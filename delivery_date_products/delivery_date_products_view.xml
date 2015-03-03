@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="view_sale_orderfor" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit5</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <group name="sale_pay" position="after">
+                    <group colspan="2" col="2" >
+                        <separator string="Dates" colspan="2"/>
+                        <field name="requested_delivery_date"/>
+                        <field name="requested_delivery_hour"/>
+                        <field name="requested_delivery_half_hour"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_product_form_delay">
+            <field name="name">product.normal.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view" />
+            <field name="arch" type="xml">
+                <group name="weight" position="after">
+                    <group string="Delay">
+                        <field name="delivery_delay" />
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>

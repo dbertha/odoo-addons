@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+    <template id="payment_delivery" name="Delivery Date" inherit_id="website_sale.payment">
+        <xpath expr="//div[@id='payment_method']" position="before">
+            <div t-if="acceptable_delivery_datetimes" class="row" id="delivery_datetimes">
+                <div class="col-lg-5 col-sm-6">
+                <h4>Choose your delivery or pick-up date</h4>
+                        <!--
+                       <select name="delivery_date" class="form-control">
+                          <option value="">Date...</option>
+                          <t t-foreach="acceptable_delivery_datetimes or []" t-as="date">
+                              <option><t t-esc="date"/></option>
+                          </t>
+                      </select>
+                      <h4>Choose your Delivery Date 2</h4>
+                      <span t-field="order.requested_delivery_date" t-field-options='{
+                      "widget": "date"}'/>
+                      -->
+                    <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
+                    <select name="delivery_date" class="form-control">
+                        <t t-foreach="website_sale_order.getDeliveryDates()" t-as="date">
+                            <option t-att-value="date"><t t-esc="date"/></option>
+                        </t>
+                    </select>
+                    <!--
+                    <select name="delivery_hour" class="form-control">
+                        <t t-foreach="['8','9','10','11','12','13','14','15', '16','17','18']" t-as="hour">
+                            <option t-att-value="hour"><t t-esc="hour"/></option>
+                        </t>
+                    </select>
+                    <select name="delivery_half_hour" class="form-control">
+                        <t t-foreach="['00-30', '30-59']" t-as="half_hour">
+                            <option t-att-value="half_hour"><t t-esc="half_hour"/></option>
+                        </t>
+                    </select>
+                    -->
+                    <p>For shop pick-up, products will be available during the opening times of your shop.</p>
+                    <!--
+                    <div class='input-group date' id='datetimepicker1'>
+                    <input name='datepick' type='text' class="form-control" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                    -->
+                </div>
+                <!--
+                <script type="text/javascript">
+                    $(function () {
+                        $('#datetimepicker1').datetimepicker();
+                        });
+                </script>
+                -->
+            </div>
+        </xpath>
+    </template>
+</data>
+</openerp>
