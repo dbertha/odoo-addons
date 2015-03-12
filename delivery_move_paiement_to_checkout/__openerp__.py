@@ -28,7 +28,7 @@
 """,
     'author': 'David Bertha',
     'website': 'https://github.com/dbertha', 
-    'depends': ['sale_stock', 'website_sale_delivery_on_checkout', 'delivery_date_products'],
+    'depends': ['delivery', 'website_sale'],
     'data': ['delivery_move_paiement_to_checkout.xml'],
     'demo': [], 
     'test': [], 
