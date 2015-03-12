@@ -20,7 +20,7 @@
 
 
 {
-    'name': 'Deivery : move choices from paiement page to checkout page',
+    'name': 'Delivery : move choices from payment page to checkout page',
     'version': '0.1',
     'category': 'Website', 
     'description': """
@@ -28,7 +28,7 @@
 """,
     'author': 'David Bertha',
     'website': 'https://github.com/dbertha', 
-    'depends': ['sale_stock', 'website_sale_delivery', 'delivery_date_products'],
+    'depends': ['sale_stock', 'website_sale_delivery_on_checkout', 'delivery_date_products'],
     'data': ['delivery_move_paiement_to_checkout.xml'],
     'demo': [], 
     'test': [], 
