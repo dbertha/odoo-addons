@@ -3,7 +3,6 @@
 <data>
     <template id="checkout_delivery_date" name="Delivery Date" inherit_id="website_sale.checkout">
         <xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="after">
-            <div t-if="acceptable_delivery_datetimes" class="row" id="delivery_datetimes">
                 <div class="col-lg-5 col-sm-6">
                 <h4>Choose your delivery or pick-up date</h4>
                         <!--
@@ -25,7 +24,7 @@
                     </select>
                     
                     <select name="delivery_interval" class="form-control">
-                        <t t-foreach="['10h00-14h30', '14h30-19h']" t-as="interval">
+                        <t t-foreach="['10h00-14h30', '14h30-19h00']" t-as="interval">
                             <option t-att-value="interval"><t t-esc="interval"/></option>
                         </t>
                     </select>
@@ -51,7 +50,6 @@
                         });
                 </script>
                 -->
-            </div>
         </xpath>
     </template>
 </data>

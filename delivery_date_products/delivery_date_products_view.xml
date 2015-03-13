@@ -9,9 +9,9 @@
                 <group name="sale_pay" position="after">
                     <group colspan="2" col="2" >
                         <separator string="Dates" colspan="2"/>
-                        <field name="requested_delivery_date"/>
-                        <field name="requested_delivery_hour"/>
-                        <field name="requested_delivery_half_hour"/>
+                        <!--<field name="requested_delivery_date"/>-->
+                        <field name="requested_delivery_datetime_start"/>
+                        <field name="requested_delivery_datetime_end"/>
                     </group>
                 </group>
             </field>

@@ -9,8 +9,9 @@ from openerp.addons.website.models.website import slug
 from openerp.addons.web.controllers.main import login_redirect
 import openerp.addons.website_sale.controllers.main
 from datetime import date, datetime
+from pytz import timezone
+import pytz
 import logging
-import string
 
 _logger = logging.getLogger(__name__)
 class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
@@ -100,17 +101,27 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         if data and data.get('delivery_date') :
             _logger.debug("checkout value delivery_date : %s", data.get('delivery_date'))
             splitted = data['delivery_date'].split()
-            splitted = splitted[1] #on ignore le nom du jour
+            splitted = splitted[1] #day name ignored
             splitted = splitted.split('/')
             day,month,year = splitted[0], splitted[1], splitted[2]
             day, month, year = int(day), int(month), int(year)
-            _logger.debug("checkout value day month year : %d/%d/%d", day, month, year)
-            date(year,month,day)
+            _logger.debug("checkout value day month year : %d/%d/%d", day, month, year)            
+            #values['checkout']['delivery_date'] = date(year,month,day)
             
-            values['checkout']['delivery_date'] = date(year,month,day)
+            _logger.debug("delivery_interval : %s", data.get('delivery_interval'))
+            splitted = data.get('delivery_interval').split('-')
+            interval_start = splitted[0].split('h')
+            interval_end = splitted[1].split('h')
+            _logger.debug("interval_start : %s", interval_start)
+            _logger.debug("interval_end : %s", interval_end)
+            tzone = timezone('Europe/Brussels')
+            datetime_start = tzone.localize(datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))).astimezone (pytz.utc)
+            datetime_end = tzone.localize(datetime(year, month, day, int(interval_end[0]), int(interval_end[1]))).astimezone (pytz.utc)
+            values['checkout']['delivery_datetime_start'] = datetime_start
+            values['checkout']['delivery_datetime_end'] = datetime_end
             
-            _logger.debug("Delivery date : %s", data['delivery_date'])
-            _logger.debug("checkout value end, checkout delivery date : %s", values['checkout']['delivery_date'])
+            #_logger.debug("Delivery date : %s", data['delivery_date'])
+            _logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
         return values
 
     def checkout_form_save(self, checkout):
@@ -176,16 +187,18 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
 
         #need to add delivery date
-        _logger.debug("checkout form save, before write : checkout delivery date : %s", checkout['delivery_date'])
-        order_info.update(requested_delivery_date = checkout.get('delivery_date'))
-        order.requested_delivery_date = checkout.get('delivery_date')
-        _logger.debug("checkout form save after write, order delivery date : %s", order.requested_delivery_date)
+        _logger.debug("checkout form save, before write : checkout delivery date time start : %s", checkout.get('delivery_datetime_start'))
+        #order_info.update(requested_delivery_date = checkout.get('delivery_date'))
+        order_info.update(requested_delivery_datetime_start = checkout.get('delivery_datetime_start'))
+        order_info.update(requested_delivery_datetime_end = checkout.get('delivery_datetime_end'))
+        #order.requested_delivery_date = checkout.get('delivery_date')
+        #_logger.debug("checkout form save after write, order delivery date : %s", order.requested_delivery_date)
         
         order_obj.write(cr, SUPERUSER_ID, [order.id], order_info, context=context)
 
     def checkout_form_validate(self, data):
         error = super(website_sale, self).checkout_form_validate(data)
-        if not data.get("delivery_date") : #TODO : check redirection va le vérifier ?
-            error['delivery_date'] = 'missing'
+        #if not data.get("delivery_date") : #TODO : check redirection va le vérifier ?
+        #    error['delivery_date'] = 'missing'
         #TODO : test if date still available
         return error

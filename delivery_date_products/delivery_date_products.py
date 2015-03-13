@@ -27,16 +27,17 @@ from openerp import SUPERUSER_ID
 from openerp.addons.web.http import request
 from openerp.osv import fields
 from openerp import models
+from pytz import timezone
 
 class delivery_date_on_sale_order(models.Model):
     _name = "sale.order"
     _inherit = 'sale.order'
     _columns = {
-        'requested_delivery_date' : fields.date(string='Requested Delivery Date', help="Date requested by the customer for the delivery."),
-        'requested_delivery_hour' : fields.integer(string='Delivery Hour',
-            help='The hour requested by the customer for the delivery'), #TODO : contraintes
-        'requested_delivery_half_hour' : fields.integer(string='Delivery Half-Hour',
-            help='the half-hour requested by the customer for the delivery')
+        #'requested_delivery_date' : fields.date(string='Requested Delivery Date', help="Date requested by the customer for the delivery."),
+        'requested_delivery_datetime_start' : fields.datetime(string='Requested Delivery Interval Beginning',
+            help='The begin of the time interval requested for the delivery'),
+        'requested_delivery_datetime_end' : fields.datetime(string='Requested Delivery Interval Ending',
+            help='The end of the time interval requested for the delivery')
     }
     def getDeliveryDates(self, cr, uid, ids, context=None):
         sale_order_obj = self.pool['sale.order']
@@ -48,7 +49,10 @@ class delivery_date_on_sale_order(models.Model):
         #    maxDelay = max(line.delivery_delay, max_delay)
         #(line.product_id.type == "service" for line in order.website_order_line)
         date_today = date.today()
-        if datetime.now().hour > 18 : #shop close
+        tzone = timezone('Europe/Brussels')
+        now = tzone.localize(datetime.now())
+        #TODO : check timezone ok
+        if now.hour > 18 : #shop close
             max_delay += 1
         delta = timedelta(days=max_delay)
         delta_one_day = timedelta(days=1)
@@ -79,23 +83,23 @@ class product_attribute_delivery_delay(models.Model):
         (_check_value, 'Delay sould be equal or greater than 0!', ['delivery_delay'])
     ]
     
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+#class SaleOrder(models.Model):
+#    _inherit = 'sale.order'
     
-    def _get_website_data(self, cr, uid, order, context=None):
-        """ Override to add date of delivery-related website data. """
-        values = super(SaleOrder, self)._get_website_data(cr, uid, order, context=context)
-        
-        # We need a delivery date only if we have stockable products
-        has_stockable_products = False
-        for line in order.order_line:
-            if line.product_id.type in ('consu', 'product'):
-                has_stockable_products = True
-        if not has_stockable_products:
-            return values
-
-        values['acceptable_delivery_datetimes'] = ["Une date ..."]
-        return values
+#     def _get_website_data(self, cr, uid, order, context=None):
+#         """ Override to add date of delivery-related website data. """
+#         values = super(SaleOrder, self)._get_website_data(cr, uid, order, context=context)
+#         
+#         # We need a delivery date only if we have stockable products
+#         has_stockable_products = False
+#         for line in order.order_line:
+#             if line.product_id.type in ('consu', 'product'):
+#                 has_stockable_products = True
+#         if not has_stockable_products:
+#             return values
+# 
+#         values['acceptable_delivery_datetimes'] = ["Une date ..."]
+#         return values
     
     
     
