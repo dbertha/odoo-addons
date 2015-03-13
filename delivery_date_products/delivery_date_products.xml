@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <openerp>
 <data>
-    <template id="payment_delivery" name="Delivery Date" inherit_id="website_sale.payment">
-        <xpath expr="//div[@id='payment_method']" position="before">
+    <template id="checkout_delivery_date" name="Delivery Date" inherit_id="website_sale.checkout">
+        <xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="after">
             <div t-if="acceptable_delivery_datetimes" class="row" id="delivery_datetimes">
                 <div class="col-lg-5 col-sm-6">
                 <h4>Choose your delivery or pick-up date</h4>
@@ -23,19 +23,20 @@
                             <option t-att-value="date"><t t-esc="date"/></option>
                         </t>
                     </select>
-                    <!--
-                    <select name="delivery_hour" class="form-control">
-                        <t t-foreach="['8','9','10','11','12','13','14','15', '16','17','18']" t-as="hour">
-                            <option t-att-value="hour"><t t-esc="hour"/></option>
+                    
+                    <select name="delivery_interval" class="form-control">
+                        <t t-foreach="['10h00-14h30', '14h30-19h']" t-as="interval">
+                            <option t-att-value="interval"><t t-esc="interval"/></option>
                         </t>
                     </select>
+                    <!--
                     <select name="delivery_half_hour" class="form-control">
                         <t t-foreach="['00-30', '30-59']" t-as="half_hour">
                             <option t-att-value="half_hour"><t t-esc="half_hour"/></option>
                         </t>
                     </select>
                     -->
-                    <p>For shop pick-up, products will be available during the opening times of your shop.</p>
+                    <p>If you ask for pick-up today, products will be available after half an hour.</p>
                     <!--
                     <div class='input-group date' id='datetimepicker1'>
                     <input name='datepick' type='text' class="form-control" />

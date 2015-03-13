@@ -43,11 +43,12 @@ class delivery_date_on_sale_order(models.Model):
         sale_order_id = request.session.get('sale_order_id')
         sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order_id, context=context)
         nb_dates = 15
-        max_delay = 1
+        max_delay = 0 #pick-up today is allowed
         #for line in order_line : #TODO : get product_id for each line, get products based on ID
         #    maxDelay = max(line.delivery_delay, max_delay)
+        #(line.product_id.type == "service" for line in order.website_order_line)
         date_today = date.today()
-        if datetime.now().hour > 15 :
+        if datetime.now().hour > 18 : #shop close
             max_delay += 1
         delta = timedelta(days=max_delay)
         delta_one_day = timedelta(days=1)

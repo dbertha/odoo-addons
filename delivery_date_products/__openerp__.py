@@ -26,13 +26,13 @@
     'description': """
     1) Done : Add delivery delay field for every products
     2) TODO : Add categories with special delivery date rules
-    2) TODO : Add a delivery date field in cart, verify that the difference between current day and delivery date is greater or equal than the maximum product delay of the products in the cart
+    2) Done : Add a delivery date field in cart, verify that the difference between current day and delivery date is greater or equal than the maximum product delay of the products in the cart
     3) Done : Add an additionnal requested_delivery_date field to the sales order with the date from the cart form.
 ===================================================
 """,
     'author': 'David Bertha',
     'website': 'http://www..com', #TODO : github
-    'depends': ['sale_stock', 'product', 'website_sale_delivery'],
+    'depends': ['sale_stock', 'product', 'website_sale_delivery_on_checkout'],
     'data': ['delivery_date_products_view.xml', 'delivery_date_products.xml'],
     'demo': [], #TODO
     'test': [], #TODO

@@ -19,5 +19,5 @@
 #
 ##############################################################################
 
-import delivery_date_products
+import delivery_date_products, controllers
 
