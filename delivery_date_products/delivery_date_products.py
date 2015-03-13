@@ -20,6 +20,8 @@
 
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
+import pytz
+
 
 
 import openerp
@@ -28,7 +30,9 @@ from openerp.addons.web.http import request
 from openerp.osv import fields
 from openerp import models
 from pytz import timezone
+import logging
 
+_logger = logging.getLogger(__name__)
 class delivery_date_on_sale_order(models.Model):
     _name = "sale.order"
     _inherit = 'sale.order'
@@ -50,9 +54,8 @@ class delivery_date_on_sale_order(models.Model):
         #(line.product_id.type == "service" for line in order.website_order_line)
         date_today = date.today()
         tzone = timezone('Europe/Brussels')
-        now = tzone.localize(datetime.now())
-        #TODO : check timezone ok
-        if now.hour > 18 : #shop close
+        now = pytz.utc.localize(datetime.now()).astimezone(tzone)
+        if now.hour >= 18 : #shop close
             max_delay += 1
         delta = timedelta(days=max_delay)
         delta_one_day = timedelta(days=1)
