@@ -24,7 +24,7 @@
             <field name="arch" type="xml">
                 <group name="weight" position="after">
                     <group string="Delay">
-                        <field name="delivery_delay" />
+                        <!--<field name="delivery_delay" />-->
                     </group>
                 </group>
             </field>

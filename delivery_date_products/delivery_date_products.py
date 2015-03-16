@@ -65,26 +65,26 @@ class delivery_date_on_sale_order(models.Model):
             delta += delta_one_day
         return result
 
-class product_attribute_delivery_delay(models.Model):
-    _name = "product.template"
-    _inherit = 'product.template'
-    _columns = {
-        'delivery_delay': fields.integer(string='Delivery Delay',
-            help='The delay for the product to be ready for delivery after been bought')
-    }
-    _defaults = {
-                 'delivery_delay' : 1 #delivery next day
-                 }
-    
-    
-    def _check_value(self, cr, uid, ids, context=None): #sould be a natural
-        obj = self.browse(cr, uid, ids[0], context=context)
-        if obj.delivery_delay < 0:
-            return False
-        return True
-    _constraints = [
-        (_check_value, 'Delay sould be equal or greater than 0!', ['delivery_delay'])
-    ]
+# class product_attribute_delivery_delay(models.Model):
+#     _name = "product.template"
+#     _inherit = 'product.template'
+#     _columns = {
+#         'delivery_delay': fields.integer(string='Delivery Delay',
+#             help='The delay for the product to be ready for delivery after been bought')
+#     }
+#     _defaults = {
+#                  'delivery_delay' : 1 #delivery next day
+#                  }
+#     
+#     
+#     def _check_value(self, cr, uid, ids, context=None): #sould be a natural
+#         obj = self.browse(cr, uid, ids[0], context=context)
+#         if obj.delivery_delay < 0:
+#             return False
+#         return True
+#     _constraints = [
+#         (_check_value, 'Delay sould be equal or greater than 0!', ['delivery_delay'])
+#     ]
     
 #class SaleOrder(models.Model):
 #    _inherit = 'sale.order'

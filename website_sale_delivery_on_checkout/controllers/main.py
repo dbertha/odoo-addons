@@ -61,6 +61,9 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         values["error"] = self.checkout_form_validate(values["checkout"])
         if values["error"]:
+            #need delivery informations
+            sale_order_obj = request.registry.get('sale.order')
+            values.update(sale_order_obj._get_website_data(cr, uid, order, context))
             return request.website.render("website_sale.checkout", values)
         self.checkout_form_save(values["checkout"])
         request.session['sale_last_order_id'] = order.id
