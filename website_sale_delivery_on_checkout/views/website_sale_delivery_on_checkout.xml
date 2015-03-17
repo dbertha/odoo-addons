@@ -23,7 +23,7 @@
     </template>
 
     <template id="checkout_delivery_method" name="Delivery Costs" inherit_id="website_sale.checkout">
-        <xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="after">
+        <xpath expr="//h3[contains(concat(' ',@class,' '),'page-header')]" position="before">
             <div t-if="deliveries" class="row" id="delivery_carrier">
                 <div class="col-lg-5 col-sm-6">
                 <h4>Choose your Delivery Method</h4>
