@@ -65,7 +65,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             sale_order_obj = request.registry.get('sale.order')
             values.update(sale_order_obj._get_website_data(cr, uid, order, context))
             return request.website.render("website_sale.checkout", values)
-        self.checkout_form_save(values["checkout"])
+        self.checkout_form_save(values["checkout"]) 
         request.session['sale_last_order_id'] = order.id
         
         #re-set correct carrier_id TODO : inside checkout_form_save (add carrier_id to dict to write)
