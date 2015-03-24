@@ -52,5 +52,17 @@
                 -->
         </xpath>
     </template>
+    
+    
+    <template id="sale_report_delivery_date" name="Delivery Date on Sale Report" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@id='informations']" position="inside">
+                <div t-if="o.requested_delivery_datetime_start" class="col-xs-3">
+                    <strong>Delivery interval : from </strong>
+                    <p t-field="o.requested_delivery_datetime_start"/>
+                    <strong>to :</strong>
+                    <p t-field="o.requested_delivery_datetime_end"/>
+                </div>
+        </xpath>
+    </template>
 </data>
 </openerp>
