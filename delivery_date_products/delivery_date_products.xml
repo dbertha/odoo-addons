@@ -2,7 +2,8 @@
 <openerp>
 <data>
     <template id="checkout_delivery_date" name="Delivery Date" inherit_id="website_sale.checkout">
-        <xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="after">
+        <!--<xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="after">-->
+        <xpath expr="//div[@id='delivery_carrier']" position="inside">
                 <div class="col-lg-5 col-sm-6">
                 <h4>Choose your delivery or pick-up date</h4>
                         <!--

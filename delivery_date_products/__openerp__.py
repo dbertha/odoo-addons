@@ -32,7 +32,7 @@
 """,
     'author': 'David Bertha',
     'website': 'http://www..com', #TODO : github
-    'depends': ['sale_stock', 'product', 'website_sale'],
+    'depends': ['sale_stock', 'product', 'website_sale', 'website_sale_delivery_on_checkout'],
     'data': ['delivery_date_products_view.xml', 'delivery_date_products.xml'],
     'demo': [], #TODO
     'test': [], #TODO
