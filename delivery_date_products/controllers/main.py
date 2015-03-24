@@ -160,6 +160,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         # create a new shipping partner
         if checkout.get('shipping_id') == -1:
+            _logger.debug("Recording shipping address")
             shipping_info = {}
             if partner_lang:
                 shipping_info['lang'] = partner_lang
