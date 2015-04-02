@@ -15,7 +15,10 @@
         
         <xpath expr="//table[@id='cart_products']/tbody//td[last()]" position="after">
             <td class="text-center" name="total_line">
-                <span style="white-space: nowrap;"><span class="oe_currency_value" id="custom_line_total"><t t-esc="int(line.product_uom_qty) * line.price_unit"/> </span>  € </span>
+                <div>
+                    
+                    <span style="white-space: nowrap;"><span class="oe_currency_value" id="custom_line_total"><t t-esc="int(line.product_uom_qty) * line.price_unit"/> </span>  € </span>
+                </div>
             </td>
         </xpath>
         
