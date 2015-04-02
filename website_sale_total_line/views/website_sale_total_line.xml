@@ -13,7 +13,7 @@
             <th width="100">Total</th>                
         </xpath>
         
-        <xpath expr="/t[1]/t[1]/div[1]/div[1]/div[1]/div[1]/table[1]/tbody[1]/t[1]/tr[1]/td[5]" position="after">
+        <xpath expr="table[@id='cart_products']/tbody//td[last()]" position="after">
             <td class="text-center" name="total_line">
                 <span style="white-space: nowrap;"><span class="oe_currency_value" id="custom_line_total"><t t-esc="int(line.product_uom_qty) * line.price_unit"/> </span>  € </span>
             </td>
