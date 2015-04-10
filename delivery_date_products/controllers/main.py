@@ -8,7 +8,8 @@ from openerp.tools.translate import _
 from openerp.addons.website.models.website import slug
 from openerp.addons.web.controllers.main import login_redirect
 import openerp.addons.website_sale.controllers.main
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from pytz import timezone
 import pytz
 import logging
@@ -98,27 +99,55 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 #         }
         _logger.debug("checkout value overload")
         values = super(website_sale, self).checkout_values(data)
+        delivery_interval_time = timedelta(minutes=30)
         if data and data.get('delivery_date') :
+            tzone = timezone('Europe/Brussels')
             _logger.debug("checkout value delivery_date : %s", data.get('delivery_date'))
             splitted = data['delivery_date'].split()
-            splitted = splitted[1] #day name ignored
-            splitted = splitted.split('/')
-            day,month,year = splitted[0], splitted[1], splitted[2]
-            day, month, year = int(day), int(month), int(year)
-            _logger.debug("checkout value day month year : %d/%d/%d", day, month, year)            
-            #values['checkout']['delivery_date'] = date(year,month,day)
-            
-            _logger.debug("delivery_interval : %s", data.get('delivery_interval'))
-            splitted = data.get('delivery_interval').split('-')
-            interval_start = splitted[0].split('h')
-            interval_end = splitted[1].split('h')
+            if(len(splitted) != 3) :
+                _logger.debug("checkout value splitted not 3 : %s", splitted)
+                return values
+            date = splitted[1].split('/')
+            if(len(date) != 3) :
+                _logger.debug("date value splitted not 3 : %s", date)
+                return values
+            try:
+                day,month,year = int(date[0]), int(date[1]), int(date[2])
+            except : 
+                _logger.debug("checkout value int conversion failed")
+                return values
+            interval_start = splitted[2].split(':')
+            if(len(interval_start) != 2) :
+                _logger.debug("checkout value interval_start not 2 : %s", splitted)
+                return values
             _logger.debug("interval_start : %s", interval_start)
-            _logger.debug("interval_end : %s", interval_end)
-            tzone = timezone('Europe/Brussels')
+            try:
+                datetime_start = datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))
+            except :
+                _logger.debug("checkout values : exception in datetime creation")
+                return values
             datetime_start = tzone.localize(datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))).astimezone (pytz.utc)
-            datetime_end = tzone.localize(datetime(year, month, day, int(interval_end[0]), int(interval_end[1]))).astimezone (pytz.utc)
             values['checkout']['delivery_datetime_start'] = datetime_start
-            values['checkout']['delivery_datetime_end'] = datetime_end
+            values['checkout']['delivery_datetime_end'] = datetime_start + delivery_interval_time
+#             splitted = data['delivery_date'].split()
+#             splitted = splitted[1] #day name ignored
+#             splitted = splitted.split('/')
+#             day,month,year = splitted[0], splitted[1], splitted[2]
+#             day, month, year = int(day), int(month), int(year)
+#             _logger.debug("checkout value day month year : %d/%d/%d", day, month, year)            
+#             #values['checkout']['delivery_date'] = date(year,month,day)
+#             
+#             _logger.debug("delivery_interval : %s", data.get('delivery_interval'))
+#             splitted = data.get('delivery_interval').split('-')
+#             interval_start = splitted[0].split('h')
+#             interval_end = splitted[1].split('h')
+#             _logger.debug("interval_start : %s", interval_start)
+#             _logger.debug("interval_end : %s", interval_end)
+#             tzone = timezone('Europe/Brussels')
+#             datetime_start = tzone.localize(datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))).astimezone (pytz.utc)
+#             datetime_end = tzone.localize(datetime(year, month, day, int(interval_end[0]), int(interval_end[1]))).astimezone (pytz.utc)
+#             values['checkout']['delivery_datetime_start'] = datetime_start
+#             values['checkout']['delivery_datetime_end'] = datetime_end
             
             #_logger.debug("Delivery date : %s", data['delivery_date'])
             _logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
@@ -197,9 +226,32 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         
         order_obj.write(cr, SUPERUSER_ID, [order.id], order_info, context=context)
 
+    def check_date_validity(self, date_time):
+        #TODO : check by sale order because date validity is relative to what's in the cart
+        tzone = timezone('Europe/Brussels')
+        now = pytz.utc.localize(datetime.now()).astimezone(tzone)
+        datetime_start = date_time.astimezone(tzone)
+        _logger.debug("form validate now : %s datetime_start : %s", now.strftime("%d/%m/%Y %H:%M"), datetime_start.strftime("%d/%m/%Y %H:%M"))
+        if ((now + timedelta(hours=1)) > datetime_start) : #sould be enough in future
+            _logger.debug("form validate : not in future")
+            return False
+        if(datetime_start.minute != 0) :
+            _logger.debug("form validate : minutes not 0")
+            return False
+        if((datetime_start.hour < 10) or (datetime_start.hour > 18)) :
+            _logger.debug("form validate : hour not in correct interval")
+            return False
+        return True
+    
     def checkout_form_validate(self, data):
         error = super(website_sale, self).checkout_form_validate(data)
-        #if not data.get("delivery_date") : #TODO : check redirection va le vérifier ?
-        #    error['delivery_date'] = 'missing'
+        if not data.get("delivery_datetime_start") : 
+            _logger.debug("form validate : delivery date missing")
+            error['delivery_date'] = 'missing'
+        elif not self.check_date_validity(data.get('delivery_datetime_start')) :
+            _logger.debug("form validate : delivery date not correct")
+            error['delivery_date'] = 'notAcceptable'
         #TODO : test if date still available
         return error
+    
+    
