@@ -14,6 +14,14 @@ div.navbar.navbar-default {
     /*text-decoration: none;*/
 }
 
+#add_to_cart {
+    text-decoration: none!important;
+    border-radius: 0;
+    color: white!important;
+    background-color: rgba(0,0,0,0.8);
+    border-width: 0;
+}
+
 a {
     color : black!important;
     text-decoration: underline!important;
