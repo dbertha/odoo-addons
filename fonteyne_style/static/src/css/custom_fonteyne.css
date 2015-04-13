@@ -3,6 +3,18 @@ body {
     letter-spacing: 2px!important;
 }
 
+.oe_website_sale,#wrap[itemscope] {
+  margin-top: 100px;
+}
+
+#add_to_cart {
+    text-decoration: none!important;
+    border-radius: 0;
+    color: white!important;
+    background-color: rgba(0,0,0,0.8);
+    border-width: 0;
+}
+
 div.navbar.navbar-default {
     padding-top: 1%;
     background-color: transparent!important;
@@ -12,14 +24,6 @@ div.navbar.navbar-default {
     width: 100%;
     border-width: 0px;
     /*text-decoration: none;*/
-}
-
-#add_to_cart {
-    text-decoration: none!important;
-    border-radius: 0;
-    color: white!important;
-    background-color: rgba(0,0,0,0.8);
-    border-width: 0;
 }
 
 a {
