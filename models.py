@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from openerp.osv import orm, fields
+from openerp import models
+from openerp.osv import osv, fields
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -9,8 +10,9 @@ _logger = logging.getLogger(__name__)
 
 #     name = fields.Char()
 
-class ProductCategory(orm.Model):
-    _inherit = 'product.category'
+class ProductPublicCategory(osv.osv):
+    #_name = 'product.public.category'
+    _inherit = "product.public.category"
     
     def hierarchy_selected(self, cr, uid, ids, activeCategoryNumber, context=None):
         _logger.debug("hierarchy selected, number : %d", activeCategoryNumber)
