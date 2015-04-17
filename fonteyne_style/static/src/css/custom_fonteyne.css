@@ -51,6 +51,12 @@ a {
     text-decoration: underline!important;
 }
 
+.text-error {
+  color: red;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
 #oe_main_menu_navbar>a {
     color : white!important;
 }
