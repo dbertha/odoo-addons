@@ -38,7 +38,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         _logger.debug("order.carrier_id.name : %s", order.carrier_id.name)
         if(order.carrier_id.name.find("Tong") != -1) :
             _logger.debug("Adding Tongres address")
-            values['shipping_id'] = -1
+            values['checkout']['shipping_id'] = -1
             values['checkout']['shipping_name'] = "Tongres"
             values['checkout']['shipping_phone'] = "02 734 08 02"
             values['checkout']['shipping_street'] = "107, Rue Gérard"
@@ -47,7 +47,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             values['checkout']['shipping_country_id'] = 21
         elif(order.carrier_id.name.find("Wolu") != -1) :
             _logger.debug("Adding Wolu address")
-            values['shipping_id'] = -1
+            values['checkout']['shipping_id'] = -1
             values['checkout']['shipping_name'] = "Woluwé"
             values['checkout']['shipping_phone'] = "02 763 48 93"
             values['checkout']['shipping_street'] = "27, Avenue Baron d'Huart"
@@ -56,7 +56,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             values['checkout']['shipping_country_id'] = 21
         elif(order.carrier_id.name.find("Jaco") != -1) :
             _logger.debug("Adding Uccle address")
-            values['shipping_id'] = -1
+            values['checkout']['shipping_id'] = -1
             values['checkout']['shipping_name'] = "Uccle"
             values['checkout']['shipping_phone'] = "02 375 48 75"
             values['checkout']['shipping_street'] = "1395, Chaussée de Waterloo"
@@ -65,7 +65,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             values['checkout']['shipping_country_id'] = 21
         elif(order.carrier_id.name.find("ulpe") != -1) :
             _logger.debug("Adding La Hulpe address")
-            values['shipping_id'] = -1
+            values['checkout']['shipping_id'] = -1
             values['checkout']['shipping_name'] = "La Hulpe"
             values['checkout']['shipping_phone'] = " 02 652 21 93"
             values['checkout']['shipping_street'] = "30, Avenue Albert 1er"
