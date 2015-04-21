@@ -188,6 +188,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             partner_id = orm_partner.create(cr, SUPERUSER_ID, billing_info, context=context)
 
         # create a new shipping partner
+        _logger.debug("Form save : Shipping id=%d", checkout.get('shipping_id'))
         if checkout.get('shipping_id') == -1:
             _logger.debug("Recording shipping address")
             shipping_info = {}
@@ -244,6 +245,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         return True
     
     def checkout_form_validate(self, data):
+        _logger.debug("Validating form")
         error = super(website_sale, self).checkout_form_validate(data)
         if not data.get("delivery_datetime_start") : 
             _logger.debug("form validate : delivery date missing")

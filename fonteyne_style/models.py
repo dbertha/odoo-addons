@@ -23,4 +23,6 @@ class ProductPublicCategory(osv.osv):
             if category.id == activeCategoryNumber : 
                 return True
             else :
-                return any(child.id == activeCategoryNumber for child in category.child_id)
+                if any(child.id == activeCategoryNumber for child in category.child_id) :
+                    return True
+        return False
