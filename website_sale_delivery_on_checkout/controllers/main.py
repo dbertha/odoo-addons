@@ -4,6 +4,10 @@ from openerp import http
 from openerp import SUPERUSER_ID
 from openerp.http import request
 import openerp.addons.website_sale.controllers.main
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
+from pytz import timezone
+import pytz
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -96,8 +100,13 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             return redirection
 
         values = self.checkout_values(post)
-
+        
+        if (post.get('shipping_name')) : 
+            #needed to check delivery date depending on delivery method
+            values["checkout"]['shipping_name'] = post.get('shipping_name')
         values["error"] = self.checkout_form_validate(values["checkout"])
+        
+        
         if values["error"]:
             #need delivery informations
             sale_order_obj = request.registry.get('sale.order')

@@ -253,6 +253,12 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         elif not self.check_date_validity(data.get('delivery_datetime_start')) :
             _logger.debug("form validate : delivery date not correct")
             error['delivery_date'] = 'notAcceptable'
+        if data.get('shipping_name') :
+            _logger.debug("Shipping name : %s weekday : %d", data['shipping_name'], data.get('delivery_datetime_start').weekday())
+            if ((data['shipping_name'] == "Uccle") and
+             (data.get('delivery_datetime_start')) and (data.get('delivery_datetime_start').weekday() < 2 )) :
+            #Fort Jaco closed if monday or thuesday
+                error["shop_closed"] = True
         #TODO : test if date still available
         return error
     
