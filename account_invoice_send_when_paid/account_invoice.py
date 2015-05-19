@@ -32,7 +32,7 @@ class account_invoice(models.Model):
     @api.multi
     def confirm_paid(self):
         _logger.debug("Will send mail")
-        account_invoice_obj = self.pool.get('account.invoice')
+        #account_invoice_obj = self.pool.get('account.invoice')
         email_act = self.action_invoice_sent()
         _logger.debug("Will compose mail")
         # send the email
