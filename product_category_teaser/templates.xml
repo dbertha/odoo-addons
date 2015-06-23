@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="website_description" name="Website Description">
+            <div t-if="category and category.website_description">
+                <p><t t-esc="category.website_description"/></p>
+            </div>
+        </template>        
+        
+        <template id="website_description_call" inherit_id="website_sale.products">
+            <xpath expr="//div[@class='products_pager']/div[@class='row']" position="inside">
+                <t t-call="product_category_teaser.website_description"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
