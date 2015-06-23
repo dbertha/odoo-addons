@@ -262,4 +262,21 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         #TODO : test if date still available
         return error
     
+    @http.route('/shop/checkout/get_dates', type='json', auth="none")
+    def get_dates(self):
+        registry = request.registry
+        uid = request.session.uid
+        context = request.session.context
+        cr = request.cr
+        sale_order_obj = request.registry['sale.order']
+        order_id = request.session.get('sale_last_order_id')
+        min_date = sale_order_obj.get_min_date(cr,uid, order_id, context) #[year, month, day, hour, minutes]
+        forbidden_days = sale_order_obj.get_forbidden_days(cr,uid, order_id, context)  
+        return {
+            'min_date' : min_date,
+            'forbidden_days' : forbidden_days}  
+            #sale_order.getMinDate() #Todo : min date as a computed field ?
+            #sale_order.getForbiddenDays()
+            #res = registry.get("calendar.alarm_manager").get_next_notif(cr, uid, context=context)
+            #return res
     

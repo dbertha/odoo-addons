@@ -44,6 +44,7 @@ class delivery_date_on_sale_order(models.Model):
             help='The end of the time interval requested for the delivery')
     }
     def getDeliveryDates(self, cr, uid, ids, context=None):
+        """OLD CODE"""
         sale_order_obj = self.pool['sale.order']
         sale_order_id = request.session.get('sale_order_id')
         sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order_id, context=context)
@@ -64,6 +65,23 @@ class delivery_date_on_sale_order(models.Model):
             result.append((date_today + delta).strftime("%a %d/%m/%Y"))
             delta += delta_one_day
         return result
+    
+    def get_min_date(self,cr,uid, ids, context) :
+        """Compute rules for delivery based on the sale order.
+        Possible improvement : use strategy pattern and delegate computation
+        to thoses classes
+        Assert : only one ID"""
+        #date_today = date.today()
+        tzone = timezone('Europe/Brussels')
+        now = pytz.utc.localize(datetime.now()).astimezone(tzone)
+        now = now.replace(hour=now.hour + 1,minute=59)
+        return [now.year, now.month, now.day, now.hour, now.minute]
+        
+    
+    def get_forbidden_days(self,cr,uid, ids, context) :
+        """Compute forbidden days for delivery
+        Assert : only one ID"""
+        return []  
 
 # class product_attribute_delivery_delay(models.Model):
 #     _name = "product.template"
