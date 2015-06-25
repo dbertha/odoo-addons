@@ -128,7 +128,8 @@ class delivery_condition(osv.Model):
                 [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thurday'), 
                  (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection = 0
                 string="Last day of the allowed range"
-                )
+                ),
+        'website_description' : fields.text(string="Text for the website")
     #fields.integer(string="Last day of the allowed range (0-monday, 6-sunday)")
         #possible improvement : 'repeat_interval'
         #cas : 
@@ -166,6 +167,9 @@ class sale_order(osv.osv):
         Expect only one type of delivery condition in the sale order
         i.e. all the categories of the products in sale order lines have
         the same delivery condition"""
+    
+    
+    
         
 class Website(osv.osv):
     _inherit = 'website'
@@ -173,21 +177,41 @@ class Website(osv.osv):
     def sale_product_domain(self, cr, uid, ids, context=None):
         """Remove objects from categories with another delivery condition than the sale order"""
         domain = super(Website, self).sale_product_domain(cr, uid, ids, context=context)
+        delivery_condition = self.sale_get_delivery_condition(cr, uid, ids, context)
+                    #find the acceptable categs
+                    #TODO : not in the non acceptable may be more secure
+        if(delivery_condition) :
+            categs_ids = self.pool['product.public.category'].search(cr,uid, 
+                            [('condition_id', '=', delivery_condition.id)], context=context)
+                    
+            _logger.debug("sale order condition : %d", delivery_condition.id)
+            domain += [('public_categ_ids','in',categs_ids)]
+        return domain
+    
+    def sale_get_delivery_condition(self,cr,uid,ids, context=None) :
         sale_order_obj = self.pool['sale.order']
         sale_order_id = request.session.get('sale_order_id')
-        _logger.debug("sale product domain overload")
+        _logger.debug("sale get_delivery_condition")
         if sale_order_id :
             sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order_id, context=context)  
             if sale_order.exists() :
                 _logger.debug("sale order exists")
                 if sale_order.delivery_condition :
-                    #find the acceptable categs
-                    categs_ids = self.pool['product.public.category'].search(cr,uid, 
-                            [('condition_id', '=', sale_order.delivery_condition.id)], context=context)
-                    
-                    _logger.debug("sale order condition : %d", sale_order.delivery_condition.id)
-                    domain += [('public_categ_ids','in',categs_ids)]
-        return domain
+                    return sale_order.delivery_condition
+        return False
+    
+    def sale_is_product_compatible_with_cart(self, cr, uid, tpl_product_id, context=None) :
+        delivery_condition = self.sale_get_delivery_condition(cr, uid, [0],context=context)
+        if(not delivery_condition) : 
+            _logger.debug("No delivery condition in the cart")
+            return not delivery_condition
+        _logger.debug("delivery condition_id in the cart : %d", delivery_condition.id)
+        template = self.pool['product.template'].browse(cr, uid, tpl_product_id, context=context)
+        public_categ = len(template.public_categ_ids) and template.public_categ_ids[0]
+        _logger.debug("public_categ : %s", str(public_categ))
+        product_condition_id = public_categ and public_categ.condition_id and public_categ.condition_id.id
+        _logger.debug("production_condition_id : %s", str(product_condition_id))
+        return product_condition_id and delivery_condition.id == product_condition_id
     
 #     def get_delivery_condition(self,cr,uid,order_id,context=None) :
 #         """Expect only one type of delivery condition in the sale order
