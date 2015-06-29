@@ -18,140 +18,46 @@ _logger = logging.getLogger(__name__)
 class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
     def checkout_values(self, data=None):
-#         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
-#         orm_partner = registry.get('res.partner')
-#         orm_user = registry.get('res.users')
-#         orm_country = registry.get('res.country')
-#         state_orm = registry.get('res.country.state')
-# 
-#         country_ids = orm_country.search(cr, SUPERUSER_ID, [], context=context)
-#         countries = orm_country.browse(cr, SUPERUSER_ID, country_ids, context)
-#         states_ids = state_orm.search(cr, SUPERUSER_ID, [], context=context)
-#         states = state_orm.browse(cr, SUPERUSER_ID, states_ids, context)
-#         partner = orm_user.browse(cr, SUPERUSER_ID, request.uid, context).partner_id
-# 
-#         order = None
-# 
-#         shipping_id = None
-#         shipping_ids = []
-#         checkout = {}
-#         if not data:
-#             if request.uid != request.website.user_id.id:
-#                 checkout.update( self.checkout_parse("billing", partner) )
-#                 shipping_ids = orm_partner.search(cr, SUPERUSER_ID, [("parent_id", "=", partner.id), ('type', "=", 'delivery')], context=context)
-#             else:
-#                 order = request.website.sale_get_order(force_create=1, context=context)
-#                 if order.partner_id:
-#                     domain = [("partner_id", "=", order.partner_id.id)]
-#                     user_ids = request.registry['res.users'].search(cr, SUPERUSER_ID, domain, context=dict(context or {}, active_test=False))
-#                     if not user_ids or request.website.user_id.id not in user_ids:
-#                         checkout.update( self.checkout_parse("billing", order.partner_id) )
-#         else:
-#             checkout = self.checkout_parse('billing', data)
-#             try: 
-#                 shipping_id = int(data["shipping_id"])
-#             except ValueError:
-#                 pass
-#             if shipping_id == -1:
-#                 checkout.update(self.checkout_parse('shipping', data))
-# 
-#         if shipping_id is None:
-#             if not order:
-#                 order = request.website.sale_get_order(context=context)
-#             if order and order.partner_shipping_id:
-#                 shipping_id = order.partner_shipping_id.id
-# 
-#         shipping_ids = list(set(shipping_ids) - set([partner.id]))
-# 
-#         if shipping_id == partner.id:
-#             shipping_id = 0
-#         elif shipping_id > 0 and shipping_id not in shipping_ids:
-#             shipping_ids.append(shipping_id)
-#         elif shipping_id is None and shipping_ids:
-#             shipping_id = shipping_ids[0]
-# 
-#         ctx = dict(context, show_address=1)
-#         shippings = []
-#         if shipping_ids:
-#             shippings = shipping_ids and orm_partner.browse(cr, SUPERUSER_ID, list(shipping_ids), ctx) or []
-#         if shipping_id > 0:
-#             shipping = orm_partner.browse(cr, SUPERUSER_ID, shipping_id, ctx)
-#             checkout.update( self.checkout_parse("shipping", shipping) )
-# 
-#         checkout['shipping_id'] = shipping_id
-# 
-#         # Default search by user country
-#         if not checkout.get('country_id'):
-#             country_code = request.session['geoip'].get('country_code')
-#             if country_code:
-#                 country_ids = request.registry.get('res.country').search(cr, uid, [('code', '=', country_code)], context=context)
-#                 if country_ids:
-#                     checkout['country_id'] = country_ids[0]
-# 
-#         values = {
-#             'countries': countries,
-#             'states': states,
-#             'checkout': checkout,
-#             'shipping_id': partner.id != shipping_id and shipping_id or 0,
-#             'shippings': shippings,
-#             'error': {},
-#             'has_check_vat': hasattr(registry['res.partner'], 'check_vat')
-#         }
-        _logger.debug("checkout value overload")
+        _logger.debug("checkout value overload for delivery date parsing")
         values = super(website_sale, self).checkout_values(data)
-        delivery_interval_time = timedelta(minutes=30)
+        values['checkout'].update(self._parse_delivery_date(data))
+        #_logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
+        return values
+        
+    def _parse_delivery_date(self, data):
         if data and data.get('delivery_date') :
             tzone = timezone('Europe/Brussels')
+            delivery_interval_time = timedelta(minutes=30)
             _logger.debug("checkout value delivery_date : %s", data.get('delivery_date'))
             splitted = data['delivery_date'].split()
             if(len(splitted) != 3) :
                 _logger.debug("checkout value splitted not 3 : %s", splitted)
-                return values
+                return {}
             date = splitted[1].split('/')
             if(len(date) != 3) :
                 _logger.debug("date value splitted not 3 : %s", date)
-                return values
+                return {}
             try:
                 day,month,year = int(date[0]), int(date[1]), int(date[2])
             except : 
                 _logger.debug("checkout value int conversion failed")
-                return values
+                return {}
             interval_start = splitted[2].split(':')
             if(len(interval_start) != 2) :
                 _logger.debug("checkout value interval_start not 2 : %s", splitted)
-                return values
+                return {}
             _logger.debug("interval_start : %s", interval_start)
             try:
                 datetime_start = datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))
             except :
                 _logger.debug("checkout values : exception in datetime creation")
-                return values
+                return {}
             datetime_start = tzone.localize(datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))).astimezone (pytz.utc)
-            values['checkout']['delivery_datetime_start'] = datetime_start
-            values['checkout']['delivery_datetime_end'] = datetime_start + delivery_interval_time
-#             splitted = data['delivery_date'].split()
-#             splitted = splitted[1] #day name ignored
-#             splitted = splitted.split('/')
-#             day,month,year = splitted[0], splitted[1], splitted[2]
-#             day, month, year = int(day), int(month), int(year)
-#             _logger.debug("checkout value day month year : %d/%d/%d", day, month, year)            
-#             #values['checkout']['delivery_date'] = date(year,month,day)
-#             
-#             _logger.debug("delivery_interval : %s", data.get('delivery_interval'))
-#             splitted = data.get('delivery_interval').split('-')
-#             interval_start = splitted[0].split('h')
-#             interval_end = splitted[1].split('h')
-#             _logger.debug("interval_start : %s", interval_start)
-#             _logger.debug("interval_end : %s", interval_end)
-#             tzone = timezone('Europe/Brussels')
-#             datetime_start = tzone.localize(datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))).astimezone (pytz.utc)
-#             datetime_end = tzone.localize(datetime(year, month, day, int(interval_end[0]), int(interval_end[1]))).astimezone (pytz.utc)
-#             values['checkout']['delivery_datetime_start'] = datetime_start
-#             values['checkout']['delivery_datetime_end'] = datetime_end
-            
-            #_logger.debug("Delivery date : %s", data['delivery_date'])
-            _logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
-        return values
+            _logger.debug("checkout value end, checkout delivery datetime start : %s", datetime_start)
+
+            return {'delivery_datetime_start' : datetime_start,
+                'delivery_datetime_end' : datetime_start + delivery_interval_time }
+        return {}
 
     def checkout_form_save(self, checkout):
         _logger.debug("checkout form save")
@@ -228,22 +134,14 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         order_obj.write(cr, SUPERUSER_ID, [order.id], order_info, context=context)
 
     def check_date_validity(self, date_time):
-        #TODO : check by sale order because date validity is relative to what's in the cart
         tzone = timezone('Europe/Brussels')
-        now = pytz.utc.localize(datetime.now()).astimezone(tzone)
-        datetime_start = date_time.astimezone(tzone)
-        _logger.debug("form validate now : %s datetime_start : %s", now.strftime("%d/%m/%Y %H:%M"), datetime_start.strftime("%d/%m/%Y %H:%M"))
-        if ((now + timedelta(hours=1)) > datetime_start) : #sould be enough in future
-            _logger.debug("form validate : not in future")
-            return False
-        if(datetime_start.minute != 0) :
-            _logger.debug("form validate : minutes not 0")
-            return False
-        if((datetime_start.hour < 10) or (datetime_start.hour > 18)) :
-            _logger.debug("form validate : hour not in correct interval")
-            return False
-        return True
-    
+        datetime_start = date_time.astimezone(tzone)        
+        uid = request.session.uid
+        context = request.session.context
+        cr = request.cr
+        order_id = request.session.get('sale_order_id')
+        return request.registry['sale.order'].check_date(cr,uid, order_id,datetime_start,context=context)
+        
     def checkout_form_validate(self, data):
         _logger.debug("Validating form")
         error = super(website_sale, self).checkout_form_validate(data)
@@ -259,21 +157,23 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
              (data.get('delivery_datetime_start')) and (data.get('delivery_datetime_start').weekday() < 2 )) :
             #Fort Jaco closed if monday or thuesday
                 error["shop_closed"] = True
-        #TODO : test if date still available
+        _logger.debug("form validate : error : %s", str(error))
         return error
     
-    @http.route('/shop/checkout/get_dates', type='json', auth="none")
+    @http.route('/shop/checkout/get_dates', type='json', auth="public")
     def get_dates(self):
-        registry = request.registry
-        uid = request.session.uid
-        context = request.session.context
+        uid = request.uid
+        context = request.context
         cr = request.cr
         sale_order_obj = request.registry['sale.order']
-        order_id = request.session.get('sale_last_order_id')
+        order_id = request.session.get('sale_order_id')
+        _logger.debug("UID : %s", str(uid))
         min_date = sale_order_obj.get_min_date(cr,uid, order_id, context) #[year, month, day, hour, minutes]
+        max_date = sale_order_obj.get_max_date(cr,uid, order_id, context)  
         forbidden_days = sale_order_obj.get_forbidden_days(cr,uid, order_id, context)  
         return {
             'min_date' : min_date,
+            'max_date' : max_date,
             'forbidden_days' : forbidden_days}  
             #sale_order.getMinDate() #Todo : min date as a computed field ?
             #sale_order.getForbiddenDays()

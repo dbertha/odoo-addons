@@ -6,31 +6,7 @@
         <xpath expr="//div[@id='delivery_carrier']" position="inside">
                 <div class="col-lg-5 col-sm-6">
                 <h3>Choose your delivery or pick-up date</h3>
-                        <!--
-                       <select name="delivery_date" class="form-control">
-                          <option value="">Date...</option>
-                          <t t-foreach="acceptable_delivery_datetimes or []" t-as="date">
-                              <option><t t-esc="date"/></option>
-                          </t>
-                      </select>
-                      <h4>Choose your Delivery Date 2</h4>
-                      <span t-field="order.requested_delivery_date" t-field-options='{
-                      "widget": "date"}'/>
-                      -->
-                      <!--
-                    <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
-                    <select name="delivery_date" class="form-control">
-                        <t t-foreach="website_sale_order.getDeliveryDates()" t-as="date">
-                            <option t-att-value="date"><t t-esc="date"/></option>
-                        </t>
-                    </select>
-                    
-                    <select name="delivery_interval" class="form-control">
-                        <t t-foreach="['10h00-14h30', '14h30-19h00']" t-as="interval">
-                            <option t-att-value="interval"><t t-esc="interval"/></option>
-                        </t>
-                    </select> -->
-                                <input type='text' class="form-control" id='delivery_date' name='delivery_date'/>
+                    <input type='text' class="form-control" id='delivery_date' name='delivery_date'/>
                                 <!--<span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar">
                                     </span>
