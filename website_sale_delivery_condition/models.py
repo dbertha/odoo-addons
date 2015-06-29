@@ -1,0 +1,232 @@
+# -*- coding: utf-8 -*-
+
+from openerp import SUPERUSER_ID
+from openerp import models
+from openerp.osv import osv, fields
+from openerp.addons.web.http import request
+
+from datetime import datetime, timedelta, date
+from dateutil.relativedelta import relativedelta
+import pytz
+from pytz import timezone
+
+import logging
+
+_logger = logging.getLogger(__name__)
+#TODO : superuser ID
+
+
+        
+class delivery_condition(osv.osv):
+    #TODO : incompatibility between categories but product can be from multiple categ : proper ?
+    _name = "delivery.condition"
+    _description = "Delivery Condition : delivery carrier and delays compatible"
+     
+    _columns = {
+        'name': fields.char('Delivery Condition Name', required=True),
+        #'partner_id': fields.many2one('res.partner', 'Transport Company', required=True, help="The partner that is doing the delivery service."),
+        #'product_id': fields.many2one('product.product', 'Delivery Product', required=True),
+        'category_ids': fields.one2many('product.public.category', 'condition_id', string='Public Categories',
+                                        readonly=True),
+        #TODO : conditions_id : 'carrier_id': fields.many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade')
+        'carrier_ids' : fields.one2many('delivery.carrier', 'condition_id', string='Delivery Carriers',
+                                        readonly=True),
+        'delay_from' : fields.integer(string="Delay in days from the present as minimum date"),
+        'delay_to' : fields.integer(string="Delay in days from the minimum date as maximum date"),
+        'limit_to_a_range_of_days' : fields.boolean(
+                        string="Delivery date proposition should be limited to the range",
+                        help="Max and min dates will be computed from there and delay from"),
+        'range_start' : fields.selection(
+                [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thurday'), 
+                 (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection = 0
+                string="First day of the allowed range"
+                ),
+    #fields.integer(string="First day of the allowed range (0-monday, 6-sunday)"),
+        'range_end' : fields.selection(
+                [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thurday'), 
+                 (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection = 0
+                string="Last day of the allowed range"
+                ),
+        'website_description' : fields.text(string="Text for the website", translate=True)
+        #possible improvement : 'repeat_interval'
+        #cas : 
+        #normal : min = now + 1h
+        #events : min = now + 1 day + 1 day if after 17h
+        #FFY : samedi à mardi
+    }
+
+    
+class product_public_category(osv.osv):
+    _name = 'product.public.category'
+    _inherit = "product.public.category"
+    _columns = {
+        'condition_id' : fields.many2one('delivery.condition', string="Conditions of Delivery")
+    }
+    
+class delivery_carrier(osv.osv):
+    _name = "delivery.carrier"
+    _inherit = "delivery.carrier"
+    _columns = {
+        'condition_id' : fields.related('product_id','product_tmpl_id','public_categ_ids','condition_id', 
+            type="many2one", relation="delivery.condition", string="Delivery Condition", readonly=True,
+            help="This is the delivery condition of the public category of the delivery product")
+        #'is_pickup' : fields.boolean(string='is a shop pick-up', 
+        #    help='if activated, the address of delivery_method will be used as shipping address'),
+        #'address_partner' : fields.many2one('res.partner', string="Address", help="Address to use as shipping address")
+    }
+    
+class sale_order(osv.osv):
+    _name = "sale.order"
+    _inherit = "sale.order"
+    
+    _columns = {
+        'delivery_condition' : fields.related('order_line', 
+            'product_id', 'product_tmpl_id', 'public_categ_ids', 'condition_id', 
+            type="many2one", relation="delivery.condition", string="Delivery Condition", readonly=True,
+            help="this field will provide a link to the delivery condition of the first public category of the first product\
+        Expect only one type of delivery condition in the sale order\
+        i.e. all the categories of the products in sale order lines have\
+        the same delivery condition")
+    } 
+    """this field will provide a link to the delivery condition of the first public categ of the first product
+        Expect only one type of delivery condition in the sale order
+        i.e. all the categories of the products in sale order lines have
+        the same delivery condition"""
+        
+    def get_min_date(self,cr,uid, order_id, context) :
+        order = self.browse(cr, SUPERUSER_ID, order_id, context)
+        delivery_condition = order.delivery_condition
+        _logger.debug("In overloaded min_date\nDelivery condition : %s", str(delivery_condition))
+        _logger.debug("user_id : %s", str(uid))
+        if delivery_condition :
+            tzone = timezone('Europe/Brussels')
+            now = pytz.utc.localize(datetime.now()).astimezone(tzone)
+            delta = timedelta(hours=1)
+            min_date = now.replace(minute=59) + delta 
+            _logger.debug("Delay from : %s", str(min_date))
+            if(delivery_condition.delay_from > 0) :
+                min_date = min_date.replace(hour=0,minute=0) #TODO : first_hour_of_day
+                delta = timedelta(days=delivery_condition.delay_from)
+                if(now.hour >= 17) : #day is over TODO : parameter last_hour_of_day
+                    delta += timedelta(days=1)
+                min_date += delta
+                forbidden_days = self.get_forbidden_days(cr, uid, order_id, context)
+                delta = timedelta(days=1)
+
+                if forbidden_days :
+                    start_of_range = (max(forbidden_days) + 1) % 7
+                    if(min_date.weekday() not in forbidden_days and min_date.weekday() != start_of_range) :
+                        #should start at the first day of the range
+                        while(min_date.weekday() != start_of_range) :
+                            min_date += delta
+                while(len(forbidden_days) < 7 and (min_date.weekday() in forbidden_days)) :
+                    min_date += delta
+            _logger.debug("Min date for delivery : %s", str(min_date))
+            return [min_date.year, min_date.month, min_date.day, min_date.hour, min_date.minute]
+        return super(sale_order,self).get_min_date(cr,uid,order_id,context=context)
+    #TODO : get sale_order from database only once in parent caller
+    def get_forbidden_days(self,cr,uid, order_id, context) :
+        order = self.browse(cr, SUPERUSER_ID, order_id, context)
+        delivery_condition = order.delivery_condition
+        if delivery_condition :
+            if(delivery_condition.range_start and delivery_condition.range_end) :
+                #warning : encoded as 1-7, but 0-6 needed
+                range_start = delivery_condition.range_start -1
+                range_end = delivery_condition.range_end -1
+                forbidden_days = []
+                if(delivery_condition.range_end < delivery_condition.range_start) :
+                    forbidden_days = [x for x in range(range_end+1, range_start)]
+                else :
+                    allowed_days = range(range_start, range_end+1)
+                    forbidden_days = [x for x in range(7) if (x not in allowed_days)]
+                _logger.debug('Forbidden days : %s', forbidden_days)
+                return forbidden_days
+        return super(sale_order,self).get_forbidden_days(cr,uid,order_id,context=context) 
+    
+    def get_max_date(self,cr,uid, order_id, context) :
+        order = self.browse(cr, SUPERUSER_ID, order_id, context)
+        delivery_condition = order.delivery_condition
+        if delivery_condition :
+            if(delivery_condition.range_start and delivery_condition.range_end) :
+                #only the first range allowed
+                forbidden_days = self.get_forbidden_days(cr, uid, order_id, context)
+                if(forbidden_days) :
+                    end_of_range = (min(forbidden_days) - 1) % 7
+                    min_date = datetime(*self.get_min_date(cr, uid, order_id, context=context))
+                    delta = timedelta(days=1)
+                    max_date = min_date
+                    while(max_date.weekday() != end_of_range) :
+                        max_date += delta
+                    max_date += delta
+                    _logger.debug("max_date weekday : %d", max_date.weekday())
+                    return [max_date.year, max_date.month, max_date.day, max_date.hour, max_date.minute]
+        return super(sale_order,self).get_max_date(cr,uid,order_id,context=context) 
+    
+    def _get_delivery_methods(self, cr, uid, order, context=None):
+        """do not display delivery methods incompatible with sale order delivery condition"""
+        carrier_obj = self.pool.get('delivery.carrier')
+        search_domain = [('website_published','=',True)]
+        if order.delivery_condition :
+            search_domain += [('condition_id','=', order.delivery_condition.id)]
+        delivery_ids = carrier_obj.search(cr, SUPERUSER_ID, search_domain, context=context)
+        
+        # Following loop is done to avoid displaying delivery methods who are not available for this order
+        # This can surely be done in a more efficient way, but at the moment, it mimics the way it's
+        # done in delivery_set method of sale.py, from delivery module
+        for delivery_id in carrier_obj.browse(cr, SUPERUSER_ID, delivery_ids, context=dict(context, order_id=order.id)):
+            if not delivery_id.available:
+                delivery_ids.remove(delivery_id.id)
+        return delivery_ids
+    
+    def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
+        """Overload to remove delivery method when cart is clear,
+        because otherwise it will apply its delivery condition to the cart"""
+        return_val = super(sale_order,self)._cart_update(cr, uid, ids, product_id, line_id, add_qty, set_qty, context=context)
+        for so in self.browse(cr, uid, ids, context=context) :
+            if(not len(so.website_order_line)) : #cart cleared
+                so.write({'carrier_id': None})
+                self._delivery_unset(cr, SUPERUSER_ID, [so.id], context=context)
+        return return_val
+    
+class Website(osv.osv):
+    _inherit = 'website'
+    
+    def sale_product_domain(self, cr, uid, ids, context=None):
+        """Remove objects from categories with another delivery condition than the sale order"""
+        domain = super(Website, self).sale_product_domain(cr, uid, ids, context=context)
+        delivery_condition = self.sale_get_delivery_condition(cr, uid, ids, context)
+                    #find the acceptable categs
+                    #TODO : not in the non acceptable may be more secure
+        if(delivery_condition) :
+            categs_ids = self.pool['product.public.category'].search(cr,uid, 
+                            [('condition_id', '=', delivery_condition.id)], context=context)
+                    
+            _logger.debug("sale order condition : %d", delivery_condition.id)
+            domain += [('public_categ_ids','in',categs_ids)]
+        return domain
+    
+    def sale_get_delivery_condition(self,cr,uid,ids, context=None) :
+        _logger.debug("get_delivery_condition, user id : %s", str(uid))
+        sale_order_obj = self.pool['sale.order']
+        sale_order_id = request.session.get('sale_order_id')
+        _logger.debug("sale get_delivery_condition")
+        if sale_order_id :
+            sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order_id, context=context)  
+            if sale_order.exists() :
+                _logger.debug("sale order exists")
+                if sale_order.delivery_condition :
+                    return sale_order.delivery_condition
+        return False
+    
+    def sale_is_product_compatible_with_cart(self, cr, uid, tpl_product_id, context=None) :
+        delivery_condition = self.sale_get_delivery_condition(cr, uid, [0],context=context)
+        if(not delivery_condition) : 
+            _logger.debug("No delivery condition in the cart")
+            return not delivery_condition
+        _logger.debug("delivery condition_id in the cart : %d", delivery_condition.id)
+        template = self.pool['product.template'].browse(cr, uid, tpl_product_id, context=context)
+        public_categ = len(template.public_categ_ids) and template.public_categ_ids[0]
+        _logger.debug("public_categ : %s", str(public_categ))
+        product_condition_id = public_categ and public_categ.condition_id and public_categ.condition_id.id
+        _logger.debug("production_condition_id : %s", str(product_condition_id))
+        return product_condition_id and delivery_condition.id == product_condition_id

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>    
+        <template id="category_with_acceptable_delivery_condition" inherit_id="website_sale.categories_recursive">
+            <xpath expr="//a" position="replace">
+                <t t-if="(not current_condition) or (c.condition_id.id == current_condition)">
+                    <a name="test-condition"  t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name"/>
+                </t>
+                <t t-if="current_condition and (c.condition_id.id != current_condition)">
+                    <a name="test-not-condition"  t-field="c.name"/>
+                </t>
+            </xpath>
+        </template>
+        
+        <template id="shop_warning_delivery_conditions" inherit_id="website_sale.products">
+            <xpath expr="//div[@id='products_grid_before']" position="before">
+                <div t-if="delivery_condition and delivery_condition.website_description">
+                    <p><t t-esc="delivery_condition.website_description"/></p>
+                </div>
+            </xpath>
+        </template>
+        
+        <template id="shop_product_warning_delivery_conditions" inherit_id="website_sale.product">
+            <xpath expr="//a[@id='add_to_cart']" position="replace">
+                <t t-if="is_compatible_with_cart">
+                    <a id="add_to_cart" class="btn btn-primary btn-lg mt8 js_check_product a-submit" href="#">Add to Cart</a>
+                </t>
+                <t t-if="not is_compatible_with_cart">
+                    <t>This product is not compatible with your cart.</t>
+                    <a id="add_to_cart" class="btn btn-primary btn-lg mt8 disabled" href="#">Add to Cart</a>
+                </t>
+            </xpath>
+        </template>
+    
+    </data>
+</openerp>

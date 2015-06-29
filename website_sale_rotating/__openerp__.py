@@ -17,11 +17,11 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale', 'product'],
+    'depends': ['base', 'website', 'website_sale', 'product', 'delivery_date_products', 'website_sale_delivery_on_checkout'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        #'security/ir.model.access.csv',
         'res_config_view.xml',
         'views.xml',
         'templates.xml'

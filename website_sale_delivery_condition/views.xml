@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        
+    <record id="delivery_condition_form_view" model="ir.ui.view">
+        <field name="name">delivery.condition.form</field>
+        <field name="model">delivery.condition</field>
+        <field name="arch" type="xml">
+            <form string="Delivery Conditions">
+                <sheet>
+                    <div>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group string="Connexions">
+                            <field name="category_ids"/>
+                            <field name="carrier_ids"/>
+                        </group>
+                        <group string="Description">
+                            <field name="website_description"/>
+                        </group>
+                        <group name="rules" string="Delay Rules">
+                            <field name="delay_from"/>
+                            <field name="delay_to"/>
+                            <field name="limit_to_a_range_of_days"/>
+                            <field name="range_start"/>
+                            <field name="range_end"/>
+                        </group>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_delivery_condition_tree" model="ir.ui.view">
+            <field name="name">delivery.condition.tree</field>
+            <field name="model">delivery.condition</field>
+            <field name="arch" type="xml">
+                <tree string="Condition">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+    
+    
+    <record id="delivery_condition_action" model="ir.actions.act_window">
+        <field name="name">Delivery Conditions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">delivery.condition</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <!--<field name="view_id" eval="False"/>-->
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to define a new condition.
+          </p><p>
+            Conditions are used to link categories to delivery methods and rules for delivery delay.
+          </p>
+        </field>
+    </record>
+    <menuitem action="delivery_condition_action" id="menu_delivery_conditions" parent="product.prod_config_main" sequence="10" />
+    
+    <record id="delivery_carrier_withcondition_form" model="ir.ui.view">
+            <field name="name">delivery.carrier.withconditions.form.view</field>
+            <field name="model">delivery.carrier</field>
+            <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='general']" position="after">
+                    <group name="conditions" string="Delivery Conditions">
+                        <field name="condition_id"/>
+                    </group>
+                </xpath>
+            </field>
+    </record>
+    
+    
+    
+    <record id="public_category_withcondition_form" model="ir.ui.view">
+            <field name="name">product.public.category.withconditions.form.view</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_left']" position="after">
+                    <group string="Delivery Conditions">
+                        <field name="condition_id"/>
+                    </group>
+                </xpath>
+            </field>
+    </record>
+    <!--test : -->
+    <record id="sale_order_withcondition_form" model="ir.ui.view">
+            <field name="name">sale.order.withconditions.form.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <group name="sale_pay" position="after">
+                    <group string="Delivery Conditions">
+                        <field name="delivery_condition"/>
+                    </group>
+                </group>
+            </field>
+    </record>
+    
+    </data>
+</openerp>
