@@ -30,7 +30,8 @@ class sale_configuration(osv.osv_memory):
         product_template_objs = self.pool['product.template']
         for record in self.browse(cr, uid, ids, context=context):
             product_template_objs.reset_week_published(cr, uid, [0], context=context)
-            product_template_objs.publish_tagged_products(cr, uid, [0], record.current_week_number, context=context)
+            if record.current_week_number :
+                product_template_objs.publish_tagged_products(cr, uid, [0], record.current_week_number, context=context)
             
         
     def get_default_current_week_number(self, cr, uid, ids, context=None):
