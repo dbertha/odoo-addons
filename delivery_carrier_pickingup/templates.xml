@@ -2,6 +2,8 @@
 <openerp>
     <data>
     <template id="checkout_pickingup" name="Delivery Address when pickup" inherit_id="website_sale.checkout">
+        <xpath expr="//select[@name='shipping_id']" position="replace">
+        </xpath>
         <xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="replace">
             <t t-set="delivery_address" t-value="delivery_id and delivery_id.is_pickup and delivery_id.address_partner"/>
             <div class="form-group col-lg-12">
