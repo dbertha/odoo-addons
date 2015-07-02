@@ -23,10 +23,10 @@
     'data': [
         # 'security/ir.model.access.csv',
         'templates.xml',
-        'views.xml',
         'delivery_report.xml',
         'report_saleorder_delivery.xml',
-        'report_group_invoice.xml'
+        'report_group_invoice.xml',
+        'views.xml'
     ],
 
     # only loaded in demonstration mode

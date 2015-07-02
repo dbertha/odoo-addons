@@ -34,7 +34,7 @@ class account_invoice(osv.osv):
             template_id = ir_model_data.get_object_reference(cr, uid, 'delivery_carrier_pickingup', 'email_template_grouped_invoice')[1]
             #TODO : handle deletion of template ?
             self.pool.get('email.template').send_mail(cr, uid, template_id, invoice_id, force_send=True, context=context)
-            #don't need composer object, we suppose the mail parameters of the template are fine
+            #don't need composer object, we suppose the mail parameters of the template are ok
             
 
 
