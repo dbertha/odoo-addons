@@ -17,7 +17,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale', 'website_sale_delivery_on_checkout'], 
+    'depends': ['base', 'website', 'website_sale'], 
 
     # always loaded
     'data': [
