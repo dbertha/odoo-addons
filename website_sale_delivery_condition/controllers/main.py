@@ -18,9 +18,13 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     @http.route(['/shop',
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
-        '/shop/category/<model("product.public.category"):category>/page/<int:page>'
+        '/shop/category/<model("product.public.category"):category>/page/<int:page>',
+        '/shop/type/<model("delivery.condition"):condition>', #new shop requests
+        '/shop/type/<model("delivery.condition"):condition>/page/<int:page>',
+        '/shop/type/<model("delivery.condition"):condition>/category/<model("product.public.category"):category>',
+        '/shop/type/<model("delivery.condition"):condition>/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
-    def shop(self, page=0, category=None, search='', **post):
+    def shop(self, page=0, category=None, condition=None, search='', **post):
         """replaced to add current delivery_condition
         TODO: compute values in a dedicated method"""
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
@@ -32,6 +36,24 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
                     ('description_sale', 'ilike', srch), ('product_variant_ids.default_code', 'ilike', srch)]
         if category:
             domain += [('public_categ_ids', 'child_of', int(category))]
+            
+        category_obj = pool['product.public.category']
+        categ_domain = [('parent_id', '=', False)]
+        url = "/shop"
+        if condition :
+            categs_ids = category_obj.search(cr,uid, 
+                            [('condition_id', '=', condition.id)], context=context) 
+            #get only products with that delivery condition
+                    
+            _logger.debug("shop page condition : %d", condition)
+            domain += [('public_categ_ids','in',categs_ids)]
+            
+            categ_domain += [('condition_id', '=', condition.id)]
+            url += "/type/%s" % slug(condition)
+            #primary categs with that delivery condition
+            #todo : assume that child categ have same delivery condition than parent ?
+        
+        
 
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
@@ -63,13 +85,13 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         product_obj = pool.get('product.template')
 
-        url = "/shop"
+        
         product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
         if category:
             category = pool['product.public.category'].browse(cr, uid, int(category), context=context)
-            url = "/shop/category/%s" % slug(category)
+            url += "/category/%s" % slug(category)
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order='website_published desc, website_sequence desc', context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
@@ -78,8 +100,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         style_ids = style_obj.search(cr, uid, [], context=context)
         styles = style_obj.browse(cr, uid, style_ids, context=context)
 
-        category_obj = pool['product.public.category']
-        category_ids = category_obj.search(cr, uid, [('parent_id', '=', False)], context=context)
+        category_ids = category_obj.search(cr, uid, categ_domain, context=context)
         categs = category_obj.browse(cr, uid, category_ids, context=context)
 
         attributes_obj = request.registry['product.attribute']
@@ -113,8 +134,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
         }
         
-        values.update({'current_condition' : delivery_condition and delivery_condition.id,
-                       'delivery_condition' : delivery_condition}) #TODO : redondant
+        values.update({'delivery_condition' : delivery_condition,#for the description
+                       'chosen_condition' : condition}) #for correct links 
         return request.website.render("website_sale.products", values)
     
     

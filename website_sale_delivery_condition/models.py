@@ -13,7 +13,6 @@ from pytz import timezone
 import logging
 
 _logger = logging.getLogger(__name__)
-#TODO : superuser ID
 
 
         
@@ -47,14 +46,17 @@ class delivery_condition(osv.osv):
                  (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection = 0
                 string="Last day of the allowed range"
                 ),
-        'website_description' : fields.text(string="Text for the website", translate=True)
+        'website_description' : fields.text(string="Text for the website", translate=True),
+        'sequence': fields.integer('Sequence', required=True, default=10,help="The sequence field is used to order the delivery conditions \
+            from the lowest sequences to the higher ones. \
+            The order is important because it determines the priority between the delivery conditions.")
         #possible improvement : 'repeat_interval'
         #cas : 
         #normal : min = now + 1h
         #events : min = now + 1 day + 1 day if after 17h
         #FFY : samedi à mardi
     }
-
+    _order = "sequence"
     
 class product_public_category(osv.osv):
     _name = 'product.public.category'
@@ -79,20 +81,29 @@ class sale_order(osv.osv):
     _name = "sale.order"
     _inherit = "sale.order"
     
+    
+    def _get_delivery_condition(self, cr, uid, ids, field_name, arg, context=None):
+        result = {}
+        for so in self.browse(cr,uid,ids,context=context) :
+            delivery_conditions = {}
+            for so_line in so.order_line :
+                if not so_line.is_delivery : #ignore delivery product
+                    for categ in so_line.product_id.product_tmpl_id.public_categ_ids :
+                    #handle properly categs of same product with different delivery_condition
+                        delivery_condition = categ.condition_id
+                        delivery_conditions.update({delivery_condition.sequence : delivery_condition.id})
+            result[so.id] = delivery_conditions and delivery_conditions[min(delivery_conditions.keys())] or False
+        return result
+    
     _columns = {
-        'delivery_condition' : fields.related('order_line', 
-            'product_id', 'product_tmpl_id', 'public_categ_ids', 'condition_id', 
+        'delivery_condition' : fields.function(_get_delivery_condition, 
             type="many2one", relation="delivery.condition", string="Delivery Condition", readonly=True,
-            help="this field will provide a link to the delivery condition of the first public category of the first product\
-        Expect only one type of delivery condition in the sale order\
-        i.e. all the categories of the products in sale order lines have\
-        the same delivery condition")
+            help="this field will provide a link to the delivery condition with \
+            the highest priority of the products in the sale order")
     } 
-    """this field will provide a link to the delivery condition of the first public categ of the first product
-        Expect only one type of delivery condition in the sale order
-        i.e. all the categories of the products in sale order lines have
-        the same delivery condition"""
-        
+
+    
+
     def get_min_date(self,cr,uid, order_id, context) :
         order = self.browse(cr, SUPERUSER_ID, order_id, context)
         delivery_condition = order.delivery_condition
@@ -178,32 +189,43 @@ class sale_order(osv.osv):
                 delivery_ids.remove(delivery_id.id)
         return delivery_ids
     
-    def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
-        """Overload to remove delivery method when cart is clear,
-        because otherwise it will apply its delivery condition to the cart"""
-        return_val = super(sale_order,self)._cart_update(cr, uid, ids, product_id, line_id, add_qty, set_qty, context=context)
-        for so in self.browse(cr, uid, ids, context=context) :
-            if(not len(so.website_order_line)) : #cart cleared
-                so.write({'carrier_id': None})
-                self._delivery_unset(cr, SUPERUSER_ID, [so.id], context=context)
-        return return_val
+    #this method is no longer usefull if delivey_condition of sale order ignore the delivery condition of delivery products
+#     def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
+#         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,
+#         because otherwise it will apply its delivery condition to the cart"""
+#         return_val = super(sale_order,self)._cart_update(cr, uid, ids, product_id, line_id, add_qty, set_qty, context=context)
+#         for so in self.browse(cr, uid, ids, context=context) :
+# #             delivery_conditions = {}
+# #             for so_line in so.order_line :
+# #                 if not so_line.is_delivery : #test other products (could also use website_order_line)
+# #                     for categ in so_line.product_id.product_tmpl_id.public_categ_ids :
+# #                     #handle properly categs of same product with different delivery_condition
+# #                         delivery_condition = categ.condition_id
+# #                         delivery_conditions.update({delivery_condition.sequence : delivery_condition.id})
+# #             result = delivery_conditions[min(delivery_conditions.keys())]
+#             
+#             
+#             if(not len(so.website_order_line)) : #cart cleared
+#                 so.write({'carrier_id': None})
+#                 self._delivery_unset(cr, SUPERUSER_ID, [so.id], context=context)
+#         return return_val
     
 class Website(osv.osv):
     _inherit = 'website'
     
-    def sale_product_domain(self, cr, uid, ids, context=None):
-        """Remove objects from categories with another delivery condition than the sale order"""
-        domain = super(Website, self).sale_product_domain(cr, uid, ids, context=context)
-        delivery_condition = self.sale_get_delivery_condition(cr, uid, ids, context)
-                    #find the acceptable categs
-                    #TODO : not in the non acceptable may be more secure
-        if(delivery_condition) :
-            categs_ids = self.pool['product.public.category'].search(cr,uid, 
-                            [('condition_id', '=', delivery_condition.id)], context=context)
-                    
-            _logger.debug("sale order condition : %d", delivery_condition.id)
-            domain += [('public_categ_ids','in',categs_ids)]
-        return domain
+#     def sale_product_domain(self, cr, uid, ids, context=None):
+#         """Remove objects from categories with another delivery condition than the sale order"""
+#         domain = super(Website, self).sale_product_domain(cr, uid, ids, context=context)
+#         delivery_condition = self.sale_get_delivery_condition(cr, uid, ids, context)
+#                     #find the acceptable categs
+#                     #TODO : not in the non acceptable may be more secure
+#         if(delivery_condition) :
+#             categs_ids = self.pool['product.public.category'].search(cr,uid, 
+#                             [('condition_id', '=', delivery_condition.id)], context=context)
+#                     
+#             _logger.debug("sale order condition : %d", delivery_condition.id)
+#             domain += [('public_categ_ids','in',categs_ids)]
+#         return domain
     
     def sale_get_delivery_condition(self,cr,uid,ids, context=None) :
         _logger.debug("get_delivery_condition, user id : %s", str(uid))
@@ -219,14 +241,17 @@ class Website(osv.osv):
         return False
     
     def sale_is_product_compatible_with_cart(self, cr, uid, tpl_product_id, context=None) :
-        delivery_condition = self.sale_get_delivery_condition(cr, uid, [0],context=context)
-        if(not delivery_condition) : 
-            _logger.debug("No delivery condition in the cart")
-            return not delivery_condition
-        _logger.debug("delivery condition_id in the cart : %d", delivery_condition.id)
-        template = self.pool['product.template'].browse(cr, uid, tpl_product_id, context=context)
-        public_categ = len(template.public_categ_ids) and template.public_categ_ids[0]
-        _logger.debug("public_categ : %s", str(public_categ))
-        product_condition_id = public_categ and public_categ.condition_id and public_categ.condition_id.id
-        _logger.debug("production_condition_id : %s", str(product_condition_id))
-        return product_condition_id and delivery_condition.id == product_condition_id
+        """Can be overloaded to handle incompatibility between delivery conditions"""
+        return True
+    
+#         delivery_condition = self.sale_get_delivery_condition(cr, uid, [0],context=context)
+#         if(not delivery_condition) : 
+#             _logger.debug("No delivery condition in the cart")
+#             return not delivery_condition
+#         _logger.debug("delive1ry condition_id in the cart : %d", delivery_condition.id)
+#         template = self.pool['product.template'].browse(cr, uid, tpl_product_id, context=context)
+#         public_categ = len(template.public_categ_ids) and template.public_categ_ids[0]
+#         _logger.debug("public_categ : %s", str(public_categ))
+#         product_condition_id = public_categ and public_categ.condition_id and public_categ.condition_id.id
+#         _logger.debug("production_condition_id : %s", str(product_condition_id))
+#         return product_condition_id and delivery_condition.id == product_condition_id

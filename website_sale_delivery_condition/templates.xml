@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>    
-        <template id="category_with_acceptable_delivery_condition" inherit_id="website_sale.categories_recursive">
+    
+        <template id="category_link_to_condition_page" inherit_id="website_sale.categories_recursive">
             <xpath expr="//a" position="replace">
+                <a  t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or '') + '/category/' + slug(c), category=0)" t-field="c.name"/>
+                <!--
                 <t t-if="(not current_condition) or (c.condition_id.id == current_condition)">
                     <a name="test-condition"  t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name"/>
                 </t>
                 <t t-if="current_condition and (c.condition_id.id != current_condition)">
                     <a name="test-not-condition"  t-field="c.name"/>
                 </t>
+                -->
             </xpath>
         </template>
         
-        <template id="shop_warning_delivery_conditions" inherit_id="website_sale.products">
+        <template id="all_products_link_to_condition_page" inherit_id="website_sale.products" name="Product Categories with correct link to condition page">
+            <xpath expr="//ul[@class='nav nav-pills nav-stacked mt16']//li//a" position="replace">
+                <a t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or ''),category=0)">All Products</a>
+            </xpath>
+        </template>
+    
+        
+        <template id="shop_warning_delivery_conditions"  active="True" customize_show="True" name="Show delivery condition description" inherit_id="website_sale.products">
             <xpath expr="//div[@id='products_grid_before']" position="before">
                 <div t-if="delivery_condition and delivery_condition.website_description">
                     <p><t t-esc="delivery_condition.website_description"/></p>
@@ -31,6 +42,5 @@
                 </t>
             </xpath>
         </template>
-    
     </data>
 </openerp>
