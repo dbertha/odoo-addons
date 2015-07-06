@@ -11,6 +11,7 @@ import pytz
 from pytz import timezone
 
 import logging
+from lxml.html.builder import AREA
 
 _logger = logging.getLogger(__name__)
 #TODO : superuser ID
@@ -109,3 +110,21 @@ class product_template(osv.Model):
         for product in self.browse(cr, uid, ids, context=context) :
             return product.week_number
         
+class SaleOrder(osv.osv):
+    _name = "sale.order"
+    _inherit = "sale.order"
+    
+    def check_products_availability(self, cr, uid, ids, context=None) :
+        """Check if the rotating products in cart are published,
+        remove them elsewhere. Those products were added when published but now they are
+        not anymore and we can't accept a cart with them"""
+        ids_to_remove = []
+        for so in self.browse(cr, uid, ids, context=context) :
+            for line in so.order_line :
+                if not line.is_delivery : #delivery can be unpublished
+                    if line.product_id.product_tmpl_id.week_number and not line.product_id.product_tmpl_id.website_published :
+                        #not ok
+                        ids_to_remove.append(line.id)
+        if ids_to_remove :
+            self.pool.get('sale.order.line').unlink(cr, uid, ids_to_remove, context=context)
+        return bool(ids_to_remove)
