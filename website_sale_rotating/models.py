@@ -74,13 +74,14 @@ class product_template(osv.Model):
         product_ids = self.search(cr, uid, 
                             [('website_published', '=', False), ('week_number', '=', weeknumber)], context=context)
         _logger.debug("number of articles with week %d : %d", weeknumber, len(product_ids))
+        #TODO : more efficient : write method with ids
         for product in self.browse(cr, uid, product_ids, context=context) :
             product.write({'website_published' : True})
     
     def tick(self, cr, uid, ids=[0], context=None):
         """One tick in the rotation
         For good behavior, assert that there is a least one article for each of
-        the possible week number (this is how we store the current week number)"""
+        the possible week number"""
         current_week = self.get_current_week(cr, uid, ids, context)
         _logger.debug("current week : %d", current_week)
         self.reset_week_published(cr, uid, ids, context)
@@ -97,7 +98,7 @@ class product_template(osv.Model):
             'website_published': True,
         }}
         elif(new_week_number != 0) :
-            _logger.debug("article should be unpublished")
+            _logger.debug("article shouldn't be published")
             return {'value': {
             'website_published': False,
         }}

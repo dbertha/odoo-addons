@@ -23,7 +23,8 @@
                         </group>
                         <group name="rules" string="Delay Rules">
                             <field name="delay_from"/>
-                            <field name="delay_to"/>
+                            <!--<field name="delay_to"/>-->
+                            <field name="limit_hour"/>
                             <field name="limit_to_a_range_of_days"/>
                             <field name="range_start"/>
                             <field name="range_end"/>

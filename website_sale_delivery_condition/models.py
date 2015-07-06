@@ -23,33 +23,39 @@ class delivery_condition(osv.osv):
      
     _columns = {
         'name': fields.char('Delivery Condition Name', required=True),
-        #'partner_id': fields.many2one('res.partner', 'Transport Company', required=True, help="The partner that is doing the delivery service."),
-        #'product_id': fields.many2one('product.product', 'Delivery Product', required=True),
         'category_ids': fields.one2many('product.public.category', 'condition_id', string='Public Categories',
                                         readonly=True),
-        #TODO : conditions_id : 'carrier_id': fields.many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade')
         'carrier_ids' : fields.one2many('delivery.carrier', 'condition_id', string='Delivery Carriers',
                                         readonly=True),
         'delay_from' : fields.integer(string="Delay in days from the present as minimum date"),
-        'delay_to' : fields.integer(string="Delay in days from the minimum date as maximum date"),
+        #'delay_to' : fields.integer(string="Delay in days from the minimum date as maximum date"),
         'limit_to_a_range_of_days' : fields.boolean(
                         string="Delivery date proposition should be limited to the range",
-                        help="Max and min dates will be computed from there and delay from"),
+                        help="Only the first allowed range will be available for delivery"),
         'range_start' : fields.selection(
                 [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thurday'), 
-                 (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection = 0
+                 (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection == 0
                 string="First day of the allowed range"
                 ),
     #fields.integer(string="First day of the allowed range (0-monday, 6-sunday)"),
         'range_end' : fields.selection(
                 [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thurday'), 
-                 (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection = 0
+                 (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection == 0
                 string="Last day of the allowed range"
                 ),
         'website_description' : fields.text(string="Text for the website", translate=True),
         'sequence': fields.integer('Sequence', required=True, default=10,help="The sequence field is used to order the delivery conditions \
             from the lowest sequences to the higher ones. \
-            The order is important because it determines the priority between the delivery conditions.")
+            The order is important because it determines the priority between the delivery conditions."),
+        'limit_hour' : fields.selection(
+                [(1, '01'), (2, '02'), (3, '03'), (4, '04'), 
+                 (5, '05'), (6, '06'), (7, '08'), (8, '08'),
+                 (9, '09'), (10, '10'), (11, '11'), (12, '12'), 
+                 (13, '13'), (14, '14'), (15, '15'), (16, '16'),
+                 (17, '17'), (18, '18'), (19, '19'), (20, '20'), 
+                 (21, '21'), (22, '22'), (23, '23'), (24, '24')], default=17,   
+                string="Last hour of day to allow delivery for the next day"
+                ),
         #possible improvement : 'repeat_interval'
         #cas : 
         #normal : min = now + 1h
@@ -116,9 +122,9 @@ class sale_order(osv.osv):
             min_date = now.replace(minute=59) + delta 
             _logger.debug("Delay from : %s", str(min_date))
             if(delivery_condition.delay_from > 0) :
-                min_date = min_date.replace(hour=0,minute=0) #TODO : first_hour_of_day
+                min_date = min_date.replace(hour=0,minute=0) #TODO : first_hour_of_day : allowed_hours
                 delta = timedelta(days=delivery_condition.delay_from)
-                if(now.hour >= 17) : #day is over TODO : parameter last_hour_of_day
+                if(now.hour >= delivery_condition.limit_hour) : #day is over
                     delta += timedelta(days=1)
                 min_date += delta
                 forbidden_days = self.get_forbidden_days(cr, uid, order_id, context)
@@ -126,7 +132,7 @@ class sale_order(osv.osv):
 
                 if forbidden_days :
                     start_of_range = (max(forbidden_days) + 1) % 7
-                    if(min_date.weekday() not in forbidden_days and min_date.weekday() != start_of_range) :
+                    if min_date.weekday() not in forbidden_days and min_date.weekday() != start_of_range :
                         #should start at the first day of the range
                         while(min_date.weekday() != start_of_range) :
                             min_date += delta
@@ -179,11 +185,13 @@ class sale_order(osv.osv):
         search_domain = [('website_published','=',True)]
         if order.delivery_condition :
             search_domain += [('condition_id','=', order.delivery_condition.id)]
+        _logger.debug("Looking for delivery conditions")
         delivery_ids = carrier_obj.search(cr, SUPERUSER_ID, search_domain, context=context)
         
         # Following loop is done to avoid displaying delivery methods who are not available for this order
         # This can surely be done in a more efficient way, but at the moment, it mimics the way it's
         # done in delivery_set method of sale.py, from delivery module
+        _logger.debug("Will remove unavailable delivery methods")
         for delivery_id in carrier_obj.browse(cr, SUPERUSER_ID, delivery_ids, context=dict(context, order_id=order.id)):
             if not delivery_id.available:
                 delivery_ids.remove(delivery_id.id)

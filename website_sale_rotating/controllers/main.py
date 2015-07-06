@@ -14,3 +14,5 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+#TODO : checkout : articles from sale order should not have different week_numbers
+#and should still be published

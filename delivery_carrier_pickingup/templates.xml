@@ -7,7 +7,7 @@
         <xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="replace">
             <t t-set="delivery_address" t-value="delivery_id and delivery_id.is_pickup and delivery_id.address_partner"/>
             <div class="form-group col-lg-12" id="shipping_address_choice">
-                      <label>Shipping</label>
+                      <!--<label>Shipping</label>-->
                       <select name="shipping_id" class="form-control" t-att-style="delivery_address and 'display:none' or ''">
                           <option value="0" t-att-selected="not delivery_address" >Ship to the same address</option>
                           <option value="-1" t-att-selected="(shipping_id == -1) or (error and len(error) > 0 and shipping_id == -1)">-- Create a new address --</option>

@@ -12,7 +12,7 @@ class delivery_carrier(osv.osv):
     
 
     def get_price(self, cr, uid, ids, field_name, arg=None, context=None):
-        """overload to add lower amount check"""
+        """overload to add lower amount bound check"""
         res = super(delivery_carrier,self).get_price(cr, uid, ids, field_name, arg=arg, context=context)
         order_id=context.get('order_id',False)
         carrier_to_check_ids = [key for key in res.keys() if res[key]['available'] ]
