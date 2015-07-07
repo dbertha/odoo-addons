@@ -118,12 +118,14 @@ class SaleOrder(osv.osv):
         """Check if the rotating products in cart are published,
         remove them elsewhere. Those products were added when published but now they are
         not anymore and we can't accept a cart with them"""
+        _logger.debug('checking product availability')
         ids_to_remove = []
         for so in self.browse(cr, SUPERUSER_ID, ids, context=context) :
             for line in so.order_line :
                 if not line.is_delivery : #delivery can be unpublished
                     if line.product_id.product_tmpl_id.week_number and not line.product_id.product_tmpl_id.website_published :
                         #not ok
+                        _logger.debug("Will remove line : %s", line.name)
                         ids_to_remove.append(line.id)
         if ids_to_remove :
             self.pool.get('sale.order.line').unlink(cr, SUPERUSER_ID, ids_to_remove, context=context)

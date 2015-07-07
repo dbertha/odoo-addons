@@ -7,6 +7,7 @@ from openerp.addons.web.http import request
 
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
+import time
 import pytz
 from pytz import timezone
 
@@ -186,6 +187,7 @@ class sale_order(osv.osv):
         if order.delivery_condition :
             search_domain += [('condition_id','=', order.delivery_condition.id)]
         _logger.debug("Looking for delivery conditions")
+        _logger.debug("Order total : %s", order.amount_total)
         delivery_ids = carrier_obj.search(cr, SUPERUSER_ID, search_domain, context=context)
         
         # Following loop is done to avoid displaying delivery methods who are not available for this order
@@ -197,6 +199,39 @@ class sale_order(osv.osv):
                 delivery_ids.remove(delivery_id.id)
         return delivery_ids
     
+    #Overload to add logging for debug
+    def delivery_set(self, cr, uid, ids, context=None):
+        line_obj = self.pool.get('sale.order.line')
+        grid_obj = self.pool.get('delivery.grid')
+        carrier_obj = self.pool.get('delivery.carrier')
+        acc_fp_obj = self.pool.get('account.fiscal.position')
+        self._delivery_unset(cr, uid, ids, context=context)
+        for order in self.browse(cr, uid, ids, context=context):
+            grid_id = carrier_obj.grid_get(cr, uid, [order.carrier_id.id], order.partner_shipping_id.id)
+            if not grid_id:
+                raise osv.except_osv(_('No Grid Available!'), _('No grid matching for this carrier!'))
+
+            if order.state not in ('draft', 'sent'):
+                raise osv.except_osv(_('Order not in Draft State!'), _('The order state have to be draft to add delivery lines.'))
+
+            grid = grid_obj.browse(cr, uid, grid_id, context=context)
+
+            taxes = grid.carrier_id.product_id.taxes_id
+            fpos = order.fiscal_position or False
+            taxes_ids = acc_fp_obj.map_tax(cr, uid, fpos, taxes)
+            #create the sale order line
+            line_infos = {
+                'order_id': order.id,
+                'name': grid.carrier_id.name,
+                'product_uom_qty': 1,
+                'product_uom': grid.carrier_id.product_id.uom_id.id,
+                'product_id': grid.carrier_id.product_id.id,
+                'price_unit': grid_obj.get_price(cr, uid, grid.id, order, time.strftime('%Y-%m-%d'), context),
+                'tax_id': [(6, 0, taxes_ids)],
+                'is_delivery': True
+            }
+            _logger.debug("New delivery line : %s", str(line_infos))
+            line_obj.create(cr, uid, line_infos, context=context)
     #this method is no longer usefull if delivey_condition of sale order ignore the delivery condition of delivery products
 #     def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
 #         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,

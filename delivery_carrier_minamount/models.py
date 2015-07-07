@@ -25,6 +25,7 @@ class DeliveryCarrier(osv.osv):
                 _logger.debug("Will check total")
                 if carrier.amount_lower_bound > ((order.amount_total - order.amount_delivery) or 0.0) :
                     res[carrier.id]['available'] = False
+        _logger.debug("Carriers and prices : %s", str(res))
         return res
     
     _columns = {

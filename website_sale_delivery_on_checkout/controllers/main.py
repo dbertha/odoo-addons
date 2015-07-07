@@ -97,13 +97,14 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             return request.redirect("/shop")
         #
         carrier_id = order.carrier_id.id
+        _logger.debug("order total in confirm order beginning : %d", order.amount_total)
         #
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
 
         values = self.checkout_values(post)
-        
+        _logger.debug("order total in confirm order after checkout values : %d", order.amount_total)
         if (post.get('shipping_name')) : 
             #needed to check delivery date depending on delivery method
             values["checkout"]['shipping_name'] = post.get('shipping_name')
@@ -116,11 +117,18 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             values.update(sale_order_obj._get_website_data(cr, uid, order, context))
             return request.website.render("website_sale.checkout", values)
         self.checkout_form_save(values["checkout"]) 
-        request.session['sale_last_order_id'] = order.id
         
-        #re-set correct carrier_id TODO : inside checkout_form_save (add carrier_id to dict to write)
-        request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context)
+        order = request.website.sale_get_order(context=context)
+        _logger.debug("order total in confirm order after checkout save : %d", order.amount_total)
+        request.session['sale_last_order_id'] = order.id
+                
         
         request.website.sale_get_order(update_pricelist=True, context=context)
-
+        order = request.website.sale_get_order(context=context)
+        _logger.debug("order total in confirm order after update_pricelist : %d", order.amount_total)
+        #check carrier quotation should be called after sale get order with update pricelist
+        request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context)
+        order = request.website.sale_get_order(context=context)
+        _logger.debug("order total in confirm order after carrier quotation : %d", order.amount_total)
+        
         return request.redirect("/shop/payment")
