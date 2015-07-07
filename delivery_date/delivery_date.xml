@@ -19,7 +19,6 @@
                         </t>
                     </select>
                     -->
-                    <p>If you ask for pick-up today, the time should be at least one hour from now.</p>
                     <!--
                     <div class='input-group date' id='datetimepicker1'>
                     <input name='datepick' type='text' class="form-control" />
