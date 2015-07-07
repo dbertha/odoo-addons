@@ -17,8 +17,6 @@ import calendar
 
 _logger = logging.getLogger(__name__)
 
-#TODO : purchase journal linked to delivery method
-
 class account_invoice(osv.osv):
     _name = 'account.invoice'
     _inherit = 'account.invoice'
@@ -44,6 +42,8 @@ class sale_order(osv.osv):
     
     def cron_grouped_invoices(self,cr,uid,ids=[],length=7, context=None):
         """Grouped invoices : every day which is a multiple of <length> and first day of the month"""
+        if context is None : 
+            context = {}
         today = date.today()
         yesterday = today - timedelta(days=1) #to be sure the day is over
         last_day_of_month = calendar.monthrange(today.year, today.month)[1]
@@ -56,9 +56,11 @@ class sale_order(osv.osv):
             #period_end and period_start
         period_start = datetime(1999,1,1)
         period_end = datetime(2100,2,2)
+        context.update({'period_start' : period_start,
+                        'period_end' : period_end})
         #TODO : add period in context to retrieve in render_html
-        self.create_delivery_grouped_invoices(cr,uid,ids,period_start,period_end, context=context)
-        #TODO : for each invoices, send email to its partner
+        invoice_ids = self.create_delivery_grouped_invoices(cr,uid,ids,period_start,period_end, context=context)
+        self.pool.get('account.invoice').send_grouped_invoices(cr,uid, invoice_ids, context=context)
     
     def create_delivery_grouped_invoices(self,cr,uid,ids, period_start, period_end,context=None):
         #TODO : default values for period start et end (end = start + delta)
@@ -76,7 +78,7 @@ class sale_order(osv.osv):
                 new_invoice_id = self.create_delivery_grouped_invoice(cr,uid,delivery_in_independant_shop,period_start, period_end,discount=35,context=context)
                 if new_invoice_id :
                     new_invoices.append(new_invoice_id)
-            else :
+            elif not delivery_in_independant_shop.address_partner :
                 _logger.error("Delivery carrier has no related partner")
         _logger.debug("invoices to send : %s", str(new_invoices))
         return new_invoices
@@ -146,7 +148,7 @@ class sale_order(osv.osv):
                 
                 'account_id': customer.property_account_receivable.id,
                 'partner_id': customer.id,
-                'journal_id': journal_ids[0],
+                'journal_id': journal.id,
                 'invoice_line': [(6, 0, new_invoice_lines)],
                 'currency_id': currency.id,
                 #'comment': order.note,
@@ -163,3 +165,28 @@ class sale_order(osv.osv):
             inv_obj.button_compute(cr, uid, [inv_id]) #update check_total
             return inv_id
         return None
+    
+class GroupedInvoiceReport(osv.AbstractModel):
+    
+    _name = 'report.delivery_carrier_pickingup.report_group_invoice'
+
+
+    def render_html(self, cr, uid, ids, data=None, context=None):
+        """Add period start and period end from context to args of report template"""
+        if context is None :
+            context= {}
+        report_obj = self.pool['report']
+        report = report_obj._get_report_from_name(cr, uid, 'delivery_carrier_pickingup.report_group_invoice')
+        tzone = timezone('Europe/Brussels')
+
+        docargs = {
+            'doc_ids': ids,
+            'doc_model': report.model,
+            'docs': self.pool.get('account.invoice').browse(cr,uid, ids,context=context),
+        }
+        if context.get('period_start', False) and context.get('period_end', False) :
+            _logger.debug("Add period to template args")
+            docargs.update({'period_start' :context.get('period_start').strftime('%d/%m/%Y'),
+                        'period_end' : context.get('period_end').strftime('%d/%m/%Y')})
+        #TODO : FormatLang : rml : deprecated but can be usefull here
+        return report_obj.render(cr, uid, ids, 'delivery_carrier_pickingup.report_group_invoice', docargs, context=context)
