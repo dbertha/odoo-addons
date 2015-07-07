@@ -20,20 +20,18 @@
 
 
 {
-    'name': 'Delivery Date and Products delays',
+    'name': 'Delivery Date In Sale Order',
     'version': '0.1',
     'category': 'Sales Management', #TODO : e-commerce
     'description': """
-    1) Done : Add delivery delay field for every products
-    2) TODO : Add categories with special delivery date rules
-    2) Done : Add a delivery date field in cart, verify that the difference between current day and delivery date is greater or equal than the maximum product delay of the products in the cart
-    3) Done : Add an additionnal requested_delivery_date field to the sales order with the date from the cart form.
+    Add an additional requested_delivery_date field to the sales order 
+    with the date from the cart (checkout form).
 ===================================================
 """,
     'author': 'David Bertha',
     'website': 'http://www..com', #TODO : github
     'depends': ['sale_stock', 'product', 'website_sale', 'website_sale_delivery_on_checkout'],
-    'data': ['delivery_date_products_view.xml', 'delivery_date_products.xml'],
+    'data': ['delivery_date_view.xml', 'delivery_date.xml'],
     'demo': [], #TODO
     'test': [], #TODO
     'installable': True,

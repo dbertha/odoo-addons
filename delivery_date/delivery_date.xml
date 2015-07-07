@@ -51,7 +51,7 @@
     
     <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
       <xpath expr="." position="inside">
-        <script type="text/javascript" src="/delivery_date_products/static/src/js/delivery_date_products.js"></script>
+        <script type="text/javascript" src="/delivery_date/static/src/js/delivery_date.js"></script>
       </xpath>
     </template>
     

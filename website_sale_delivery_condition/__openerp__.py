@@ -18,7 +18,7 @@
     'category': 'Sales',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale', 'product', 'delivery_date_products', 'website_sale_delivery_on_checkout'],
+    'depends': ['base', 'website', 'website_sale', 'product', 'delivery_date', 'website_sale_delivery_on_checkout'],
 
     # always loaded
     'data': [
