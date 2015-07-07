@@ -119,12 +119,12 @@ class SaleOrder(osv.osv):
         remove them elsewhere. Those products were added when published but now they are
         not anymore and we can't accept a cart with them"""
         ids_to_remove = []
-        for so in self.browse(cr, uid, ids, context=context) :
+        for so in self.browse(cr, SUPERUSER_ID, ids, context=context) :
             for line in so.order_line :
                 if not line.is_delivery : #delivery can be unpublished
                     if line.product_id.product_tmpl_id.week_number and not line.product_id.product_tmpl_id.website_published :
                         #not ok
                         ids_to_remove.append(line.id)
         if ids_to_remove :
-            self.pool.get('sale.order.line').unlink(cr, uid, ids_to_remove, context=context)
+            self.pool.get('sale.order.line').unlink(cr, SUPERUSER_ID, ids_to_remove, context=context)
         return bool(ids_to_remove)
