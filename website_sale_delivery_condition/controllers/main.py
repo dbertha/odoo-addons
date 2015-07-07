@@ -15,6 +15,14 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
+
+    def checkout_values(self, data=None):
+        """Overload to add delivery condition"""
+        values = super(website_sale, self).checkout_values(data)
+        values.update({'delivery_condition' : request.website.sale_get_delivery_condition()})
+        #_logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
+        return values
+    
     @http.route(['/shop',
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
