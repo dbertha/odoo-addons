@@ -3,6 +3,7 @@
 from openerp.osv import osv, fields
 import openerp.addons.decimal_precision as dp
 import logging
+from openerp import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
@@ -14,13 +15,13 @@ class DeliveryCarrier(osv.osv):
 
     def get_price(self, cr, uid, ids, field_name, arg=None, context=None):
         """overload to add lower amount bound check"""
-        res = super(DeliveryCarrier,self).get_price(cr, uid, ids, field_name, arg=arg, context=context)
+        res = super(DeliveryCarrier,self).get_price(cr, SUPERUSER_ID, ids, field_name, arg=arg, context=context)
         order_id=context.get('order_id',False)
         carrier_to_check_ids = [key for key in res.keys() if res[key]['available'] ]
         _logger.debug("Carriers_to_check : %s", str(carrier_to_check_ids))
-        for carrier in self.browse(cr, uid, carrier_to_check_ids, context=context) :
+        for carrier in self.browse(cr, SUPERUSER_ID, carrier_to_check_ids, context=context) :
             if carrier.not_available_if_less_than and order_id :
-                order = self.pool.get('sale.order').browse(cr, uid, order_id, context=context)
+                order = self.pool.get('sale.order').browse(cr, SUPERUSER_ID, order_id, context=context)
                 _logger.debug("Will check total")
                 if carrier.amount_lower_bound > ((order.amount_total - order.amount_delivery) or 0.0) :
                     res[carrier.id]['available'] = False
