@@ -8,7 +8,7 @@
     'description': """
         Public categories are linked to a delivery condition. When a product is added to
         a sale order, the sale order is considered as having that delivery condition.
-        Delay rules and delivery carrier are dependant of the delivery condition of the sale order.
+        Delay rules and delivery carrier are dependent of the delivery condition of the sale order.
     """,
 
     'author': "David Bertha",

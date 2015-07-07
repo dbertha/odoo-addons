@@ -23,10 +23,10 @@
         </template>
     
         
-        <template id="shop_warning_delivery_conditions"  active="True" customize_show="True" name="Show delivery condition description" inherit_id="website_sale.products">
-            <xpath expr="//div[@id='products_grid_before']" position="before">
+        <template id="shop_warning_delivery_conditions"  active="True" customize_show="True" name="Show delivery condition description" inherit_id="website_sale.checkout">
+            <xpath expr="//input[@id='delivery_date']" position="before">
                 <div t-if="delivery_condition and delivery_condition.website_description">
-                    <p><t t-esc="delivery_condition.website_description"/></p>
+                    <span class="text-warning" t-field="delivery_condition.website_description"/>
                 </div>
             </xpath>
         </template>
