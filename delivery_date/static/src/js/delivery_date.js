@@ -16,10 +16,22 @@ $(document).ready(function () {
             console.log(result.min_date)
             result.min_date[1] = result.min_date[1] - 1 //moment.js : months start from 0...
             timeStart = moment(result.min_date);
-            console.log(timeStart.format("DD/MM hh:mm"))
+            console.log(timeStart.format("DD/MM HH:mm"))
             timeDefault = moment(timeStart);
             timeDefault.hours(timeDefault.hours() +1);
             timeDefault.minutes(0);
+            forbidden_intervals_list = result.forbidden_intervals
+            console.debug(forbidden_intervals_list)
+            console.debug(forbidden_intervals_list.length)
+            console.debug(forbidden_intervals_list[0])
+            var forbidden_intervals = []
+            for (var j = 0; j < forbidden_intervals_list.length; j++){
+                forbidden_intervals_list[j][0][1] = forbidden_intervals_list[j][0][1] - 1
+                forbidden_intervals_list[j][1][1] = forbidden_intervals_list[j][1][1] - 1
+                forbidden_intervals[forbidden_intervals.length] = [moment(forbidden_intervals_list[j][0]), moment(forbidden_intervals_list[j][1])]
+                console.log(forbidden_intervals[forbidden_intervals.length - 1][0].format("DD/MM HH:mm"))
+            }
+            console.debug(forbidden_intervals)
             daysDisabled = result.forbidden_days;
             for (var i = 0; i < daysDisabled.length; i++) {
                 daysDisabled[i] = (daysDisabled[i] + 1) % 7 //week starts on sunday
@@ -34,21 +46,15 @@ $(document).ready(function () {
             $delivery_field.datetimepicker({
                     sideBySide: true,
                     enabledHours: [10, 11, 12, 13, 14, 15, 16,17,18], 
-                    //TODO : enabledhours relative to shop opening hours
-                    minDate : timeStart, //minDate = minDateTime in fact
+                    minDate : timeStart, //minDate is minDateTime in fact
                     maxDate : timeEnd,
                     daysOfWeekDisabled : daysDisabled,
                     //inline: true,
                     defaultDate: timeDefault,
-                    //disabledTimeIntervals: [[moment({ h: 0 }), moment({ h: 8 })], [moment({ h: 18 }), moment({ h: 24 })]],
-                    format: 'ddd DD/MM/YYYY HH:mm', //ex : Thu 14/03/2015;
-                    stepping: 60 //we choose only hours, but minutes are shown
+                    format: 'ddd DD/MM/YYYY HH:mm', //ex : Thu 14/03/2015 10:00
+                    stepping: 60, //we choose only hours, but minutes are shown
+                    disabledTimeIntervals : forbidden_intervals
             }).show(); //.enabledHours([10, 11, 12, 13, 14, 15, 16,17,18]); //enabledHours: [10, 11, 12, 13, 14, 15, 16,17,18],
-            //openerp.jsonRpc("/shop/checkout/get_dates", 'call', {}).then(function(result) {
-                //result contains constraints
-                //timeStart from result moment([year, month, day, hour, minutes]);
-                //daysOfWeekDisabled from result // Default: [] Accepts: array of numbers from 0-6
-            //});
         });
     }
 

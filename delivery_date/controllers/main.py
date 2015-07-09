@@ -171,10 +171,13 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         min_date = sale_order_obj.get_min_date(cr,uid, order_id, context) #[year, month, day, hour, minutes]
         max_date = sale_order_obj.get_max_date(cr,uid, order_id, context)  
         forbidden_days = sale_order_obj.get_forbidden_days(cr,uid, order_id, context)  
+        forbidden_intervals = sale_order_obj.get_forbidden_time_intervals(cr,uid, order_id, min_date=min_date, max_date=max_date, context=context) 
         return {
             'min_date' : min_date,
             'max_date' : max_date,
-            'forbidden_days' : forbidden_days}  
+            'forbidden_days' : forbidden_days,
+            'forbidden_intervals' : forbidden_intervals
+            }  
             #sale_order.getMinDate() #Todo : min date as a computed field ?
             #sale_order.getForbiddenDays()
             #res = registry.get("calendar.alarm_manager").get_next_notif(cr, uid, context=context)

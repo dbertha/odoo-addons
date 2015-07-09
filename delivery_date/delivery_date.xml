@@ -4,7 +4,7 @@
     <template id="checkout_delivery_date" name="Delivery Date" inherit_id="website_sale.checkout">
         <!--<xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="after">-->
         <xpath expr="//div[@id='delivery_carrier']" position="inside">
-                <div class="col-lg-5 col-sm-6">
+                <div t-attf-class="form-group #{error.get('delivery_date') and 'has-error' or ''} col-lg-5 col-sm-6">
                 <h3>Choose your delivery or pick-up date</h3>
                     <input type='text' class="form-control" id='delivery_date' name='delivery_date'/>
                                 <!--<span class="input-group-addon">

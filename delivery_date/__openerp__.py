@@ -29,8 +29,9 @@
 ===================================================
 """,
     'author': 'David Bertha',
-    'website': 'http://www..com', #TODO : github
-    'depends': ['sale_stock', 'product', 'website_sale', 'website_sale_delivery_on_checkout'],
+    'website': 'http://www.github.com/dbertha',
+    'depends': ['sale_stock', 'product', 'website_sale', 'website_sale_delivery_on_checkout', 'fonteyne_style'],
+    #fonteyne_style : datetimepicker, moment.js (2.9)
     'data': ['delivery_date_view.xml', 'delivery_date.xml'],
     'demo': [], #TODO
     'test': [], #TODO
