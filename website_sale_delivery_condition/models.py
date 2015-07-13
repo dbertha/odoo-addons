@@ -18,7 +18,6 @@ _logger = logging.getLogger(__name__)
 
         
 class delivery_condition(osv.osv):
-    #TODO : incompatibility between categories but product can be from multiple categ : proper ?
     _name = "delivery.condition"
     _description = "Delivery Condition : delivery carrier and delays compatible"
      
@@ -146,20 +145,19 @@ class sale_order(osv.osv):
     def get_forbidden_days(self,cr,uid, order_id, context) :
         order = self.browse(cr, SUPERUSER_ID, order_id, context)
         delivery_condition = order.delivery_condition
+        forbidden_days = super(sale_order,self).get_forbidden_days(cr,uid,order_id,context=context) 
         if delivery_condition :
             if(delivery_condition.range_start and delivery_condition.range_end) :
                 #warning : encoded as 1-7, but 0-6 needed
                 range_start = delivery_condition.range_start -1
                 range_end = delivery_condition.range_end -1
-                forbidden_days = []
                 if(delivery_condition.range_end < delivery_condition.range_start) :
                     forbidden_days = [x for x in range(range_end+1, range_start)]
                 else :
                     allowed_days = range(range_start, range_end+1)
-                    forbidden_days = [x for x in range(7) if (x not in allowed_days)]
+                    forbidden_days += [x for x in range(7) if (x not in allowed_days)]
                 _logger.debug('Forbidden days : %s', forbidden_days)
-                return forbidden_days
-        return super(sale_order,self).get_forbidden_days(cr,uid,order_id,context=context) 
+        return forbidden_days
     
     def get_max_date(self,cr,uid, order_id, context) :
         order = self.browse(cr, SUPERUSER_ID, order_id, context)
@@ -232,7 +230,10 @@ class sale_order(osv.osv):
             }
             _logger.debug("New delivery line : %s", str(line_infos))
             line_obj.create(cr, uid, line_infos, context=context)
+            
+            
     #this method is no longer usefull if delivey_condition of sale order ignore the delivery condition of delivery products
+
 #     def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
 #         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,
 #         because otherwise it will apply its delivery condition to the cart"""
