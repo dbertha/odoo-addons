@@ -4,7 +4,6 @@
 <template id="report_group_invoice_document">
 <!--<t t-name="delivery_carrier_pickingup.report_group_invoice_document">-->
     <!--- <t t-call="report.external_layout">-->
-    <!-- TODO : table-bordered : table_border to have the same rendering> -->
        <div class="page">
             <div class="row">
                 <div class="col-xs-5 text-center font-times">
@@ -44,9 +43,9 @@
                     <img t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" width="200px" height="100px"/> -->
                 </div>
                 <div class="mt92 col-xs-5 col-xs-offset-1">     
-                    <h3><i> <span style="text-transform:uppercase;"/> N.V. PHIL S.A. </i></h3>
-                    <span> Rue de Wand/De Wandstraat, 131 </span> <br/>
-                    <span>B-1020</span> &amp;nbsp;<span> Bruxelles/Brussel </span><br/>
+                    <h3><i> <span style="text-transform:uppercase;"/> PHIL S.A. </i></h3>
+                    <span> Rue de Wand, 131 </span> <br/>
+                    <span>B-1020</span> &amp;nbsp;<span> Bruxelles </span><br/>
                    TVA/BTW : <span style="text-transform:uppercase;" t-field="res_company.partner_id.vat"/><br/>
                     
                     <!--<a a-attr-href="res_company.website">
@@ -77,7 +76,7 @@
                 </div>
             </div>
             -->
-            <table class="mt32 table-bordered">
+            <table class="mt32 table_border">
                 <tr>
                     <td class="col-xs-4 text-center">
                         <!--
@@ -112,7 +111,7 @@
                     </td>
                 </tr>
             </table>
-             <table class="mt32 table-bordered" style="font-size:11px;">
+             <table class="mt32 table_border" style="font-size:11px;">
                 <thead>
                     <tr>
                         <th>ART.</th>
@@ -205,7 +204,7 @@
 
             <div class="row mt32" t-if="o.tax_line">
                 <div class="col-xs-8">
-                    <table class="table-bordered text-center" style="font-size:11px;">
+                    <table class="table_border text-center" style="font-size:11px;">
                         <thead>
                             <tr>
                                 <th class="text-center">%TVA/BTW</th>
@@ -243,7 +242,7 @@
                 </div>
             </div>
 
-            <table class="mt32 table-bordered" style="page-break-inside:avoid;">
+            <table class="mt32 table_border" style="page-break-inside:avoid;">
                 <tr>
                     <td class="col-xs-4" rowspan="2"></td>
                     <td class="col-xs-4" rowspan="2"></td>

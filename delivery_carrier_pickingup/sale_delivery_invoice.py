@@ -75,7 +75,7 @@ class sale_order(osv.osv):
         for delivery_in_independant_shop in delivery_carrier_obj.browse(cr, SUPERUSER_ID,delivery_carrier_ids, context=context) :
             if delivery_in_independant_shop.address_partner and delivery_in_independant_shop.address_partner.is_company :
                 _logger.debug("Independant shop found")
-                new_invoice_id = self.create_delivery_grouped_invoice(cr,uid,delivery_in_independant_shop,period_start, period_end,discount=35,context=context)
+                new_invoice_id = self.create_delivery_grouped_invoice(cr,uid,delivery_in_independant_shop,period_start, period_end,context=context)
                 if new_invoice_id :
                     new_invoices.append(new_invoice_id)
             elif not delivery_in_independant_shop.address_partner :
@@ -84,7 +84,7 @@ class sale_order(osv.osv):
         return new_invoices
         
         
-    def create_delivery_grouped_invoice(self,cr,uid,delivery_carrier,period_start,period_end,discount=0, context=None):
+    def create_delivery_grouped_invoice(self,cr,uid,delivery_carrier,period_start,period_end, context=None):
         if context is None :
             context = {}
         if not delivery_carrier.address_partner.email :
@@ -101,7 +101,6 @@ class sale_order(osv.osv):
         
         defaults = {
             'create_date':False,
-            'discount':discount, #TODO : not if caution
             'invoice_id' : False,
         }
         defaults.update({'partner_id' : customer.id})
@@ -120,6 +119,7 @@ class sale_order(osv.osv):
                     for invoice_line in order_line.invoice_lines :
                         if invoice_line.invoice_id.state != 'cancel'  :
                             _logger.debug("new invoice line")
+                            defaults.update({'discount' : invoice_line.product_id.product_tmpl_id.discount or 0 })
                             new_invoice_line_id = self.pool.get('account.invoice.line').copy(cr,uid,invoice_line.id,defaults,context=context)
                             new_invoice_lines.append(new_invoice_line_id)
         if new_invoice_lines :

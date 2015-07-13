@@ -17,6 +17,73 @@
                 </xpath>
             </field>
     </record>
+    
+    
+    <record model="ir.ui.view" id="product_template_view_invoice_discount">
+        <field name="name">product.template.invoicediscount</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='taxes_id']" position="after"> 
+                <group name="reverse_invoice">
+                    <field name="discount_id"/>
+                </group>
+                    
+            </xpath>
+
+        </field>
+    </record>
+    
+        <!-- Reverse Invoice Discount -->
+        <record id="view_invoice_discount_tree" model="ir.ui.view">
+            <field name="name">account.invoice.discount.tree</field>
+            <field name="model">account.invoice.discount</field>
+            <field name="arch" type="xml">
+                <tree string="Discount For Reverse Invoice">
+                    <field name="name"/>
+                    <field name="percentage"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_invoice_discount_form" model="ir.ui.view">
+            <field name="name">account.invoice.discount.form</field>
+            <field name="model">account.invoice.discount</field>
+            <field name="arch" type="xml">
+                <form string="Discount For Reverse Invoice">
+                    <group col="2">
+                        <field name="name"/>
+                        <field name="percentage"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_account_invoice_discount_form" model="ir.actions.act_window">
+            <field name="name">Reverse Invoice Discount</field>
+            <field name="res_model">account.invoice.discount</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new reverse invoice discount.
+              </p><p>
+                When generating reverse invoice (when you sell on eshop for another company),
+                each invoice line will receive the discount linked to the product related.
+              </p>
+            </field>
+        </record>
+        <menuitem action="action_account_invoice_discount_form" id="menu_action_account_invoice_discount_form" parent="account.next_id_27" sequence="20"/>
+        
+        <record id="invoice_supplier_form_withforcedsendbutton" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.withforcedsendbutton.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside"> 
+                    <button name="action_invoice_sent" type="object" string="Send by Email" groups="base.group_user"/> 
+                    <!--attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" -->
+                </xpath>
+            </field>
+        </record>
     </data>
 
     <!-- Mail template are declared in a NOUPDATE block
