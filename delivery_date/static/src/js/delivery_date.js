@@ -45,7 +45,8 @@ $(document).ready(function () {
             
             $delivery_field.datetimepicker({
                     sideBySide: true,
-                    enabledHours: [10, 11, 12, 13, 14, 15, 16,17,18], 
+                    enabledHours: [10, 11, 12, 13, 14, 15, 16,17,18], //force to check for a valid date at init 
+                    //TODO : should check valid date even without that option, and for each day change
                     minDate : timeStart, //minDate is minDateTime in fact
                     maxDate : timeEnd,
                     daysOfWeekDisabled : daysDisabled,
@@ -54,7 +55,7 @@ $(document).ready(function () {
                     format: 'ddd DD/MM/YYYY HH:mm', //ex : Thu 14/03/2015 10:00
                     stepping: 60, //we choose only hours, but minutes are shown
                     disabledTimeIntervals : forbidden_intervals
-            }).show(); //.enabledHours([10, 11, 12, 13, 14, 15, 16,17,18]); //enabledHours: [10, 11, 12, 13, 14, 15, 16,17,18],
+            }).show();
         });
     }
 

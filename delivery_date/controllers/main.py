@@ -69,67 +69,11 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         
         super(website_sale, self).checkout_form_save(checkout)
 
-#         partner_lang = request.lang if request.lang in [lang.code for lang in request.website.language_ids] else None
-# 
-#         billing_info = {}
-#         if partner_lang:
-#             billing_info['lang'] = partner_lang
-#         billing_info.update(self.checkout_parse('billing', checkout, True))
-# 
-#         # set partner_id
-#         partner_id = None
-#         if request.uid != request.website.user_id.id:
-#             partner_id = orm_user.browse(cr, SUPERUSER_ID, uid, context=context).partner_id.id
-#         elif order.partner_id:
-#             user_ids = request.registry['res.users'].search(cr, SUPERUSER_ID,
-#                 [("partner_id", "=", order.partner_id.id)], context=dict(context or {}, active_test=False))
-#             if not user_ids or request.website.user_id.id not in user_ids:
-#                 partner_id = order.partner_id.id
-# 
-#         # save partner informations
-#         if partner_id and request.website.partner_id.id != partner_id:
-#             orm_partner.write(cr, SUPERUSER_ID, [partner_id], billing_info, context=context)
-#         else:
-#             # create partner
-#             partner_id = orm_partner.create(cr, SUPERUSER_ID, billing_info, context=context)
-# 
-#         # create a new shipping partner
-#         _logger.debug("Form save : Shipping id=%d", checkout.get('shipping_id'))
-#         if checkout.get('shipping_id') == -1:
-#             _logger.debug("Recording shipping address")
-#             shipping_info = {}
-#             if partner_lang:
-#                 shipping_info['lang'] = partner_lang
-#             shipping_info.update(self.checkout_parse('shipping', checkout, True))
-#             shipping_info['type'] = 'delivery'
-#             shipping_info['parent_id'] = partner_id
-#             checkout['shipping_id'] = orm_partner.create(cr, SUPERUSER_ID, shipping_info, context)
-# 
-#         order_info = {
-#             'partner_id': partner_id,
-#             'message_follower_ids': [(4, partner_id), (3, request.website.partner_id.id)],
-#             'partner_invoice_id': partner_id,
-#         }
-#         order_info.update(order_obj.onchange_partner_id(cr, SUPERUSER_ID, [], partner_id, context=context)['value'])
-#         address_change = order_obj.onchange_delivery_id(cr, SUPERUSER_ID, [], order.company_id.id, partner_id,
-#                                                         checkout.get('shipping_id'), None, context=context)['value']
-#         order_info.update(address_change)
-#         if address_change.get('fiscal_position'):
-#             fiscal_update = order_obj.onchange_fiscal_position(cr, SUPERUSER_ID, [], address_change['fiscal_position'],
-#                                                                [(4, l.id) for l in order.order_line], context=None)['value']
-#             order_info.update(fiscal_update)
-# 
-#         order_info.pop('user_id')
-#         order_info.update(partner_shipping_id=checkout.get('shipping_id') or partner_id)
-
-
         #need to add delivery date
         _logger.debug("checkout form save, before write : checkout delivery date time start : %s", checkout.get('delivery_datetime_start'))
-        #order_info.update(requested_delivery_date = checkout.get('delivery_date'))
         order_info = {'requested_delivery_datetime_start' : checkout.get('delivery_datetime_start'),
                       'requested_delivery_datetime_end' : checkout.get('delivery_datetime_end')
                       }
-        #_logger.debug("checkout form save after write, order delivery date : %s", order.requested_delivery_date)
         
         order_obj.write(cr, SUPERUSER_ID, [order.id], order_info, context=context)
 
@@ -151,12 +95,6 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         elif not self.check_date_validity(data.get('delivery_datetime_start')) :
             _logger.debug("form validate : delivery date not correct")
             error['delivery_date'] = 'notAcceptable'
-        if data.get('shipping_name') :
-            _logger.debug("Shipping name : %s weekday : %d", data['shipping_name'], data.get('delivery_datetime_start').weekday())
-            if ((data['shipping_name'] == "Uccle") and
-             (data.get('delivery_datetime_start')) and (data.get('delivery_datetime_start').weekday() < 2 )) :
-            #Fort Jaco closed if monday or thuesday
-                error["shop_closed"] = True
         _logger.debug("form validate : error : %s", str(error))
         return error
     
@@ -168,7 +106,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         sale_order_obj = request.registry['sale.order']
         order_id = request.session.get('sale_order_id')
         _logger.debug("UID : %s", str(uid))
-        min_date = sale_order_obj.get_min_date(cr,uid, order_id, context) #[year, month, day, hour, minutes]
+        min_date = sale_order_obj.get_min_date(cr,uid, order_id, context) 
+        #[year, month, day, hour, minutes]
         max_date = sale_order_obj.get_max_date(cr,uid, order_id, context)  
         forbidden_days = sale_order_obj.get_forbidden_days(cr,uid, order_id, context)  
         forbidden_intervals = sale_order_obj.get_forbidden_time_intervals(cr,uid, order_id, min_date=min_date, max_date=max_date, context=context) 
@@ -178,8 +117,3 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             'forbidden_days' : forbidden_days,
             'forbidden_intervals' : forbidden_intervals
             }  
-            #sale_order.getMinDate() #Todo : min date as a computed field ?
-            #sale_order.getForbiddenDays()
-            #res = registry.get("calendar.alarm_manager").get_next_notif(cr, uid, context=context)
-            #return res
-    
