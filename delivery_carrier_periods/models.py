@@ -67,14 +67,14 @@ class DeliveryPeriod(osv.osv) :
     }
     def _check_dates(self, cr, uid, ids, context = None) :
         period = self.browse(cr, uid, ids, context=context)
-        if period.period_end_hour > period.period_start_hour :
+        if period.end_hour > period.start_hour :
             return True
-        elif period.period_end_hour == period.period_start_hour :
-            return period.period_end_min >= period.period_start_min
+        elif period.end_hour == period.start_hour :
+            return period.end_min >= period.start_min
         return False
     
     _constraints = [
-        (_check_dates, 'End time should be after start time !', ['period_start_hour', 'period_end_hour', 'period_start_min', 'period_end_min'])]
+        (_check_dates, 'End time should be after start time !', ['start_hour', 'end_hour', 'start_min', 'end_min'])]
     
     
 class SaleOrder(osv.osv):

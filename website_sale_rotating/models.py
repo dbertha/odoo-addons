@@ -3,15 +3,9 @@
 from openerp import SUPERUSER_ID
 from openerp import models
 from openerp.osv import osv, fields
-from openerp.addons.web.http import request
 
-from datetime import datetime, timedelta, date
-from dateutil.relativedelta import relativedelta
-import pytz
-from pytz import timezone
 
 import logging
-from lxml.html.builder import AREA
 
 _logger = logging.getLogger(__name__)
 #TODO : superuser ID
