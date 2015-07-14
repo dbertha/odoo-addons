@@ -7,17 +7,6 @@
         name="delivery_carrier_pickingup.report_saleorder_delivery" 
         string="Sale Order Deliveries" 
         file="delivery_carrier_pickingup.report_saleorder_delivery"/>
-        
-        <report 
-            id="delivery_grouped_invoice"
-            model="account.invoice"
-            string="Reversed grouped invoice"
-            report_type="qweb-pdf"
-            name="delivery_carrier_pickingup.report_group_invoice"
-            file="delivery_carrier_pickingup.report_group_invoice"
-            attachment_use="True"
-            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
-        />
 
     </data>
 </openerp>

@@ -49,16 +49,17 @@ class sale_order(osv.osv):
         last_day_of_month = calendar.monthrange(today.year, today.month)[1]
         if yesterday.day % length == 0 or yesterday.day == last_day_of_month :
             period_end = yesterday
-            start_day = (((period_end - timedelta(days=1)).day) / int(length)) * int(length)
+            if yesterday.day % length == 0 :
+                start_day = (((period_end - timedelta(days=1)).day) / int(length)) * int(length)
+            else :
+                start_day = ((period_end.day) / int(length)) * int(length)
             #previous multiple
-            period_start =  yesterday - timedelta(yesterday.day - start_day)
+            period_start =  period_end - timedelta(period_end.day - start_day)
             #TODO : check that this period is not already invoiced
-            #period_end and period_start
-        period_start = datetime(1999,1,1)
-        period_end = datetime(2100,2,2)
+        #period_start = datetime(1999,1,1)
+        #period_end = datetime(2100,2,2)
         context.update({'period_start' : period_start,
                         'period_end' : period_end})
-        #TODO : add period in context to retrieve in render_html
         invoice_ids = self.create_delivery_grouped_invoices(cr,uid,ids,period_start,period_end, context=context)
         self.pool.get('account.invoice').send_grouped_invoices(cr,uid, invoice_ids, context=context)
     

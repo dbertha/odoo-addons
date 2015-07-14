@@ -537,7 +537,7 @@ www.fonteynethekitchen.be.</strong>
 <template id="report_group_invoice">
     <t t-call="report.html_container">
         <t t-foreach="doc_ids" t-as="doc_id">
-            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'delivery_carrier_pickingup.report_group_invoice_document')"/>
+            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'account_invoice_reverse.report_group_invoice_document')"/>
         </t>
     </t>
 </template>

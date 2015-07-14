@@ -25,7 +25,6 @@
         'templates.xml',
         'delivery_report.xml',
         'report_saleorder_delivery.xml',
-        'report_group_invoice.xml',
         'views.xml'
     ],
 

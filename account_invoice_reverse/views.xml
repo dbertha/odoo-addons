@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    <record id="delivery_carrier_withjournal_form" model="ir.ui.view">
+            <field name="name">delivery.carrier.withjournal.form.view</field>
+            <field name="model">delivery.carrier</field>
+            <field name="inherit_id" ref="delivery_carrier_pickingup.delivery_carrier_withshippingaddress_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='pick_up']" position="inside">
+                        <field name="journal_id" 
+                            attrs="{'invisible':[('is_pickup','=',False), ('address_partner', '=', False)]}"
+                            domain="[('type', '=', 'purchase')]"/>
+                </xpath>
+            </field>
+    </record>
+    
+    <record model="ir.ui.view" id="product_template_view_invoice_discount">
+        <field name="name">product.template.invoicediscount</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='taxes_id']" position="after"> 
+                <group name="reverse_invoice">
+                    <field name="discount_id"/>
+                </group>
+                    
+            </xpath>
+
+        </field>
+    </record>
+    
+        <!-- Reverse Invoice Discount -->
+        <record id="view_invoice_discount_tree" model="ir.ui.view">
+            <field name="name">account.invoice.discount.tree</field>
+            <field name="model">account.invoice.discount</field>
+            <field name="arch" type="xml">
+                <tree string="Discount For Reverse Invoice">
+                    <field name="name"/>
+                    <field name="percentage"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_invoice_discount_form" model="ir.ui.view">
+            <field name="name">account.invoice.discount.form</field>
+            <field name="model">account.invoice.discount</field>
+            <field name="arch" type="xml">
+                <form string="Discount For Reverse Invoice">
+                    <group col="2">
+                        <field name="name"/>
+                        <field name="percentage"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_account_invoice_discount_form" model="ir.actions.act_window">
+            <field name="name">Reverse Invoice Discount</field>
+            <field name="res_model">account.invoice.discount</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new reverse invoice discount.
+              </p><p>
+                When generating reverse invoice (when you sell on eshop for another company),
+                each invoice line will receive the discount linked to the product related.
+              </p>
+            </field>
+        </record>
+        <menuitem action="action_account_invoice_discount_form" id="menu_action_account_invoice_discount_form" parent="account.next_id_27" sequence="20"/>
+        
+        <record id="invoice_supplier_form_withforcedsendbutton" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.withforcedsendbutton.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside"> 
+                    <button name="action_invoice_sent" type="object" string="Send by Email" groups="base.group_user"/> 
+                    <!--attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" -->
+                </xpath>
+            </field>
+        </record>
+    </data>
+
+    <!-- Mail template are declared in a NOUPDATE block
+         so users can freely customize/delete them -->
+    <data noupdate="1">
+        <!--Email template -->
+        <record id="email_template_grouped_invoice" model="email.template">
+            <field name="name">Reverse Grouped Invoice - Send by Email</field>
+            <field name="email_from">${(object.user_id.email or object.company_id.email or 'noreply@localhost')|safe}</field>
+            <field name="subject">Submission from PHIL S.A. : Invoice (Ref ${object.origin or 'n/a'})</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="delivery_grouped_invoice"/>
+            <field name="report_name">Invoice_${(object.origin or '').replace('/','_')}_${object.state == 'draft' and 'draft' or ''}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.partner_id.name},</p>
+
+    <p>A new invoice is submitted for approuval. </p>
+    <p> Please transfer it to confirm it, or contact us if this invoice is not correct. </p>
+</div>
+            ]]></field>
+        </record>
+    </data>
+    
+</openerp>
