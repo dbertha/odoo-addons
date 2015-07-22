@@ -110,8 +110,8 @@ class sale_order(osv.osv):
 
     
 
-    def get_min_date(self,cr,uid, order_id, context) :
-        order = self.browse(cr, SUPERUSER_ID, order_id, context)
+    def get_min_date(self,cr,uid, order, forbidden_days=None, context=None) :
+        #order = self.browse(cr, SUPERUSER_ID, order_id, context)
         delivery_condition = order.delivery_condition
         _logger.debug("In overloaded min_date\nDelivery condition : %s", str(delivery_condition))
         _logger.debug("user_id : %s", str(uid))
@@ -121,13 +121,14 @@ class sale_order(osv.osv):
             delta = timedelta(hours=1)
             min_date = now.replace(minute=59) + delta 
             _logger.debug("Delay from : %s", str(min_date))
+            if delivery_condition.limit_hour and now.hour >= delivery_condition.limit_hour : #day is over
+                    min_date += timedelta(days=1)
             if(delivery_condition.delay_from > 0) :
-                min_date = min_date.replace(hour=0,minute=0) #TODO : first_hour_of_day : allowed_hours
+                min_date = min_date.replace(hour=0,minute=0)
                 delta = timedelta(days=delivery_condition.delay_from)
-                if(now.hour >= delivery_condition.limit_hour) : #day is over
-                    delta += timedelta(days=1)
+                
                 min_date += delta
-                forbidden_days = self.get_forbidden_days(cr, uid, order_id, context)
+                if forbidden_days is None : forbidden_days = self.get_forbidden_days(cr, uid, order, context)
                 delta = timedelta(days=1)
 
                 if forbidden_days :
@@ -140,12 +141,12 @@ class sale_order(osv.osv):
                     min_date += delta
             _logger.debug("Min date for delivery : %s", str(min_date))
             return [min_date.year, min_date.month, min_date.day, min_date.hour, min_date.minute]
-        return super(sale_order,self).get_min_date(cr,uid,order_id,context=context)
+        return super(sale_order,self).get_min_date(cr,uid,order,forbidden_days=forbidden_days, context=context)
     #TODO : get sale_order from database only once in parent caller
-    def get_forbidden_days(self,cr,uid, order_id, context) :
-        order = self.browse(cr, SUPERUSER_ID, order_id, context)
+    def get_forbidden_days(self,cr,uid, order, context=None) :
+        #order = self.browse(cr, SUPERUSER_ID, order_id, context=context)
         delivery_condition = order.delivery_condition
-        forbidden_days = super(sale_order,self).get_forbidden_days(cr,uid,order_id,context=context) 
+        forbidden_days = super(sale_order,self).get_forbidden_days(cr,uid,order, context=context) 
         if delivery_condition :
             if(delivery_condition.range_start and delivery_condition.range_end) :
                 #warning : encoded as 1-7, but 0-6 needed
@@ -159,16 +160,19 @@ class sale_order(osv.osv):
                 _logger.debug('Forbidden days : %s', forbidden_days)
         return forbidden_days
     
-    def get_max_date(self,cr,uid, order_id, context) :
-        order = self.browse(cr, SUPERUSER_ID, order_id, context)
+    def get_max_date(self,cr,uid, order, min_date=None,forbidden_days=None, context=None) :
+        #order = self.browse(cr, SUPERUSER_ID, order_id, context=context)
         delivery_condition = order.delivery_condition
         if delivery_condition :
             if(delivery_condition.range_start and delivery_condition.range_end) :
                 #only the first range allowed
-                forbidden_days = self.get_forbidden_days(cr, uid, order_id, context)
+                forbidden_days = self.get_forbidden_days(cr, uid, order, context)
                 if(forbidden_days) :
                     end_of_range = (min(forbidden_days) - 1) % 7
-                    min_date = datetime(*self.get_min_date(cr, uid, order_id, context=context))
+                    if min_date :
+                        min_date = datetime(*min_date)
+                    else :
+                        min_date = datetime(*self.get_min_date(cr, uid, order, context=context))
                     delta = timedelta(days=1)
                     max_date = min_date
                     while(max_date.weekday() != end_of_range) :
@@ -176,7 +180,7 @@ class sale_order(osv.osv):
                     max_date += delta
                     _logger.debug("max_date weekday : %d", max_date.weekday())
                     return [max_date.year, max_date.month, max_date.day, max_date.hour, max_date.minute]
-        return super(sale_order,self).get_max_date(cr,uid,order_id,context=context) 
+        return super(sale_order,self).get_max_date(cr,uid,order,min_date=min_date, forbidden_days=forbidden_days, context=context) 
     
     def _get_delivery_methods(self, cr, uid, order, context=None):
         """do not display delivery methods incompatible with sale order delivery condition"""
