@@ -18,7 +18,9 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale', 'account'],
+    'depends': ['base', 'website', 'website_sale', 'account',
+                'website_sale_autopay', #auto link ecommerce transaction to invoice
+                'account_invoice_send_when_paid'], #auto send invoice default template when paid
 
     # always loaded
     'data': [
