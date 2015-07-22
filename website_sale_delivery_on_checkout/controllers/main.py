@@ -42,43 +42,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         #order = request.website.sale_get_order(force_create=1, context=context)
         _logger.debug("order.carrier_id : %d", order.carrier_id)
         _logger.debug("order.carrier_id.name : %s", order.carrier_id.name)
-#         if(order.carrier_id) :
-#             if(order.carrier_id.name.find("Tong") != -1) :
-#                 _logger.debug("Adding Tongres address")
-#                 values['checkout']['shipping_id'] = -1
-#                 values['checkout']['shipping_name'] = "Tongres"
-#                 values['checkout']['shipping_phone'] = "02 734 08 02"
-#                 values['checkout']['shipping_street'] = "107, Rue Gérard"
-#                 values['checkout']['shipping_city'] = "Etterbeek"
-#                 values['checkout']['shipping_zip'] = "1040"
-#                 values['checkout']['shipping_country_id'] = 21
-#             elif(order.carrier_id.name.find("Wolu") != -1) :
-#                 _logger.debug("Adding Wolu address")
-#                 values['checkout']['shipping_id'] = -1
-#                 values['checkout']['shipping_name'] = "Woluwé"
-#                 values['checkout']['shipping_phone'] = "02 763 48 93"
-#                 values['checkout']['shipping_street'] = "27, Avenue Baron d'Huart"
-#                 values['checkout']['shipping_city'] = "Woluwé-Saint-Pierre"
-#                 values['checkout']['shipping_zip'] = "1150"
-#                 values['checkout']['shipping_country_id'] = 21
-#             elif(order.carrier_id.name.find("Jaco") != -1) :
-#                 _logger.debug("Adding Uccle address")
-#                 values['checkout']['shipping_id'] = -1
-#                 values['checkout']['shipping_name'] = "Uccle"
-#                 values['checkout']['shipping_phone'] = "02 375 48 75"
-#                 values['checkout']['shipping_street'] = "1395, Chaussée de Waterloo"
-#                 values['checkout']['shipping_city'] = "Uccle"
-#                 values['checkout']['shipping_zip'] = "1180"
-#                 values['checkout']['shipping_country_id'] = 21
-#             elif(order.carrier_id.name.find("ulpe") != -1) :
-#                 _logger.debug("Adding La Hulpe address")
-#                 values['checkout']['shipping_id'] = -1
-#                 values['checkout']['shipping_name'] = "La Hulpe"
-#                 values['checkout']['shipping_phone'] = " 02 652 21 93"
-#                 values['checkout']['shipping_street'] = "30, Avenue Albert 1er"
-#                 values['checkout']['shipping_city'] = "Genval"
-#                 values['checkout']['shipping_zip'] = "1332"
-#                 values['checkout']['shipping_country_id'] = 21
+
         return request.website.render("website_sale.checkout", values)
     
     def order_lines_2_google_api(self, order_lines):
