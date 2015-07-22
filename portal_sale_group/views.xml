@@ -163,7 +163,7 @@
                         default langage : user.lang ? probably already like that -->
                         </group>
                         <group string="Sale Orders">
-                            <field name="order_ids"/>
+                            <field name="filtered_order_ids"/>
                         </group>
                     </div>
                 </sheet>
