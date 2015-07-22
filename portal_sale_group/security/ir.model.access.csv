@@ -1,0 +1,31 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_users_groups_users,users access to portal groups,model_res_users_groups,group_portal_users,1,0,0,0
+access_res_users_groups_admins,admins access to portal groups,model_res_users_groups,group_portal_admins,1,1,0,0
+access_res_users_groups_managers,sale managers access to portal groups,model_res_users_groups,base.group_sale_manager,1,1,1,1
+access_res_groups_from_portal,users access to res groups,base.model_res_groups,group_portal_users,1,0,0,0
+access_res_groups_from_portal_admins,admins access to res groups,base.model_res_groups,group_portal_admins,1,0,0,0
+access_res_users_portal_for_admins,admins can create users in group,base.model_res_users,group_portal_admins,1,1,1,1
+access_mail_alias_for_admins,admins can create alias for users,mail.model_mail_alias,group_portal_admins,1,1,1,1
+access_res_partner_for_admins,admins can create partner for users,base.model_res_partner,group_portal_admins,1,1,1,1
+access_mail_templates_for_admins,admins can use mail template,email_template.model_email_template,group_portal_admins,1,0,0,0
+access_companies_for_admins,admins can read companies,base.model_res_company,group_portal_admins,1,0,0,0
+access_ir_ui_menu_group_admin,ir_ui_menu group_admin,base.model_ir_ui_menu,group_portal_admins,1,0,0,0
+access_mail_message_group_admin,message for group admin,mail.model_mail_message,group_portal_admins,1,1,1,1
+access_mail_mail_group_admin,mail.mail group_admin,mail.model_mail_mail,group_portal_admins,1,1,1,0
+access_mail_notification_group_admin,mail.notification group_admin,mail.model_mail_notification,group_portal_admins,1,1,1,0
+access_mail_followers_group_admin,mail.followers group_admin,mail.model_mail_followers,group_portal_admins,1,1,0,0
+access_ir_attachment_group_admin,ir.attachment group_admin,base.model_ir_attachment,group_portal_admins,1,0,1,0
+access_sale_order_group_admin,sale.order group_admin,sale.model_sale_order,group_portal_admins,1,0,0,0
+access_sale_order_line_group_admin,sale.order.line group_admin,sale.model_sale_order_line,group_portal_admins,1,0,0,0
+access_account_invoice_group_admin,account.invoice group_admin,account.model_account_invoice,group_portal_admins,1,0,0,0
+access_account_invoice_tax_group_admin,account.invoice.tax group_admin,account.model_account_invoice_tax,group_portal_admins,1,0,0,0
+access_account_invoice_line_group_admin,account.invoice.line group_admin,account.model_account_invoice_line,group_portal_admins,1,0,0,0
+access_account_journal_group_admin,account.journal group_admin,account.model_account_journal,group_portal_admins,1,0,0,0
+access_product_list_group_admin,product.pricelist group_admin,product.model_product_pricelist,group_portal_admins,1,0,0,0
+access_account_tax_group_admin,account.tax group_admin,account.model_account_tax,group_portal_admins,1,0,0,0
+access_res_partner_category_group_admin,res.partner.category group_admin,base.model_res_partner_category,group_portal_admins,1,0,0,0
+access_product_attribute_portal_group_admin,product.attribute group_admin,product.model_product_attribute,group_portal_admins,1,0,0,0
+access_product_attribute_value_portal_group_admin,product.attribute value group_admin,product.model_product_attribute_value,group_portal_admins,1,0,0,0
+access_product_attribute_price_portal_group_admin,product.attribute price group_admin,product.model_product_attribute_price,group_portal_admins,1,0,0,0
+access_product_attribute_line_portal_group_admin,product.attribute line group_admin,product.model_product_attribute_line,group_portal_admins,1,0,0,0
+access_im_chat_presence_group_admin,im_chat.presence group_admin,im_chat.model_im_chat_presence,group_portal_admins,1,1,1,1

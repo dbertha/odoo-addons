@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+    
+        <record id="partner_for_group_delivery" model="res.partner">
+            <field name="name">Group Delivery</field>
+        </record>
+        
+        <record id="product_product_group_delivery" model="product.product">
+            <field name="name">Group Delivery</field>
+            <field name="default_code">Delivery</field>
+            <field name="type">service</field>
+            <field name="standard_price">0.0</field>
+            <field name="list_price">0.0</field>
+        </record>
+        
+        <record forcecreate="True" id="delivery_group_carrier" model="delivery.carrier">
+            <field name="name">Group Delivery</field>
+            <field name="normal_price">0</field>
+            <field name="product_id" ref="product_product_group_delivery"/>
+            <field name="partner_id" ref="partner_for_group_delivery"/>
+        </record>
+    </data>
+</openerp>
