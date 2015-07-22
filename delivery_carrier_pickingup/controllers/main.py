@@ -32,7 +32,8 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
                  and order.carrier_id.address_partner and order.carrier_id.address_partner.street :
                 shipping_id = -1
                 if order.partner_id : #can be public user
-                    domain = [("parent_id", "=", order.partner_id.id), ('type', "=", 'delivery'), 
+                    
+                    domain = [("parent_id", "=", order.partner_id.id), 
                              ('name', '=' ,order.carrier_id.address_partner.name)]
                     shipping_from_carrier_ids = registry['res.partner'].search(cr, SUPERUSER_ID, 
                                 domain, context=context)
@@ -43,24 +44,7 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
                         _logger.debug("shipping_from_carrier_ids : %s", shipping_from_carrier_ids)
                         shipping_id = shipping_from_carrier_ids[0]
                         #cannot create shipping partner here because the order partner_id can be public user
-    #                 if shipping_id is None :
-    #                     #create new partner with shipping info of the delivery method
-    #                     shipping_info = {}
-    #                     partner_lang = request.lang if request.lang in [lang.code for lang in request.website.language_ids] else None
-    #                     if partner_lang:
-    #                         shipping_info['lang'] = partner_lang
-    # 
-    #                     shipping_info['type'] = 'delivery'
-    #                     shipping_info['parent_id'] = order.partner_id.id
-    #                     shipping_info.update({
-    #                             'name' : order.carrier_id.address_partner.name,
-    #                             'street' : order.carrier_id.address_partner.street,
-    #                             'street2' : order.carrier_id.address_partner.street2,  
-    #                             'state_id' : order.carrier_id.address_partner.state_id and order.carrier_id.address_partner.state_id or 0,
-    #                             'city' : order.carrier_id.address_partner.city,              
-    #                             'country_id' : order.carrier_id.address_partner.country_id and order.carrier_id.address_partner.country_id.id or 0
-    #                     })
-    #                     shipping_id = registry['res.partner'].create(cr, SUPERUSER_ID, shipping_info, context)
+
             values['checkout']['shipping_id'] = shipping_id
             values['shipping_id']= shipping_id #erase old data
     #    

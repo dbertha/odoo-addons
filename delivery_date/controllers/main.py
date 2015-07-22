@@ -23,36 +23,38 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         values['checkout'].update(self._parse_delivery_date(data))
         #_logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
         return values
+    
+    def convert_format(self, date_format) :
+        conversion_dict = {'ddd' : '%a',
+         'DD' : '%d',
+         'MM' : '%m',
+         'YYYY' : '%Y',
+         'HH' : '%H',
+         'mm' : '%M',
+         }
+        for original,replace in conversion_dict.iteritems() :
+            date_format = date_format.replace(original, replace)
+        return date_format
         
     def _parse_delivery_date(self, data):
+        cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
         if data and data.get('delivery_date') :
+            
             tzone = timezone('Europe/Brussels')
             delivery_interval_time = timedelta(minutes=30)
             _logger.debug("checkout value delivery_date : %s", data.get('delivery_date'))
-            splitted = data['delivery_date'].split()
-            if(len(splitted) != 3) :
-                _logger.error("Datetime sould be in format Day DD/MM/YYYY HH:MM : %s", splitted)
-                return {}
-            date = splitted[1].split('/')
-            if(len(date) != 3) :
-                _logger.error("Date should be in format DD/MM/YYYY : %s", date)
-                return {}
-            try:
-                day,month,year = int(date[0]), int(date[1]), int(date[2])
-            except : 
-                _logger.error("Date values are not integers")
-                return {}
-            interval_start = splitted[2].split(':')
-            if(len(interval_start) != 2) :
-                _logger.error("Time should be in format HH:MM : %s", splitted)
-                return {}
-            _logger.debug("interval_start : %s", interval_start)
-            try:
-                datetime_start = datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))
+            order = request.website.sale_get_order(force_create=1, context=context)
+            order_obj = registry.get('sale.order')
+            datetime_format = self.convert_format(order_obj.get_datetime_format(cr, uid, order, context=context))
+            _logger.debug("format : %s", datetime_format)
+            try :
+                datetime_start = datetime.strptime(data.get('delivery_date'), datetime_format)
+                datetime_start = tzone.localize(datetime_start).astimezone(pytz.utc)
+                _logger.debug("delivery date from format : %s", datetime_start)
             except :
-                _logger.error("checkout values : exception in datetime creation")
+                _logger.error("Incorrect date %s for format : %s", data.get('delivery_date'), datetime_format)
                 return {}
-            datetime_start = tzone.localize(datetime(year, month, day, int(interval_start[0]), int(interval_start[1]))).astimezone (pytz.utc)
+
             _logger.debug("checkout value end, checkout delivery datetime start : %s", datetime_start)
 
             return {'delivery_datetime_start' : datetime_start,
@@ -105,15 +107,18 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         cr = request.cr
         sale_order_obj = request.registry['sale.order']
         order_id = request.session.get('sale_order_id')
+        order = sale_order_obj.browse(cr, SUPERUSER_ID, order_id, context=context)
         _logger.debug("UID : %s", str(uid))
-        min_date = sale_order_obj.get_min_date(cr,uid, order_id, context) 
+        forbidden_days = sale_order_obj.get_forbidden_days(cr,uid, order, context=context)  
+
+        min_date = sale_order_obj.get_min_date(cr,uid, order, forbidden_days=forbidden_days, context=context) 
         #[year, month, day, hour, minutes]
-        max_date = sale_order_obj.get_max_date(cr,uid, order_id, context)  
-        forbidden_days = sale_order_obj.get_forbidden_days(cr,uid, order_id, context)  
-        forbidden_intervals = sale_order_obj.get_forbidden_time_intervals(cr,uid, order_id, min_date=min_date, max_date=max_date, context=context) 
+        max_date = sale_order_obj.get_max_date(cr,uid, order, min_date=min_date, forbidden_days=forbidden_days, context=context)  
+        forbidden_intervals = sale_order_obj.get_forbidden_time_intervals(cr,uid, order, min_date=min_date, max_date=max_date,context=context) 
         return {
             'min_date' : min_date,
             'max_date' : max_date,
             'forbidden_days' : forbidden_days,
-            'forbidden_intervals' : forbidden_intervals
+            'forbidden_intervals' : forbidden_intervals,
+            'format' : sale_order_obj.get_datetime_format(cr, uid, order, context=context)
             }  
