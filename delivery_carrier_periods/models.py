@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 import pytz
 from pytz import timezone
+from __builtin__ import str
 _logger = logging.getLogger(__name__)
 
 
@@ -42,7 +43,7 @@ class DeliveryPeriod(osv.osv) :
     _columns = {
         'name' : fields.function(_name_get, type='char', string='Name'),
         'day_of_week' : fields.selection(
-                [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thurday'), 
+                [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thursday'), 
                  (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection == 0
                 string="Day of the week", required=True
                 ),
@@ -81,12 +82,12 @@ class SaleOrder(osv.osv):
     _name = "sale.order"
     _inherit = "sale.order"
     
-    def get_forbidden_time_intervals(self,cr,uid, order_id, min_date=None, max_date=None, context=None) :
-        intervals = super(SaleOrder,self).get_forbidden_time_intervals(cr,uid,order_id, min_date=min_date, max_date=max_date, context=context) 
+    def get_forbidden_time_intervals(self,cr,uid, order, min_date=None, max_date=None, context=None) :
+        intervals = super(SaleOrder,self).get_forbidden_time_intervals(cr,uid,order, min_date=min_date, max_date=max_date, context=context) 
         if min_date and max_date :
             #nothing to compute if the is not an interval to check
             #TODO: can use forbidden_days also
-            order = self.browse(cr, SUPERUSER_ID, order_id, context)
+            #order = self.browse(cr, SUPERUSER_ID, order_id, context)
             delivery_carrier = order.carrier_id
             allowed_daytimes = {}
             if delivery_carrier and delivery_carrier.delivery_period_ids :
@@ -108,9 +109,17 @@ class SaleOrder(osv.osv):
                     if current_day.isoweekday() in allowed_daytimes.keys() :
                         #TODO : end of interval allowed : ok or not ?
                         start_of_interval = [current_day.year, current_day.month, current_day.day, 0, 0]
+                        
                         for daily_interval in allowed_daytimes[current_day.isoweekday()] :
                             #supposed ordered and no overlap
+                            
                             end_of_interval = [current_day.year, current_day.month, current_day.day, daily_interval[0][0], daily_interval[0][1]]
+                            _logger.debug("current_day %s, min_datetime %s, tomorrow %s", str(current_day.date()), str(min_datetime.date()), str((date.today() + timedelta(days=1))))
+                            if current_day.date() == date.today() \
+                                    or (current_day.date() == min_datetime.date() \
+                                    and current_day.date() == (date.today() + timedelta(days=1))) : 
+                                end_of_interval[3] += 1 #disable first hour of opening if min_date is today or tomorrow, because order will not be ready
+                                _logger.debug("end of interval : %s", str(end_of_interval))
                             intervals.append([start_of_interval, end_of_interval])
                             start_of_interval = end_of_interval[0:3] + [daily_interval[1][0], daily_interval[1][1]]
                         intervals.append([start_of_interval, [current_day.year, current_day.month, current_day.day, 23, 59]])
@@ -121,29 +130,3 @@ class SaleOrder(osv.osv):
                         intervals.append([[current_day.year, current_day.month, current_day.day, 0, 0], [current_day.year, current_day.month, current_day.day, 23, 59]])
                     current_day += one_day_delta
         return intervals
-    
-    
-    
-# class SaleOrder(osv.osv):
-#     _name = "sale.order"
-#     _inherit = "sale.order"
-#     
-#     def _get_amount_without_delivery(self, cr, uid, ids, field_name, arg, context=None) :
-#         cur_obj = self.pool.get('res.currency')
-#         res = {}
-#         for order in self.browse(cr, uid, ids, context=context):
-#             res[order.id] = {'amount_total_without_delivery' : 0.0}
-#             val = val1 = 0.0
-#             cur = order.pricelist_id.currency_id
-#             for line in order.order_line:
-#                 if not line.is_delivery :
-#                     val1 += line.price_subtotal
-#                     val += self._amount_line_tax(cr, uid, line, context=context)
-#             amount_tax = cur_obj.round(cr, uid, cur, val)
-#             amount_untaxed = cur_obj.round(cr, uid, cur, val1)
-#             res[order.id]['amount_total_without_delivery'] = amount_tax + amount_untaxed
-#         return res
-#     
-#     columns = {
-#         'amount_total_without_delivery' : fields.function(_get_amount_without_delivery, digits_compute=dp.get_precision('Account'), string='Total Without Delivery')
-#     }
