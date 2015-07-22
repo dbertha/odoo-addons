@@ -52,10 +52,12 @@ $(document).ready(function () {
                     daysOfWeekDisabled : daysDisabled,
                     //inline: true,
                     defaultDate: timeDefault,
-                    format: 'ddd DD/MM/YYYY HH:mm', //ex : Thu 14/03/2015 10:00
+                    format: result.format,//'ddd DD/MM/YYYY HH:mm', //ex : Thu 14/03/2015 10:00
                     stepping: 60, //we choose only hours, but minutes are shown
                     disabledTimeIntervals : forbidden_intervals
             }).show();
+            console.debug($delivery_field.data("DateTimePicker").date());
+            //console.debug(picker.date());
         });
     }
 
