@@ -20,6 +20,7 @@
                         </group>
                         <group string="Description">
                             <field name="website_description"/>
+                            <field name="image" widget="image"/>
                         </group>
                         <group name="rules" string="Delay Rules">
                             <field name="delay_from"/>

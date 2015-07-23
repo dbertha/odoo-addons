@@ -56,6 +56,8 @@ class delivery_condition(osv.osv):
                  (21, '21'), (22, '22'), (23, '23'), (24, '24')], default=17,   
                 string="Last hour of day to allow delivery for the next day"
                 ),
+        'image': fields.binary("Image",
+            help="This field holds the image used as image for the shop page, limited to 1024x1024px.")
         #possible improvement : 'repeat_interval'
         #cas : 
         #normal : min = now + 1h
