@@ -82,8 +82,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     def check_date_validity(self, date_time):
         tzone = timezone('Europe/Brussels')
         datetime_start = date_time.astimezone(tzone)        
-        uid = request.session.uid
-        context = request.session.context
+        uid = request.uid
+        context = request.context
         cr = request.cr
         order_id = request.session.get('sale_order_id')
         return request.registry['sale.order'].check_date(cr,uid, order_id,datetime_start,context=context)
