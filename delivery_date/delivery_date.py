@@ -86,7 +86,7 @@ class SaleOrder(models.Model):
         and not in a forbidden day"""
         tzone = timezone('Europe/Brussels')
         now = pytz.utc.localize(datetime.now()).astimezone(tzone)
-        order = self.browse(cr, uid, ids, context=context)
+        order = self.browse(cr, SUPERUSER_ID, ids, context=context)
         forbidden_days = self.get_forbidden_days(cr, uid, order, context=context)
         
         min_datetime_list = self.get_min_date(cr, uid, order, forbidden_days=forbidden_days, context=context)
