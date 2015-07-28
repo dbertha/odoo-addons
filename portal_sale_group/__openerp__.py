@@ -20,6 +20,7 @@
     'depends': ['base', 'portal', 'portal_sale', 'mail', 
                 'website_sale', 'website_sale_delivery_condition',
                 'delivery_carrier_pickingup',
+                'account_grouped_invoice',
                 'delivery_date'], 
 
     # always loaded
@@ -27,7 +28,8 @@
         'data.xml',
         'templates.xml',
         'views.xml',
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
+        'schedular_data.xml'
     ],
 
     # only loaded in demonstration mode

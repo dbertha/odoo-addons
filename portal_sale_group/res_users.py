@@ -36,6 +36,7 @@ class ResUsers(osv.osv) :
         #'available_amount' : fields.(_get_available_amount, type="float", string="Available amount"),
         'spent_amount' : fields.function(_get_spent_amount, type='float', string="Spent Amount", store=True, digits_compute=dp.get_precision('Account')),
         'available_amount' : fields.float(string="Available amount"),
+        'credit_tag' : fields.many2one('account.credit.tag', string="Credit Tag")
     }
     
     def _get_group(self,cr, uid, context=None):

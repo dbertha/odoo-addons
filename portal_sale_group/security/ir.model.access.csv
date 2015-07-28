@@ -1,5 +1,14 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_res_users_groups_users,users access to portal groups,model_res_users_groups,group_portal_users,1,0,0,0
+access_res_users_groups_users,users access to portal groups,model_res_users_groups,group_portal_users,0,0,0,0
+access_credit_tag_groups_users,users access to credit tag,model_account_credit_tag,group_portal_users,1,0,0,0
+access_credit_tag_groups_admins,portal admins access to credit tag,model_account_credit_tag,group_portal_admins,1,0,0,0
+access_credit_tag_sale_manager,sale manager access to credit tag,model_account_credit_tag,base.group_sale_manager,1,1,1,1
+access_email_template_users,users access to email template,email_template.model_email_template,group_portal_users,1,0,0,0
+access_ir_attachment_group_users,ir.attachment group_users,base.model_ir_attachment,group_portal_users,1,1,1,0
+access_mail_message_group_admin,message for group users,mail.model_mail_message,group_portal_users,1,1,1,1
+access_mail_mail_group_users,mail.mail group_users,mail.model_mail_mail,group_portal_users,1,1,1,0
+access_mail_notification_group_users,mail.notification group_users,mail.model_mail_notification,group_portal_users,1,1,1,0
+access_mail_followers_group_users,mail.followers group_users,mail.model_mail_followers,group_portal_users,1,1,0,0
 access_res_users_groups_admins,admins access to portal groups,model_res_users_groups,group_portal_admins,1,1,0,0
 access_res_users_groups_managers,sale managers access to portal groups,model_res_users_groups,base.group_sale_manager,1,1,1,1
 access_res_groups_from_portal,users access to res groups,base.model_res_groups,group_portal_users,1,0,0,0

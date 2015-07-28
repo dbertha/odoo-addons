@@ -14,6 +14,23 @@ class SaleOrder(osv.osv) :
         'portal_group_id' : fields.many2one('res.users.groups', string="Portal Group", readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
     }
     
+    def _get_sale_orders_with_group(self, cr, uid, ids, group_by,group_id, period_start, period_end, context=None) :
+        if group_by == "portal_group_id" :
+            search_domain = [('requested_delivery_datetime_start', '>=', period_start.strftime('%Y-%m-%d %H:%M:%S')), 
+                    ('requested_delivery_datetime_start', '<', period_end.strftime('%Y-%m-%d %H:%M:%S')),
+                    ('portal_group_id', '=', group_id)]
+            _logger.debug("Search of SO to invoice domain : %s", search_domain)
+            sale_order_obj = self.pool.get('sale.order')
+            order_ids = sale_order_obj.search(cr,SUPERUSER_ID, search_domain, context=context)
+            portal_group = self.pool.get('res.users.groups').browse(cr, SUPERUSER_ID, group_id, context=context)
+            invoice_values = {
+                'partner_id' : portal_group.administrator.partner_id.id,
+                'origin' : u"{}/{}".format(portal_group.name, period_end.strftime('%d-%m-%Y'))
+                }
+            return order_ids, invoice_values
+        return super(SaleOrder, self)._get_sale_orders_with_group(cr, uid, ids, group_by,group_id, period_start, period_end, context=context)
+
+    
     def _get_delivery_methods(self, cr, uid, order, context=None) :
         """Overload in order to bypass delivery condition check of delivery method
         easier than create a delivery method with a product in a new public categ that have this delivery condition"""
