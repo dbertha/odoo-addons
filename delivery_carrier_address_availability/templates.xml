@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <template id="checkout_carrier_zip_check" name="Delivery Address warning" inherit_id="website_sale_delivery_on_checkout.checkout_delivery_method">
+        <xpath expr="//div[@id='delivery_carrier']" position="before">
+        <span class="text-warning" t-if="error.get('delivery_zip') == 'not_available'">Delivery not available for your shipping zipcode.</span>
+        </xpath>
+        
+    </template>
+    </data>
+</openerp>

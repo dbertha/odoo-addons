@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<record id="delivery_grid_witziplistpartner_form" model="ir.ui.view">
+            <field name="name">delivery.grid.witziplistpartner.form.view</field>
+            <field name="model">delivery.grid</field>
+            <field name="inherit_id" ref="delivery.view_delivery_grid_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Destination']" position="replace">
+                    <page string="Destination">
+                        <group string="Zip List">
+                            <field name="zip_list"/>
+                        </group>
+                        <group string="Notifications">
+                            <field name="notif_partner_id"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+    </record>
+    
+<record id="delivery_carrier_witziplistpartner_form" model="ir.ui.view">
+            <field name="name">delivery.carrier.witziplistpartner.form.view</field>
+            <field name="model">delivery.carrier</field>
+            <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Destination']" position="replace">
+                    <page string="Destination">
+                        <group string="Zip List">
+                            <field name="zip_list"/>
+                        </group>
+                        <group string="Notifications">
+                            <field name="notif_partner_id"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+    </record>
+    </data>
+    
+</openerp>
