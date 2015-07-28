@@ -26,27 +26,26 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
         _logger.debug("checkout value overload for delivery shipping address")
         order = request.website.sale_get_order(force_create=1, context=context) 
         #partner_id defined in this call
-        if not data : #TODO : handle errors, overwrite only when needed
+        if not data :
             shipping_id = 0
             if order.carrier_id and order.carrier_id.is_pickup \
-                 and order.carrier_id.address_partner and order.carrier_id.address_partner.street :
+                and order.carrier_id.address_partner and order.carrier_id.address_partner.street :
                 shipping_id = -1
                 if order.partner_id : #can be public user
-                    
-                    domain = [("parent_id", "=", order.partner_id.id), 
-                             ('name', '=' ,order.carrier_id.address_partner.name)]
-                    shipping_from_carrier_ids = registry['res.partner'].search(cr, SUPERUSER_ID, 
-                                domain, context=context)
                         
+                    domain = [("parent_id", "=", order.partner_id.id), 
+                                 ('name', '=' ,order.carrier_id.address_partner.name)]
+                    shipping_from_carrier_ids = registry['res.partner'].search(cr, SUPERUSER_ID, 
+                                    domain, context=context)
+                            
                     values.update({'delivery_id' : order.carrier_id})
                     if shipping_from_carrier_ids :
-                        #partner with delivery in that shop already exists
+                            #partner with delivery in that shop already exists
                         _logger.debug("shipping_from_carrier_ids : %s", shipping_from_carrier_ids)
                         shipping_id = shipping_from_carrier_ids[0]
-                        #cannot create shipping partner here because the order partner_id can be public user
-
-            values['checkout']['shipping_id'] = shipping_id
-            values['shipping_id']= shipping_id #erase old data
+                            #cannot create shipping partner here because the order partner_id can be public user
+                values['checkout']['shipping_id'] = shipping_id            
+                values['shipping_id']= shipping_id #erase old data
     #    
 
         
