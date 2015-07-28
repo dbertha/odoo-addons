@@ -20,6 +20,11 @@
             <xpath expr="//ul[@class='nav nav-pills nav-stacked mt16']//li//a" position="replace">
                 <a t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or ''),category=0)">All Products</a>
             </xpath>
+            <xpath expr="//div[@id='products_grid']/table" position="before">
+            <div id="delivery_image" t-if="chosen_condition and chosen_condition.image">
+                <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(chosen_condition, 'image', None)"/>
+            </div>
+            </xpath>
         </template>
     
         

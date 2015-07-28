@@ -16,6 +16,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     @http.route(['/shop/checkout'], type='http', auth="public", website=True)
     def checkout(self, **post):
         cr, uid, context = request.cr, request.uid, request.context
+        context.update({'checkout' : True})
         _logger.debug("Request for checkout page received")
         order = request.website.sale_get_order(force_create=1, context=context)
         #adapt when delivery method is changed
@@ -55,20 +56,20 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
     def confirm_order(self, **post):
         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
+        context.update({'checkout' : False}) #more check than for checkout values
 
         order = request.website.sale_get_order(context=context)
         if not order:
             return request.redirect("/shop")
         #
         carrier_id = order.carrier_id.id
-        _logger.debug("order total in confirm order beginning : %d", order.amount_total)
+        _logger.debug("order carrier name start of confirm order : %s", order.carrier_id.name)
         #
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
 
         values = self.checkout_values(post)
-        _logger.debug("order total in confirm order after checkout values : %d", order.amount_total)
         if (post.get('shipping_name')) : 
             #needed to check delivery date depending on delivery method
             values["checkout"]['shipping_name'] = post.get('shipping_name')
@@ -82,17 +83,21 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             return request.website.render("website_sale.checkout", values)
         self.checkout_form_save(values["checkout"]) 
         
-        order = request.website.sale_get_order(context=context)
-        _logger.debug("order total in confirm order after checkout save : %d", order.amount_total)
-        request.session['sale_last_order_id'] = order.id
-                
-        
         request.website.sale_get_order(update_pricelist=True, context=context)
-        order = request.website.sale_get_order(context=context)
-        _logger.debug("order total in confirm order after update_pricelist : %d", order.amount_total)
+
         #check carrier quotation should be called after sale get order with update pricelist
-        request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context)
-        order = request.website.sale_get_order(context=context)
-        _logger.debug("order total in confirm order after carrier quotation : %d", order.amount_total)
+        if not request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context) :
+            _logger.debug("Delivery carrier has changed, send error to qweb")
+            
+            #need delivery informations
+            sale_order_obj = request.registry.get('sale.order')
+            context.update({'checkout' : True})
+            values.update(sale_order_obj._get_website_data(cr, uid, order, context))
+            values.update(self.checkout_values()) #update carrier info
+            values["error"].update({'delivery_zip' : 'not_available'})
+            return request.website.render("website_sale.checkout", values)
+
+        request.session['sale_last_order_id'] = order.id
+
         
         return request.redirect("/shop/payment")

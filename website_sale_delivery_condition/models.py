@@ -190,8 +190,6 @@ class sale_order(osv.osv):
         search_domain = [('website_published','=',True)]
         if order.delivery_condition :
             search_domain += [('condition_id','=', order.delivery_condition.id)]
-        _logger.debug("Looking for delivery conditions")
-        _logger.debug("Order total : %s", order.amount_total)
         delivery_ids = carrier_obj.search(cr, SUPERUSER_ID, search_domain, context=context)
         
         # Following loop is done to avoid displaying delivery methods who are not available for this order
@@ -203,7 +201,7 @@ class sale_order(osv.osv):
                 delivery_ids.remove(delivery_id.id)
         return delivery_ids
     
-    #Overload to add logging for debug
+    #Overload to add logging for debug and pass context
     def delivery_set(self, cr, uid, ids, context=None):
         line_obj = self.pool.get('sale.order.line')
         grid_obj = self.pool.get('delivery.grid')
@@ -211,7 +209,7 @@ class sale_order(osv.osv):
         acc_fp_obj = self.pool.get('account.fiscal.position')
         self._delivery_unset(cr, uid, ids, context=context)
         for order in self.browse(cr, uid, ids, context=context):
-            grid_id = carrier_obj.grid_get(cr, uid, [order.carrier_id.id], order.partner_shipping_id.id)
+            grid_id = carrier_obj.grid_get(cr, uid, [order.carrier_id.id], order.partner_shipping_id.id, context=context)
             if not grid_id:
                 raise osv.except_osv(_('No Grid Available!'), _('No grid matching for this carrier!'))
 

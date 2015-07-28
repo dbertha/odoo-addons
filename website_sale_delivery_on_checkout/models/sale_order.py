@@ -78,16 +78,17 @@ class SaleOrder(orm.Model):
                     carrier_ids.insert(0, carrier_id)
             if force_carrier_id or not carrier_id or not carrier_id in carrier_ids:
                 for delivery_id in carrier_ids:
-                    grid_id = carrier_obj.grid_get(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id.id)
+                    grid_id = carrier_obj.grid_get(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id.id, context=context) #transmit context
                     if grid_id:
                         carrier_id = delivery_id
                         break
                 order.write({'carrier_id': carrier_id})
             if carrier_id:
-                order.delivery_set()
+                self.pool['sale.order'].delivery_set(cr, SUPERUSER_ID, [order.id], context=context) #transmit context
             else:
-                order._delivery_unset()                    
-        return bool(carrier_id)
+                order._delivery_unset()                 
+        _logger.debug('force carrier id : %s carrier_id : %s', force_carrier_id, carrier_id)   
+        return force_carrier_id == carrier_id if force_carrier_id else bool(carrier_id)
 
     def _get_delivery_methods(self, cr, uid, order, context=None):
         carrier_obj = self.pool.get('delivery.carrier')
