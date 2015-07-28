@@ -19,6 +19,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
     def checkout_values(self, data=None):
         """Overload to add delivery date parsing"""
+        _logger.debug("DATA dict when checkout_values of delivery_date module : %s", data)
         values = super(website_sale, self).checkout_values(data)
         values['checkout'].update(self._parse_delivery_date(data))
         #_logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
@@ -59,6 +60,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
             return {'delivery_datetime_start' : datetime_start,
                 'delivery_datetime_end' : datetime_start + delivery_interval_time }
+        _logger.debug("/!\\  no delivery_date /!\\ ")
         return {}
 
     def checkout_form_save(self, checkout):

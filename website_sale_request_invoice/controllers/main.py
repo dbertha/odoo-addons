@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     
     def checkout_values(self, data=None):
-        """Overload to add delivery date parsing"""
+        """Overload to add invoice param"""
         values = super(website_sale, self).checkout_values(data)
         if data :
             values['checkout'].update({'accept_invoice' : bool(data.get('accept_invoice', False))})

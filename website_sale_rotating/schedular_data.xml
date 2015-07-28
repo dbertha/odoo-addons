@@ -9,7 +9,7 @@
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
+            <field name="doall" eval="True" />
             <field eval="'product.template'" name="model"></field>
             <field eval="'tick'" name="function"/>
             <field eval="''" name="args"/>
