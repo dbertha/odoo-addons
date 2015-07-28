@@ -18,15 +18,15 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale', 'delivery', 'delivery_carrier_pickingup'], 
+    'depends': ['base', 'website', 'website_sale', 'delivery', 'delivery_carrier_pickingup',
+                'account_grouped_invoice'], 
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'templates.xml',
-        'delivery_report.xml',
-        'report_group_invoice.xml',
-        'views.xml'
+        'views.xml',
+        'schedular_data.xml'
     ],
 
     # only loaded in demonstration mode

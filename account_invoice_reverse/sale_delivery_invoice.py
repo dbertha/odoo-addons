@@ -23,15 +23,16 @@ class account_invoice(osv.osv):
     
     def send_grouped_invoices(self, cr,uid,ids, context=None):
         _logger.debug("Will send mail")
+        ir_model_data = self.pool.get('ir.model.data')
+        template_id = ir_model_data.get_object_reference(cr, uid, 'delivery_carrier_pickingup', 'email_template_grouped_invoice')[1]
         #account_invoice_obj = self.pool.get('account.invoice')
         for invoice_id in ids : #send one by one
             #template = self.env.ref('delivery_carrier_pickingup.email_template_grouped_invoice', False)
             #compose_form = self.env.ref('mail.email_compose_message_wizard_form', False)
             #old api way :
-            ir_model_data = self.pool.get('ir.model.data')
-            template_id = ir_model_data.get_object_reference(cr, uid, 'delivery_carrier_pickingup', 'email_template_grouped_invoice')[1]
+            
             #TODO : handle deletion of template ?
-            self.pool.get('email.template').send_mail(cr, uid, template_id, invoice_id, force_send=True, context=context)
+            self.pool.get('email.template').send_mail(cr, uid, template_id, invoice_id, force_send=False, context=context)
             #don't need composer object, we suppose the mail parameters of the template are ok
             
 
@@ -39,6 +40,31 @@ class account_invoice(osv.osv):
 class sale_order(osv.osv):
     _name = "sale.order"
     _inherit = "sale.order"
+    
+    def _get_sale_orders_with_group(self, cr, uid, ids, group_by,group_id, period_start, period_end, context=None) :
+        if group_by == "carrier_id" :
+            search_domain = [('requested_delivery_datetime_start', '>=', period_start.strftime('%Y-%m-%d %H:%M:%S')), 
+                    ('requested_delivery_datetime_start', '<', period_end.strftime('%Y-%m-%d %H:%M:%S')),
+                    ('carrier_id', '=', group_id)]
+            sale_order_obj = self.pool.get('sale.order')
+            order_ids = sale_order_obj.search(cr,SUPERUSER_ID, search_domain, context=context)
+            delivery_carrier = self.pool.get('delivery.carrier').browse(cr, SUPERUSER_ID, group_id, context=context)
+            journal = delivery_carrier.journal_id
+            journal_id = False
+            if not journal :
+                journal_ids = self.pool.get('account.journal').search(cr, SUPERUSER_ID,
+                    [('type', '=', 'purchase')]) #need access to company ?
+                journal_id = journal_ids[0]
+            else :
+                journal_id = journal.id
+            invoice_values = {
+                'partner_id' : delivery_carrier.address_partner.id,
+                'type' : 'in_invoice',
+                'journal_id' : journal_id
+                }
+            return order_ids, invoice_values
+        return super(sale_order, self)._get_sale_orders_with_group(cr, uid, ids, group_by,group_id, period_start, period_end, context=context)
+
     
     def cron_grouped_invoices(self,cr,uid,ids=[],length=7, context=None):
         """Grouped invoices : every day which is a multiple of <length> and first day of the month"""
@@ -56,8 +82,10 @@ class sale_order(osv.osv):
             #previous multiple
             period_start =  period_end - timedelta(period_end.day - start_day)
             #TODO : check that this period is not already invoiced
+        #TEST :
         #period_start = datetime(1999,1,1)
         #period_end = datetime(2100,2,2)
+        #
         context.update({'period_start' : period_start,
                         'period_end' : period_end})
         invoice_ids = self.create_delivery_grouped_invoices(cr,uid,ids,period_start,period_end, context=context)
@@ -76,7 +104,12 @@ class sale_order(osv.osv):
         for delivery_in_independant_shop in delivery_carrier_obj.browse(cr, SUPERUSER_ID,delivery_carrier_ids, context=context) :
             if delivery_in_independant_shop.address_partner and delivery_in_independant_shop.address_partner.is_company :
                 _logger.debug("Independant shop found")
-                new_invoice_id = self.create_delivery_grouped_invoice(cr,uid,delivery_in_independant_shop,period_start, period_end,context=context)
+                if not delivery_in_independant_shop.address_partner.email :
+                    _logger.error("Delivery carrier has no email in his related partner")
+                #new_invoice_id = self.create_delivery_grouped_invoice(cr,uid,delivery_in_independant_shop,period_start, period_end,context=context)
+                new_invoice_id = self.create_grouped_invoice(cr,uid,ids,group_by='carrier_id',group_id=delivery_in_independant_shop.id,
+                                                             period_start=period_start,period_end=period_end, 
+                                                             invoice_delivery=True,apply_discount=True, service_to_add=False, context=context)
                 if new_invoice_id :
                     new_invoices.append(new_invoice_id)
             elif not delivery_in_independant_shop.address_partner :
@@ -88,8 +121,7 @@ class sale_order(osv.osv):
     def create_delivery_grouped_invoice(self,cr,uid,delivery_carrier,period_start,period_end, context=None):
         if context is None :
             context = {}
-        if not delivery_carrier.address_partner.email :
-            _logger.error("Delivery carrier has no email in his related partner")
+        
         search_domain = [('requested_delivery_datetime_start', '>=', period_start.strftime('%Y-%m-%d %H:%M:%S')), 
                     ('requested_delivery_datetime_start', '<', period_end.strftime('%Y-%m-%d %H:%M:%S')),
                     ('carrier_id', '=', delivery_carrier.id)]
@@ -167,27 +199,3 @@ class sale_order(osv.osv):
             return inv_id
         return None
     
-class GroupedInvoiceReport(osv.AbstractModel):
-    
-    _name = 'report.delivery_carrier_pickingup.report_group_invoice'
-
-
-    def render_html(self, cr, uid, ids, data=None, context=None):
-        """Add period start and period end from context to args of report template"""
-        if context is None :
-            context= {}
-        report_obj = self.pool['report']
-        report = report_obj._get_report_from_name(cr, uid, 'delivery_carrier_pickingup.report_group_invoice')
-        tzone = timezone('Europe/Brussels')
-
-        docargs = {
-            'doc_ids': ids,
-            'doc_model': report.model,
-            'docs': self.pool.get('account.invoice').browse(cr,uid, ids,context=context),
-        }
-        if context.get('period_start', False) and context.get('period_end', False) :
-            _logger.debug("Add period to template args")
-            docargs.update({'period_start' :context.get('period_start').strftime('%d/%m/%Y'),
-                        'period_end' : context.get('period_end').strftime('%d/%m/%Y')})
-        #TODO : FormatLang : rml : deprecated but can be usefull here
-        return report_obj.render(cr, uid, ids, 'delivery_carrier_pickingup.report_group_invoice', docargs, context=context)
