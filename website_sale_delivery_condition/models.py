@@ -20,12 +20,20 @@ _logger = logging.getLogger(__name__)
 class delivery_condition(osv.osv):
     _name = "delivery.condition"
     _description = "Delivery Condition : delivery carrier and delays compatible"
-     
+    
+    def _get_carrier_ids(self, cr, uid, ids, field_name, arg, context=None) :
+        """Return the list of carriers with this delivery condition"""
+        res = {}
+        for condition in self.browse(cr, uid, ids, context=context):
+            carrier_ids = self.pool.get('delivery.carrier').search(cr, uid, [('condition_ids', 'in', [condition.id])])
+            res[condition.id] = carrier_ids
+        return res
+    
     _columns = {
         'name': fields.char('Delivery Condition Name', required=True),
         'category_ids': fields.one2many('product.public.category', 'condition_id', string='Public Categories',
                                         readonly=True),
-        'carrier_ids' : fields.one2many('delivery.carrier', 'condition_id', string='Delivery Carriers',
+        'carrier_ids' : fields.function(_get_carrier_ids,type='one2many',obj='delivery.carrier', string='Delivery Carriers',
                                         readonly=True),
         'delay_from' : fields.integer(string="Delay in days from the present as minimum date"),
         #'delay_to' : fields.integer(string="Delay in days from the minimum date as maximum date"),
@@ -59,10 +67,6 @@ class delivery_condition(osv.osv):
         'image': fields.binary("Image",
             help="This field holds the image used as image for the shop page, limited to 1024x1024px.")
         #possible improvement : 'repeat_interval'
-        #cas : 
-        #normal : min = now + 1h
-        #events : min = now + 1 day + 1 day if after 17h
-        #FFY : samedi à mardi
     }
     _order = "sequence"
     
@@ -79,18 +83,21 @@ class delivery_carrier(osv.osv):
     _columns = {
         'condition_id' : fields.related('product_id','product_tmpl_id','public_categ_ids','condition_id', 
             type="many2one", relation="delivery.condition", string="Delivery Condition", readonly=True,
-            help="This is the delivery condition of the public category of the delivery product")
-        #'is_pickup' : fields.boolean(string='is a shop pick-up', 
-        #    help='if activated, the address of delivery_method will be used as shipping address'),
-        #'address_partner' : fields.many2one('res.partner', string="Address", help="Address to use as shipping address")
+            help="This is the delivery condition of the public category of the delivery product"),
+        'condition_ids' : fields.many2many('delivery.condition', 'delivery_carrier_condition_rel', 'carrier_id', 'condition_id',
+                                           string="Delivery Conditions", 
+                                           help="That delivery method will be available for order with one of those delivery condition."),
+        #The delivery product should be in a category linked with the delivery condition with the lowest priority"),
+        #Not true, because sale order delivery condition is not dependent of delivery lines
     }
+    
     
 class sale_order(osv.osv):
     _name = "sale.order"
     _inherit = "sale.order"
     
     
-    def _get_delivery_condition(self, cr, uid, ids, field_name, arg, context=None):
+    def _get_delivery_condition(self, cr, uid, ids, field_name, arg, context=None) :
         result = {}
         for so in self.browse(cr,uid,ids,context=context) :
             delivery_conditions = {}
@@ -189,7 +196,7 @@ class sale_order(osv.osv):
         carrier_obj = self.pool.get('delivery.carrier')
         search_domain = [('website_published','=',True)]
         if order.delivery_condition :
-            search_domain += [('condition_id','=', order.delivery_condition.id)]
+            search_domain += [('condition_ids','in', [order.delivery_condition.id])]
         delivery_ids = carrier_obj.search(cr, SUPERUSER_ID, search_domain, context=context)
         
         # Following loop is done to avoid displaying delivery methods who are not available for this order
@@ -236,45 +243,12 @@ class sale_order(osv.osv):
             line_obj.create(cr, uid, line_infos, context=context)
             
             
-    #this method is no longer usefull if delivey_condition of sale order ignore the delivery condition of delivery products
 
-#     def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
-#         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,
-#         because otherwise it will apply its delivery condition to the cart"""
-#         return_val = super(sale_order,self)._cart_update(cr, uid, ids, product_id, line_id, add_qty, set_qty, context=context)
-#         for so in self.browse(cr, uid, ids, context=context) :
-# #             delivery_conditions = {}
-# #             for so_line in so.order_line :
-# #                 if not so_line.is_delivery : #test other products (could also use website_order_line)
-# #                     for categ in so_line.product_id.product_tmpl_id.public_categ_ids :
-# #                     #handle properly categs of same product with different delivery_condition
-# #                         delivery_condition = categ.condition_id
-# #                         delivery_conditions.update({delivery_condition.sequence : delivery_condition.id})
-# #             result = delivery_conditions[min(delivery_conditions.keys())]
-#             
-#             
-#             if(not len(so.website_order_line)) : #cart cleared
-#                 so.write({'carrier_id': None})
-#                 self._delivery_unset(cr, SUPERUSER_ID, [so.id], context=context)
-#         return return_val
     
 class Website(osv.osv):
     _inherit = 'website'
     
-#     def sale_product_domain(self, cr, uid, ids, context=None):
-#         """Remove objects from categories with another delivery condition than the sale order"""
-#         domain = super(Website, self).sale_product_domain(cr, uid, ids, context=context)
-#         delivery_condition = self.sale_get_delivery_condition(cr, uid, ids, context)
-#                     #find the acceptable categs
-#                     #TODO : not in the non acceptable may be more secure
-#         if(delivery_condition) :
-#             categs_ids = self.pool['product.public.category'].search(cr,uid, 
-#                             [('condition_id', '=', delivery_condition.id)], context=context)
-#                     
-#             _logger.debug("sale order condition : %d", delivery_condition.id)
-#             domain += [('public_categ_ids','in',categs_ids)]
-#         return domain
-    
+
     def sale_get_delivery_condition(self,cr,uid,ids, context=None) :
         _logger.debug("get_delivery_condition, user id : %s", str(uid))
         sale_order_obj = self.pool['sale.order']
@@ -292,14 +266,3 @@ class Website(osv.osv):
         """Can be overloaded to handle incompatibility between delivery conditions"""
         return True
     
-#         delivery_condition = self.sale_get_delivery_condition(cr, uid, [0],context=context)
-#         if(not delivery_condition) : 
-#             _logger.debug("No delivery condition in the cart")
-#             return not delivery_condition
-#         _logger.debug("delive1ry condition_id in the cart : %d", delivery_condition.id)
-#         template = self.pool['product.template'].browse(cr, uid, tpl_product_id, context=context)
-#         public_categ = len(template.public_categ_ids) and template.public_categ_ids[0]
-#         _logger.debug("public_categ : %s", str(public_categ))
-#         product_condition_id = public_categ and public_categ.condition_id and public_categ.condition_id.id
-#         _logger.debug("production_condition_id : %s", str(product_condition_id))
-#         return product_condition_id and delivery_condition.id == product_condition_id

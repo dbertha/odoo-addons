@@ -37,7 +37,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         TODO: compute values in a dedicated method"""
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
-        domain = request.website.sale_product_domain()
+        domain = request.website.sale_product_domain(context=context)
         if search:
             for srch in search.split(" "):
                 domain += ['|', '|', '|', ('name', 'ilike', srch), ('description', 'ilike', srch),
@@ -61,8 +61,6 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             #primary categs with that delivery condition
             #todo : assume that child categ have same delivery condition than parent ?
         
-        
-
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
         attrib_set = set([v[1] for v in attrib_values])
