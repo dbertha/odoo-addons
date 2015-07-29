@@ -79,7 +79,7 @@ class WebsiteSale(openerp.addons.delivery_date.controllers.main.website_sale):
     
             self.checkout_form_save(values["checkout"])
     
-            request.session['sale_last_order_id'] = order.id
+            
     
             order = request.website.sale_get_order(update_pricelist=True, context=context)
             sale_order_obj = request.registry.get('sale.order')
@@ -94,6 +94,7 @@ class WebsiteSale(openerp.addons.delivery_date.controllers.main.website_sale):
                 values["error"].update({'delivery_zip' : 'not_available'})
                 return request.website.render("website_sale.checkout", values)
             _logger.debug("Before confirmation")
+            request.session['sale_last_order_id'] = order.id
             #context=dict(context or {},send_email = True)
             registry.get('sale.order').action_button_confirm(cr, uid, order.id, context=context)
             

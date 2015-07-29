@@ -47,7 +47,8 @@ class PortalGroup(osv.osv) :
         if not vals.get('delivery_condition') :
             delivery_condition_obj = self.pool.get('delivery.condition')
             delivery_condition_vals = {
-                'delay_from' : 1, #group order for at least the next day
+                'delay_from' : 0, #group order for at least the next day
+                'limit_hour' : 10,
                 'name' : vals.get('name') #delivery condition with same name
             }
             delivery_condition_id = delivery_condition_obj.create(cr, SUPERUSER_ID,delivery_condition_vals, context=context)
