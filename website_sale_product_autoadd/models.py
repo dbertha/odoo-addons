@@ -65,18 +65,6 @@ class SaleOrder(osv.osv):
                 #TODO : recursive call to itself should suppose a stop case : consider only the line modified
                 super(SaleOrder,self)._cart_update(cr, uid, ids, product_id=companion_id, set_qty=companion_quantity, add_qty=-1)
                 # add_qty in case of set_qty=0; because _cart_update test : "if set_qty"
-        for so in self.browse(cr, SUPERUSER_ID, ids, context=context) :
-            _logger.debug("Total after cart update : %d", so.amount_total)
-#             delivery_conditions = {}
-#             for so_line in so.order_line :
-#                 if not so_line.is_delivery : #test other products (could also use website_order_line)
-#                     for categ in so_line.product_id.product_tmpl_id.public_categ_ids :
-#                     #handle properly categs of same product with different delivery_condition
-#                         delivery_condition = categ.condition_id
-#                         delivery_conditions.update({delivery_condition.sequence : delivery_condition.id})
-#             result = delivery_conditions[min(delivery_conditions.keys())]
-             
-             
         if companions_quantities :
             result_dict['quantity'] = 0 #force reload whith json request
         return result_dict
