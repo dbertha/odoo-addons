@@ -164,13 +164,21 @@ class ProductTemplate(osv.osv) :
                 help="Discount to apply to invoice lines with that product when reverse grouped invoiced is generated")
     }
     
-    def force_default(self, cr, uid, ids = [], discount_id=0, context=None) :
+    def force_default_discount(self, cr, uid, ids = [], discount_id=0, context=None) :
         """Quick solution to avoid encoding the same discount manually for each product
         User should be admin"""
         assert uid == SUPERUSER_ID, "User to force discount value should be the administrator"
         product_ids = self.search(cr, uid, [], discount_id, context=context)
         _logger.debug("Dicount id force default : %d", discount_id)
         self.write(cr, uid, product_ids, {'discount_id' : discount_id}, context=context)
+        
+    def force_default_taxes(self, cr, uid, ids = [], taxes_ids=[1], context=None) :
+        """Quick solution to avoid encoding the same discount manually for each product
+        User should be admin"""
+        assert uid == SUPERUSER_ID, "User to force discount value should be the administrator"
+        product_ids = self.search(cr, uid, [], context=context)
+        _logger.debug("Taxes ids force default : %d", taxes_ids)
+        self.write(cr, uid, product_ids, {'taxes_ids' : [(0,6,taxes_ids)]}, context=context)
         
 class GroupedInvoiceReport(osv.AbstractModel):
     
