@@ -178,7 +178,7 @@ class ProductTemplate(osv.osv) :
         assert uid == SUPERUSER_ID, "User to force discount value should be the administrator"
         product_ids = self.search(cr, uid, [], context=context)
         _logger.debug("Taxes ids force default : %d", taxes_ids)
-        self.write(cr, uid, product_ids, {'taxes_id' : [(0,6,taxes_ids)]}, context=context)
+        self.write(cr, uid, product_ids, {'taxes_id' : [(6,0,taxes_ids)]}, context=context)
         
 class GroupedInvoiceReport(osv.AbstractModel):
     
