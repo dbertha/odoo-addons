@@ -35,7 +35,8 @@ class WebsiteSale(openerp.addons.delivery_date.controllers.main.website_sale):
         if not redirection and order.portal_group_id :
             user = registry.get('res.users').browse(cr, SUPERUSER_ID, uid, context=context)
             if order.amount_total > user.available_amount :
-                request.redirect("/cart")
+                return request.redirect("/cart")
+        return redirection
     
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):
