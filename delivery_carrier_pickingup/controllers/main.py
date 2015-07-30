@@ -45,7 +45,7 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
                         shipping_id = shipping_from_carrier_ids[0]
                             #cannot create shipping partner here because the order partner_id can be public user
                 values['checkout']['shipping_id'] = shipping_id            
-                values['shipping_id']= shipping_id #erase old data
+            values['shipping_id']= shipping_id #erase old data
     #    
 
         
