@@ -96,6 +96,15 @@ class sale_order(osv.osv):
     _name = "sale.order"
     _inherit = "sale.order"
     
+    def has_delivery_condition_named(self, cr, uid, ids, delivery_name, context=None) :
+        for so in self.browse(cr,uid,ids,context=context) :
+            for so_line in so.order_line :
+                if not so_line.is_delivery : #ignore delivery product
+                    for categ in so_line.product_id.product_tmpl_id.public_categ_ids :
+                        delivery_condition = categ.condition_id
+                        if delivery_condition.name == delivery_name :
+                            return True
+        return False
     
     def _get_delivery_condition(self, cr, uid, ids, field_name, arg, context=None) :
         result = {}
