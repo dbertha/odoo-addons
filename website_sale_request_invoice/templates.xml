@@ -3,7 +3,7 @@
     <data>
         <template id="checkout_delivery_method" name="Delivery Costs" inherit_id="website_sale.checkout">
             <xpath expr="//input[@name='email']" position="after">
-                 <input type="checkbox" name="accept_invoice" value="1" checked="checked"/>I want to receive invoice by mail<br/>
+                 <input type="checkbox" name="accept_invoice" value="1"/>I want to receive invoice by mail<br/>
             </xpath>
         </template>
     </data>

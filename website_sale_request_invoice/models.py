@@ -13,6 +13,6 @@ class ResPartner(osv.osv):
     _columns = {
         'accept_invoice' : fields.boolean(
                     help="Mail address will be used in invoice email template or not according to this field",
-                    string="Accept Invoice", default=1)
+                    string="Accept Invoice", default=0)
     }
     
