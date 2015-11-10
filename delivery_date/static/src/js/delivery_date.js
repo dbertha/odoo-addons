@@ -54,7 +54,8 @@ $(document).ready(function () {
                     defaultDate: timeDefault,
                     format: result.format,//'ddd DD/MM/YYYY HH:mm', //ex : Thu 14/03/2015 10:00
                     stepping: 60, //we choose only hours, but minutes are shown
-                    disabledTimeIntervals : forbidden_intervals
+                    disabledTimeIntervals : forbidden_intervals,
+                    inline: true
             }).show();
             console.debug($delivery_field.data("DateTimePicker").date());
             //console.debug(picker.date());
