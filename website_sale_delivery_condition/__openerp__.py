@@ -18,7 +18,9 @@
     'category': 'Sales',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale', 'product', 'delivery_date', 'website_sale_delivery_on_checkout'],
+    'depends': ['base', 'website', 'website_sale',
+                 'website_sale_rotating', #to add number of week in shop page rendering
+                'product', 'delivery_date', 'website_sale_delivery_on_checkout'],
 
     # always loaded
     'data': [
