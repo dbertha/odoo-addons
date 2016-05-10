@@ -47,5 +47,14 @@
                 </t>
             </xpath>
         </template>
+        
+        
+        <template id="shop_product_warning_delivery_conditions" inherit_id="website_sale.product">
+            <xpath expr="//li[@t-if='category']" position="replace">
+                <li t-if="category">
+                    <a t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or '') + '/category/' + slug(category), category=0)" t-field="category.name"/>
+                </li>
+            </xpath>
+        </template>
     </data>
 </openerp>
