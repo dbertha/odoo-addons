@@ -160,7 +160,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         context.update(active_id=product.id)
 
         if category:
-            category = category_obj.browse(cr, uid, int(category), context=context)
+            category = category_obj.browse(cr, SUPERUSER_ID, int(category), context=context)
 
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
@@ -203,6 +203,14 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             'product': product,
             'get_attribute_value_ids': self.get_attribute_value_ids
         }
+        
+        if category :
+            chosen_condition =  category.condition_id
+        if chosen_condition :
+            values.update({
+                       'chosen_condition' : chosen_condition}) #for correct links 
+            
+        
         values.update({'is_compatible_with_cart' : request.website.sale_is_product_compatible_with_cart(int(product))
                        })
         return request.website.render("website_sale.product", values)
