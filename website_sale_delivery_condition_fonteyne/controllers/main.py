@@ -9,8 +9,6 @@ from openerp.addons.website.models.website import slug
 from openerp.addons.web.controllers.main import login_redirect
 import openerp.addons.website_sale_delivery_condition.controllers.main
 import logging
-import website_sale_delivery_condition
-
 
 
 
