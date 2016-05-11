@@ -15,7 +15,15 @@ import logging
 _logger = logging.getLogger(__name__)
 class website_sale(openerp.addons.website_sale_delivery_condition.controllers.main.website_sale):
 
-    @http.route(['/shop'], type='http', auth="public", website=True)
+    @http.route(['/shop',
+        '/shop/page/<int:page>',
+        '/shop/category/<model("product.public.category"):category>',
+        '/shop/category/<model("product.public.category"):category>/page/<int:page>',
+        '/shop/type/<model("delivery.condition"):condition>', #new shop requests
+        '/shop/type/<model("delivery.condition"):condition>/page/<int:page>',
+        '/shop/type/<model("delivery.condition"):condition>/category/<model("product.public.category"):category>',
+        '/shop/type/<model("delivery.condition"):condition>/category/<model("product.public.category"):category>/page/<int:page>'
+    ], type='http', auth="public", website=True)
     def shop(self, page=0, category=None, condition=None, search='', **post):
         """Overload to redirect to menu page"""
         if not category and not condition :
