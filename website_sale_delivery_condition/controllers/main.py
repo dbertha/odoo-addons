@@ -204,13 +204,9 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             'get_attribute_value_ids': self.get_attribute_value_ids
         }
         chosen_condition = None
-        if not category :
-            #if we do not come from the category list page (but from the cart for example), we impose a category for correct breadcrum link
-            category = product.public_categ_ids and product.public_categ_ids[0]
         if category :
             chosen_condition =  category.condition_id
-        if chosen_condition :
-            values.update({
+        values.update({
                        'chosen_condition' : chosen_condition}) #for correct links 
             
         
