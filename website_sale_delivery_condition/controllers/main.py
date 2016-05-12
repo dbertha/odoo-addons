@@ -180,7 +180,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         if not context.get('pricelist'):
             context['pricelist'] = int(self.get_pricelist())
-            product = template_obj.browse(cr, uid, int(product), context=context)
+            product = template_obj.browse(cr, SUPERUSER_ID, int(product), context=context)
 
         #
 #         delivery_condition = request.website.sale_get_delivery_condition()
@@ -203,7 +203,10 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             'product': product,
             'get_attribute_value_ids': self.get_attribute_value_ids
         }
-        
+        chosen_condition = None
+        if not category :
+            #if we do not come from the category list page (but from the cart for example), we impose a category for correct breadcrum link
+            category = product.public_categ_ids and product.public_categ_ids[0]
         if category :
             chosen_condition =  category.condition_id
         if chosen_condition :
