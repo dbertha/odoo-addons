@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="template_ogone" inherit_id="payment_ogone.ogone_acquirer_button">
+            <xpath expr="//form" position="inside">
+                <t t-if="tx_values.get('TP')" >
+                    
+                    <input name="TP" type="hidden" t-att-value='tx_values["TP"]'/>
+                </t>
+            </xpath>
+      </template>
+
+    </data>
+</openerp>
