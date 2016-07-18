@@ -26,6 +26,10 @@ class website_sale(openerp.addons.website_sale_delivery_condition.controllers.ma
     ], type='http', auth="public", website=True)
     def shop(self, page=0, category=None, condition=None, search='', **post):
         """Overload to redirect to menu page"""
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+        if category and not condition :
+            categ = request.registry['product.public.category'].browse(cr, SUPERUSER_ID, int(category), context=context)
+            condition = categ.condition_id
         if not category and not condition :
             return request.redirect("/page/nos-cartes")
         else :
