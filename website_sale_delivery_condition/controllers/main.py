@@ -6,7 +6,6 @@ from openerp import http
 from openerp.http import request
 from openerp.tools.translate import _
 from openerp.addons.website.models.website import slug
-from openerp.addons.web.controllers.main import login_redirect
 import openerp.addons.website_sale.controllers.main
 from openerp.addons.website_sale.controllers.main import QueryURL, PPG, PPR, table_compute
 import logging
@@ -161,6 +160,9 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         if category:
             category = category_obj.browse(cr, SUPERUSER_ID, int(category), context=context)
+        chosen_condition = None
+        if category :
+            chosen_condition =  category.condition_id
 
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
@@ -203,9 +205,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             'product': product,
             'get_attribute_value_ids': self.get_attribute_value_ids
         }
-        chosen_condition = None
-        if category :
-            chosen_condition =  category.condition_id
+        
         values.update({
                        'chosen_condition' : chosen_condition}) #for correct links 
             
