@@ -160,6 +160,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         if category:
             category = category_obj.browse(cr, SUPERUSER_ID, int(category), context=context)
+            category = category if category.exists() else False
         chosen_condition = None
         if category :
             chosen_condition =  category.condition_id
