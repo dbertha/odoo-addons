@@ -20,6 +20,6 @@ class WebsiteSale(openerp.addons.website_sale.controllers.main.website_sale):
     def checkout_redirection(self, order):
         """Overload to check if rotating products in cart are still published"""
         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
-        if registry.get('sale.order').check_products_availability(cr, uid, order.id, context=context) :
+        if order and registry.get('sale.order').check_products_availability(cr, uid, order.id, context=context) :
             return request.redirect('/shop')
         return super(WebsiteSale,self).checkout_redirection(order)
