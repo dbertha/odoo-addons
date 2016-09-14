@@ -26,6 +26,12 @@ class SaleOrder(osv.osv):
     _name = "sale.order"
     _inherit = "sale.order"
     
+    def _delivery_unset(self, cr, uid, ids, context=None):
+        #Overload to handle relational product with delivery product
+        result = super(sale_order,self)._delivery_unset(cr,uid,ids, context=context)
+        self.pool['sale.order']._cart_update(cr, uid,ids, context=context)
+        return result
+    
     def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,
         because otherwise it will apply its delivery condition to the cart"""
