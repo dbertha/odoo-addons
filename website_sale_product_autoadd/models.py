@@ -46,6 +46,21 @@ class SaleOrder(osv.osv):
         #self.pool['sale.order']._cart_update(cr, uid,ids, context=context)
         return result
     
+    def delivery_set(self, cr, uid, ids, context=None):
+        result = super(SaleOrder,self).delivery_set(cr,uid,ids, context=context)
+        for so in self.browse(cr, SUPERUSER_ID, ids, context=context) :
+            companions_quantities = {}
+            for line in so.order_line :
+                if line.is_delivery : #line added in super call
+                    _logger.debug("delivery line find")
+                    for companion_product in line.product_id.companion_product_ids :
+                        _logger.debug("companion product find : %s", companion_product.name)
+                        companions_quantities[companion_product.id] = 1
+        for companion_id, companion_quantity in companions_quantities.iteritems() :
+                _logger.debug("companion product to update (ensure there is one), id : %s, quantity : %s", companion_id, companion_quantity)
+                self._cart_update(cr, uid, ids, product_id=companion_id, set_qty=companion_quantity, add_qty=-1)
+        return result
+    
     def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,
         because otherwise it will apply its delivery condition to the cart"""
