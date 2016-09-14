@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+
+    <data>
+      
+
+      <template id="assets_frontend" inherit_id="website.assets_frontend" name="fonteyne_style_assets">
+          <xpath expr="." position="inside">
+
+            
+          
+
+          <!-- Costum css -->
+          <link rel='stylesheet' type='text/css' href='/fonteyne_style/static/src/css/custom_fonteyne.css'/>
+
+
+    
+          
+          <!-- Datetime Picker -->
+          <link rel="stylesheet" href="/fonteyne_style/static/src/css/bootstrap-datetimepicker.css"/>
+          <script type="text/javascript" src="/fonteyne_style/static/src/js/moment.js"></script>
+          <script type="text/javascript" src="/fonteyne_style/static/src/js/bootstrap-datetimepicker.js"></script>
+          
+
+
+          <!-- Costum js -->
+          <script type="text/javascript" src="/fonteyne_style/static/src/js/backgroundcheck.js"></script>
+          <script type="text/javascript" src="/fonteyne_style/static/src/js/costum_fonteyne.js"></script>
+
+
+        
+          
+          
+          <!--  tool pingdom -->
+          <script>
+            
+          var _prum = [['id', '5639b8f1abe53d8820646f4d'],
+          ['mark', 'firstbyte', (new Date()).getTime()]];
+          (function() {
+          var s = document.getElementsByTagName('script')[0]
+          , p = document.createElement('script');
+          p.async = 'async';
+          p.src = '//rum-static.pingdom.net/prum.min.js';
+          s.parentNode.insertBefore(p, s);
+          })();
+
+          </script>
+
+
+
+
+          
+
+
+          
+          </xpath>
+      </template>
+      
+      <template id="fonteyne_template_ogone" inherit_id="payment_ogone.ogone_acquirer_button">
+            <xpath expr="//form" position="inside">
+                <input name="TP" type="hidden" value="https://e-sites.github.io/ingenico.css/dist/template.html"/>
+            </xpath>
+      </template>
+      
+      
+      <template id="product_navbar_after_grid" inherit_id="website_sale.products" active="True" customize_show="True" name="Product Categories Down">
+            <xpath expr="//div[@id='products_grid']" position="after">
+                <div id="products_grid_after" class="col-md-3 hidden-xs">
+                    <ul class="nav nav-pills nav-stacked mt16 bottom-nav">
+                        <li t-att-class=" '' if category else 'active' ">
+                            <a t-att-href="keep('/shop',category=0)">All Products</a>
+                        
+                        </li>
+                        <t t-foreach="categories" t-as="c">
+                            <t t-call="website_sale.categories_recursive"/>
+                        </t>
+                    </ul>
+                </div>
+            </xpath>
+      </template>
+      
+    <template id="modal_delivery" name="Delivery informations">
+      <div aria-hidden="true" class="modal fade" id="TAenlevement" role="dialog" style="display: none;">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <img class="oe_snippet_thumbnail_img close" data-dismiss="modal" src="/fonteyne_style/static/src/img/close.svg"/>
+            <div class="row">
+              <div class="col-xs-12">
+                <h1>Take Away</h1>
+                <span class="sep" style="margin-top:20px;"></span>
+              </div>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="col-md-5 no-paddingColL">
+                    <div class="modalTitelIconHeight" style="     height: 80px; ">
+                      <div class="col-md-2 no-paddingColL vcenter">
+                        <t t-if="enlevement">
+                        <img class="img-responsive vcenter" src="/fonteyne_style/static/src/img/nos-cartes/afhaal4.png"/>
+                        </t>
+                        <t t-if="livraison">
+                        <img class="img-responsive vcenter" src="/fonteyne_style/static/src/img/nos-cartes/delivery2.png"/>
+                        </t>
+                      </div>
+                      <div class="col-md-10">
+                      <t t-if="enlevement">
+                        <h2>Enlévement au magasin</h2>
+                      </t>
+                      <t t-if="livraison">
+                      <h2 class="vcenter" style="margin-top: 10px;">Livraison</h2>
+                      </t>
+                      </div>
+                    </div>
+                    <t t-if="enlevement">
+                    <p><br/>
+Vos commandes sont disponibles pendant les heures d'ouverture de nos magasins. Contactez nous au <strong>02/333.50.14</strong></p>
+                    </t>
+                    <t t-if="livraison">
+                    <p>
+<br/>
+Pour les 19 communes de Bruxelles
+<br/>
++ Waterloo et Rhode Saint Genèse
+<span style="font-family: 'Open Sans', sans-serif; font-size: 17px; line-height: 26px;">Commande de plus de 100€ : 12.10€</span>
+<br style="font-family: 'Open Sans', sans-serif; font-size: 17px; line-height: 26px;"/>
+<span style="font-family: 'Open Sans', sans-serif; font-size: 17px; line-height: 26px;">Commande de moins de 100€ : 18.15€</span>
+<br/>
+Pour une livraison hors Bruxelles, contactez nous au
+<strong> 02/333.50.14</strong>
+</p>
+                    </t>
+                  </div>
+                  <div class="col-md-offset-1 col-md-6"><div class="modalTitelIconHeight" style="     height: 80px; ">
+                      
+                  <div class="col-md-2 vcenter"><img class="img-responsive vcenter" src="/fonteyne_style/static/src/img/nos-cartes/clock.png"/></div>
+                  <div class="col-md-10 vcenter">
+                  <t t-if="enlevement">
+                  <h2 class="vcenter" style="margin-top: 10px;">Heures d'ouvertures</h2>
+                  </t>
+                  <t t-if="livraison">
+                  
+<h2 class="vcenter" style="margin-top: 10px;">Heures de livraison</h2>
+
+                  </t>
+                  </div>
+                  </div>
+ 
+<t t-if="enlevement">
+<div class="col-md-12 no-paddingColL">
+    
+<p style="font-size: 13pt;"><strong>Woluwe: </strong> 7/7 de 10.00 - 19.00</p>
+    
+</div>
+ 
+
+<div class="col-md-12 no-paddingColL no-paddingColR ">
+    
+<p style="font-size: 13pt;"><strong>Wemmel: </strong> 7/7 de 10.00 - 19.00</p>
+    
+</div>
+
+<div class="col-md-12 no-paddingColL no-paddingColR ">
+    
+<p style="font-size: 13pt;"><strong>Fort Jaco: </strong> Mercredi au samedi de 10.00 - 19.00. Dimanche de 10.00 - 14.00</p>
+
+</div>
+</t>
+<t t-if="livraison">
+<p>
+<br/>
+Livraison du samedi au mardi de 10h à 19h
+</p>
+</t>
+</div>
+                </div>
+              </div>
+            </div>
+            <button class="modal-closeButton nosCartesButton" data-dismiss="modal" type="button">Close</button>
+            <a t-att-href="urlClose"> </a>
+            <button class="nosCartesButton modalCta">webshop</button>
+            <a t-att-href="urlWebshop"> </a>
+            <div class="clearBoth"></div>
+          </div>
+        </div>
+      </div>
+
+</template>
+    </data>
+</openerp>
+
+
+

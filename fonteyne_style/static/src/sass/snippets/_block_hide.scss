@@ -1,0 +1,171 @@
+
+
+$color_bg_hide : #8D8D8D;
+
+
+.block_hide_wrap{
+	
+	list-style: none;
+	width:100%;
+	overflow:hidden;
+	z-index: 10;
+	background: $color_gray;
+	>div:first-child{
+		z-index: 0;
+	}
+	>div:nth-child(2){
+		z-index: 1;
+	}
+	>div:nth-child(3){
+		z-index: 2;
+	}
+
+}
+
+.block_hide_wrap-item{
+
+	float: left;
+	width: 33.333%;
+	min-height: 700px;
+	position: relative;
+	background: $color_bg_hide;
+	&:hover{
+		img{
+			opacity: 0;
+		}
+	}
+	>div{
+		padding-top: 200px;
+		padding-bottom: 170px;
+		z-index: 1000;
+		position: absolute;
+		height:100%;
+		width: 100%;
+	}
+	.block_hide_wrap-link{
+		z-index: 1000;
+		color: #747378;
+		background: #fff;
+		text-align: center;
+		text-transform: uppercase;
+		font-size: 1.1rem;
+		letter-spacing: .3rem;
+		position: absolute;
+		width: 240px;
+		display: block;
+		padding: 10px 20px 10px 20px;
+		left: 50%;
+		margin-left: -120px;
+		margin-top: 20px;
+		border-radius : 20px;
+		bottom:60px;
+		&:hover{
+			background: $color_red;
+			color: #fff;
+			text-decoration:none;
+		}
+	}
+	img{
+		width: auto;
+		min-width: 100%;
+		max-width: 130%;
+		position: absolute;
+		top: 0px;
+		z-index: -1;
+		min-height: 100%;
+		@include transition(.3s);
+		opacity: .8;
+	}
+	h2{
+		z-index: 1000;
+		padding-left: 10%;
+		padding-right: 10%;
+		color: #fff;
+		text-align: center;
+		text-transform: uppercase;
+		font-size: 2rem;
+		letter-spacing: .3rem;
+		line-height: 2rem;
+		font-weight: 600;
+	}
+	p{
+		z-index: 1000;
+		padding-left: 10%;
+		padding-right: 10%;
+		color: #fff;
+		text-align: center;
+	}
+	.separator{
+		display:block;
+		width:10px;
+		height: 1px;
+		background: $color_red;
+		z-index: 1000;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 20px;
+		margin-bottom: 20px;
+		@include transition(.3s);
+	}
+}
+
+.block_hide{
+	.container{
+		width: 100%;
+		padding:0px;
+	}
+}
+
+
+
+//RESPONSIVE SMALL LAPTOP
+
+
+@include  screen-tablet--landscape {
+
+
+.block_hide_wrap-item{
+	float: none;
+	width: 100%;
+	min-height:550px;
+	>div{
+		padding-top: 120px;
+		padding-bottom: 100px;
+		z-index: 1000;
+		position: relative;
+	}
+	img{
+		opacity:.8;
+		-webkit-filter: blur(4px);
+	}
+}
+
+
+}
+
+
+//RESPONSIVE screen-tablet--landscape
+
+
+@include screen-tablet--landscape {
+	
+
+.block_hide_wrap-item{
+	min-height:470px;
+	img{
+		opacity:.2;
+		-webkit-filter: blur(4px);
+	}
+	
+	>div{
+		padding-top: 80px;
+		padding-bottom: 100px;
+		z-index: 1000;
+		position: relative;
+	}
+}
+
+}
+
+
+

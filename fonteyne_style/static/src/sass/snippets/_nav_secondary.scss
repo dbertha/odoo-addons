@@ -1,0 +1,90 @@
+
+
+// SEC NAV
+
+.nav_secondary{
+	background: $color_gray_light;
+  	width: 100%;
+  	padding-top: 30px;
+  	padding-bottom: 30px;
+	ul{
+		text-align: center;
+  		padding: 0;
+		li{
+			padding: 20px;
+			display: inline-block;
+			text-transform: uppercase;
+			letter-spacing: .2rem;
+			cursor: pointer;
+			font-size: 1.2rem;
+			@include transition(.3s);
+			font-weight: 600;
+			color: #B3B3B3;
+			&:hover{
+				color: $color_red;
+			}
+		}
+	}
+}
+
+.nav_secondary .active_secnav{
+	color: $color_red;
+}
+
+
+// THIRD NAV
+
+
+.nav_third{
+	background: #fff;
+  	width: 100%;
+  	padding-top: 40px;
+  	padding-bottom: 30px;
+	ul{
+		text-align: center;
+  		padding: 0;
+		li{
+			padding: 20px;
+			display: inline-block;
+			text-transform: uppercase;
+			letter-spacing: .2rem;
+			cursor: pointer;
+			font-size: 1.2rem;
+			@include transition(.3s);
+			font-weight: 400;
+			color: #B3B3B3;
+			&:hover{
+				color: $color_red;
+			}
+		}
+	}
+}
+
+.nav_third .active_thirdnav{
+	color: $color_red;
+}
+
+
+@include screen-tablet--portait {
+
+
+.nav_secondary{
+	background: $color_gray_light;
+  	width: 100%;
+  	padding-top: 30px;
+  	padding-bottom: 30px;
+	ul{
+		width: 100%;
+		li{
+			display: block;
+			text-align:left;
+			&:hover{
+				color: $color_red;
+			}
+		}
+	}
+}
+
+
+	
+}

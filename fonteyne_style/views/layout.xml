@@ -1,0 +1,83 @@
+
+
+<openerp>
+
+    <data>
+      <template id="theme_custom_nav" name="Fonteyene Nav" inherit_id="website.layout">
+      <xpath expr="//div[@id='wrapwrap']/header" position="replace">
+          <header t-att-class=" 'editable_mode' if editable else '' ">
+           <nav class="navbar navbar-fonteyne" role="navigation">
+            <div class="container-fluid">
+             <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" />
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+             </div>
+             <a class="logo_nav" href="/">
+               
+               <img src="/fonteyne_style/static/src/img/logo_light.svg" alt="Fonteyne logo" />
+
+             </a>
+             <a class="navbar-brand" href="/" t-field="res_company.name" />
+             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav" id="top_menu">
+               <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                <t t-call="website.submenu" />
+               </t>
+               <li class="divider" groups="base.group_user,base.group_portal" t-ignore="true" />
+               
+               <li class="dropdown" t-ignore="true" groups="base.group_user,base.group_portal">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                 <b>
+                  <span t-esc="user_id.name" />
+                  <span class="caret"></span>
+                 </b>
+                </a>
+                <ul class="dropdown-menu js_usermenu" role="menu">
+                 <li>
+                  <a href="/web" role="menuitem">My Account</a>
+                 </li>
+                 <li class="divider" />
+                 <li>
+                  <a t-attf-href="/web/session/logout?redirect=/" role="menuitem">Logout</a>
+                 </li>
+                </ul>
+               </li>
+              </ul>
+             </div>
+            </div>
+           </nav>
+          </header>
+         </xpath>
+        </template>
+
+
+
+      <template id="custom_header" inherit_id="website.layout" name="Custom Header">
+
+          <!-- Assign an id  -->
+          <xpath expr="//div[@id='wrapwrap']/header" position="attributes">
+            <attribute name="id">header</attribute>
+          </xpath>
+
+          <!-- Add an element after the top menu  -->
+          <xpath expr="//div[@id='wrapwrap']/header/div" position="after">
+            
+            
+
+          </xpath>
+
+      </template>
+
+
+
+
+
+
+
+    </data>
+
+
+</openerp>

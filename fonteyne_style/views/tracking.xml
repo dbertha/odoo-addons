@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<!-- Adds all assets in Odoo -->
+        <template id="assets_backend" name="hotjarcode" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+		         <!-- All links to CSS and JS files should be added in here. -->
+<script type="text/javascript" src="/static/src/js/javascriptfile.js"></script>
+
+            </xpath>
+        </template>
+    </data>
+</openerp>

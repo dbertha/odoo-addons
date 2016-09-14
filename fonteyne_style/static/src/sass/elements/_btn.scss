@@ -1,0 +1,30 @@
+
+/*  *//*  *//*  */
+/*    BTN    	 */
+/*  *//*  *//*  */
+
+
+.btnfs{
+	padding: 20px 30px;
+	text-align:center;
+	display: block;
+	text-transform: uppercase;
+	background: #fff;
+	color:$color_gray;
+	font-size: 1rem;
+	letter-spacing: .6rem;
+	margin-left: auto;
+	margin-right: auto;		
+	@include transition(.3s);
+	&:hover{
+		background: $color_gray;
+		color:#fff;
+		text-decoration:none;
+	}
+	&-carte{
+		position: absolute;
+		bottom:100px;
+		right:150px;
+		cursor: pointer;
+	}
+}

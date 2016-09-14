@@ -1,0 +1,46 @@
+
+
+
+.p_two{
+	padding-top: 100px;
+	padding-bottom: 100px;
+	background: #fff;
+	h1{
+		text-transform: uppercase;
+		font-size: 2.5rem;
+		letter-spacing: .8rem;
+		text-align:center;
+	}
+	.separator{
+		display:block;
+		width: 100px;
+		height: 1px;
+		background: $color_gray;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 40px;
+		margin-bottom: 40px;
+	}
+}
+
+
+//RESPONSIVE screen-tablet--landscape
+
+
+@include screen-tablet--landscape {
+
+
+
+	
+.p_two{
+	p{
+		text-align:left;
+	}
+	.separator{
+		width: 50px;
+	}
+	
+}
+
+
+}

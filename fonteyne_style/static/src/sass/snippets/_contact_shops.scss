@@ -1,0 +1,109 @@
+
+
+
+
+.contact_shops-bloc{
+	padding-bottom: 100px;
+	overflow: hidden;
+	padding-top: 40px;
+	img{
+		width: 100%;
+	}
+	h3{
+		text-transform: uppercase;
+		letter-spacing: .1rem;
+		cursor: pointer;
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: $color_gray;
+		margin-top: 30px;
+		margin-bottom: 30px;
+		font-weight: 700;
+	}
+	p span{
+		font-weight: 700;
+	}
+}
+
+.contact_shops-map{
+	margin-bottom: 40px;
+}
+
+.slider{
+	position: relative;
+	height: 600px;
+	margin-bottom: 0px;
+	margin-top: 50px;
+	overflow: hidden;
+	background: $color_gray;
+}
+
+.slider-item{
+	position: absolute;
+	width:100%;
+
+}
+
+.slider-arrow{
+	position: absolute;
+	width: 60px;
+	height: 60px;
+	border: 1px solid #fff;
+	text-align: center;
+	color: #fff;
+	font-size: 3rem;
+	line-height: 5rem ;
+	cursor: pointer;
+	top: 50%;
+	margin-top: -30px;
+	@include transition(.3s);
+	&:hover{
+		background: #fff;
+		color: $color_gray;
+	}
+}
+
+.slider-arrow--left{
+	left:20px;
+}
+
+.slider-arrow--right{
+	right:20px;
+}
+
+.contact_shops-info{
+	overflow: hidden;
+}
+
+
+
+@include screen-tablet--landscape {
+	.slider{
+		height: 500px;
+	}
+}
+
+@include screen-tablet--portait {
+	.slider{
+		height: 450px;
+		img{
+			min-height: 100%;
+			width:auto;
+			max-width: 150%;
+		}
+	}
+	
+}
+
+
+@include screen-mobile--landscape {
+	.slider{
+		height: 400px;
+		img{
+			min-height: 100%;
+			width:auto;
+			max-width: 200%;
+		}
+	}
+}
+

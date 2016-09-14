@@ -1,0 +1,30 @@
+
+
+
+
+
+.img_fixed{
+	height: 400px;
+	background-attachment: fixed;
+	background-size:cover;
+	position: relative;
+	background-color: $color_gray;
+}
+
+@media (max-width: 400px){
+
+	.img_fixed{
+	    min-height: 300px;
+	}
+
+}
+
+@include screen-tablet--landscape {
+	.img_fixed{
+		height: 400px;
+		background-attachment: initial;
+		background-size:cover;
+		position: relative;
+		background-color: $color_gray;
+	}
+}
