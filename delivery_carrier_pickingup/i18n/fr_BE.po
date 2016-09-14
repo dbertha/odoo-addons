@@ -1,0 +1,488 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* delivery_carrier_pickingup
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-09 13:54+0000\n"
+"PO-Revision-Date: 2015-07-09 16:36+0100\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#. module: delivery_carrier_pickingup
+#: model:email.template,body_html:delivery_carrier_pickingup.email_template_grouped_invoice
+msgid ""
+"\n"
+"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-"
+"serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
+"\n"
+"    <p>Hello ${object.partner_id.name},</p>\n"
+"\n"
+"    <p>A new invoice is submitted for approuval. </p>\n"
+"    <p> Please transfer it to confirm it, or contact us if this invoice is "
+"not correct. </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"\n"
+"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-"
+"serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
+"\n"
+"    <p>Bonjour ${object.partner_id.name},</p>\n"
+"\n"
+"    <p>Une nouvelle facture est soumise pour confirmation. </p>\n"
+"    <p> Veuillez nous la transférez en confirmation, ou contactez-nous si "
+"cette facture n'est pas correcte. </p>\n"
+"</div>\n"
+"            "
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "%TVA/BTW"
+msgstr "%TVA/BTW"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "&nbsp;"
+msgstr "&nbsp;"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+msgstr "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "&nbsp;€"
+msgstr "&nbsp;€"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "-- Create a new address --"
+msgstr "-- Créer une nouvelle adresse --"
+
+#. module: delivery_carrier_pickingup
+#: model:ir.actions.act_window,help:delivery_carrier_pickingup.action_account_invoice_discount_form
+msgid ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"                Click to define a new reverse invoice discount.\n"
+"              </p><p>\n"
+"                When generating reverse invoice (when you sell on eshop for "
+"another company),\n"
+"                each invoice line will receive the discount linked to the "
+"product related.\n"
+"              </p>\n"
+"            "
+msgstr ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"                Cliquer pour définir une nouvelle ristourne pour les "
+"factures inversées.\n"
+"              </p><p>\n"
+"                À la génération d'une facture inversée (quand vous vendez "
+"sur l'eshop pour une autre société), ,\n"
+"                à chaque ligne de la facture sera appliquée la ristourne du "
+"produit correspondant.\n"
+"              </p>\n"
+"            "
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "A PAYER"
+msgstr "A PAYER"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "A RAPPELER LORS DU PAIEMENT"
+msgstr "A RAPPELER LORS DU PAIEMENT"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "A REMBOURSER"
+msgstr "A REMBOURSER"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "ACQUITTÉE"
+msgstr "ACQUITTÉE"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "ART."
+msgstr "ART."
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "B-1020"
+msgstr "B-1020"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "BETAALD"
+msgstr "BETAALD"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "BIJ BETALING TE VERMELDEN"
+msgstr "BIJ BETALING TE VERMELDEN"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "BTW"
+msgstr "BTW"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "Bruxelles"
+msgstr "Bruxelles"
+
+#. module: delivery_carrier_pickingup
+#: model:ir.model,name:delivery_carrier_pickingup.model_delivery_carrier
+msgid "Carrier"
+msgstr "Transporteur"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "City"
+msgstr "Ville"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Country"
+msgstr "Pays"
+
+#. module: delivery_carrier_pickingup
+#: field:account.invoice.discount,create_uid:0
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: delivery_carrier_pickingup
+#: field:account.invoice.discount,create_date:0
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "DATE / DATUM :"
+msgstr "DATE / DATUM :"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "DESIGNATION – OMSCHRIJVING"
+msgstr "DESIGNATION – OMSCHRIJVING"
+
+#. module: delivery_carrier_pickingup
+#: view:account.invoice.discount:delivery_carrier_pickingup.view_invoice_discount_form
+#: view:account.invoice.discount:delivery_carrier_pickingup.view_invoice_discount_tree
+msgid "Discount For Reverse Invoice"
+msgstr "Ristourne Pour Facture Inversée"
+
+#. module: delivery_carrier_pickingup
+#: field:account.invoice.discount,percentage:0
+msgid "Discount percentage"
+msgstr "Pourcentage de ristourne"
+
+#. module: delivery_carrier_pickingup
+#: help:account.invoice.discount,percentage:0
+msgid "Discount to apply on reverse invoice. Between 0 and 100"
+msgstr "Ristourne à appliquer sur les factures inversées. Entre 0 et 100"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "EENHEID"
+msgstr "EENHEID"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "EENHEIDSPRIJS"
+msgstr "EENHEIDSPRIJS"
+
+#. module: delivery_carrier_pickingup
+#: code:addons/delivery_carrier_pickingup/sale_delivery_invoice.py:134
+#, python-format
+msgid "Error!"
+msgstr "Erreur !"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "FACTURE / FACTUUR"
+msgstr "FACTURE / FACTUUR"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "HOEVEELHEID"
+msgstr "HOEVEELHEID"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "IBAN :"
+msgstr "IBAN :"
+
+#. module: delivery_carrier_pickingup
+#: field:account.invoice.discount,id:0
+#: field:report.delivery_carrier_pickingup.report_group_invoice,id:0
+#: field:report.delivery_carrier_pickingup.report_saleorder_delivery,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: delivery_carrier_pickingup
+#: help:delivery.carrier,journal_id:0
+msgid ""
+"If is pickup and partner is a company, use this journal for grouped invoices"
+msgstr ""
+"Si c'est un enlèvement et que le partenaire est une société, utilise ce "
+"journal pour les factures inversées"
+
+#. module: delivery_carrier_pickingup
+#: model:ir.model,name:delivery_carrier_pickingup.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: delivery_carrier_pickingup
+#: model:email.template,report_name:delivery_carrier_pickingup.email_template_grouped_invoice
+msgid ""
+"Invoice_${(object.origin or '').replace('/','_')}_${object.state == 'draft' "
+"and 'draft' or ''}"
+msgstr ""
+"Invoice_${(object.origin or '').replace('/','_')}_${object.state == 'draft' "
+"and 'draft' or ''}"
+
+#. module: delivery_carrier_pickingup
+#: field:account.invoice.discount,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: delivery_carrier_pickingup
+#: field:account.invoice.discount,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: delivery_carrier_pickingup
+#: field:account.invoice.discount,name:0
+msgid "Name"
+msgstr "Nom"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Name (Shipping)"
+msgstr "Nom (Livraison)"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_saleorder_delivery
+msgid "Nombre de livraison :"
+msgstr "Nombre de livraison :"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "PERIODE / PERIOD :"
+msgstr "PERIODE / PERIOD :"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "PHIL S.A."
+msgstr "PHIL S.A."
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "PRIX UNIT"
+msgstr "PRIX UNIT"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Pays..."
+msgstr "Pays..."
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: delivery_carrier_pickingup
+#: view:delivery.carrier:delivery_carrier_pickingup.delivery_carrier_withshippingaddress_form
+msgid "Pick Up"
+msgstr "Enlèvement"
+
+#. module: delivery_carrier_pickingup
+#: code:addons/delivery_carrier_pickingup/sale_delivery_invoice.py:135
+#, python-format
+msgid "Please define sales journal for this company: \"%s\" (id:%d)."
+msgstr ""
+"Prière de définir un journal de vente pour cette société : \"%s\" (id:%d)."
+
+#. module: delivery_carrier_pickingup
+#: model:ir.model,name:delivery_carrier_pickingup.model_product_template
+msgid "Product Template"
+msgstr "Product Template"
+
+#. module: delivery_carrier_pickingup
+#: field:delivery.carrier,journal_id:0
+msgid "Purchase Journal"
+msgstr "Journal d'achat"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_saleorder_delivery
+msgid "Période du"
+msgstr "Période du"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "QUANTITE"
+msgstr "QUANTITE"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "REFER. SO/CL:&nbsp;"
+msgstr "REFER. SO/CL:&nbsp;"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "REMARQUES/ OPMERKINGEN :"
+msgstr "REMARQUES/ OPMERKINGEN :"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "REMBOURSE"
+msgstr "REMBOURSE"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_saleorder_delivery
+msgid "Rapport de livraison"
+msgstr "Rapport de livraison"
+
+#. module: delivery_carrier_pickingup
+#: model:ir.actions.act_window,name:delivery_carrier_pickingup.action_account_invoice_discount_form
+#: model:ir.ui.menu,name:delivery_carrier_pickingup.menu_action_account_invoice_discount_form
+msgid "Reverse Invoice Discount"
+msgstr "Ristourne de facture inversée"
+
+#. module: delivery_carrier_pickingup
+#: model:ir.actions.report.xml,name:delivery_carrier_pickingup.delivery_grouped_invoice
+msgid "Reversed grouped invoice"
+msgstr "Facture inversée et groupée"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "Rue de Wand, 131"
+msgstr "Rue de Wand, 131"
+
+#. module: delivery_carrier_pickingup
+#: model:ir.actions.report.xml,name:delivery_carrier_pickingup.action_report_saleorder_delivery
+msgid "Sale Order Deliveries"
+msgstr "Livraisons du bon de commande"
+
+#. module: delivery_carrier_pickingup
+#: model:ir.model,name:delivery_carrier_pickingup.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Ship to the same address"
+msgstr "Livrer à l'adresse de facturation"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Shipping Information"
+msgstr "Informations de livraison"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "State / Province"
+msgstr "État / Province"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "State / Province..."
+msgstr "État / Province..."
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Street"
+msgstr "Rue"
+
+#. module: delivery_carrier_pickingup
+#: model:email.template,subject:delivery_carrier_pickingup.email_template_grouped_invoice
+msgid "Submission from PHIL S.A. : Invoice (Ref ${object.origin or 'n/a'})"
+msgstr ""
+"Soumission de la part de PHIL S.A. : Facture (Ref ${object.origin or 'n/a'})"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TE BETALEN"
+msgstr "TE BETALEN"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TERUG BETAALD"
+msgstr "TERUG BETAALD"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TERUG TE BETALEN"
+msgstr "TERUG TE BETALEN"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TOTAAL"
+msgstr "TOTAAL"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TOTAL"
+msgstr "TOTAL"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TOTAL/TOTAAL"
+msgstr "TOTAL/TOTAAL"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TOTAL/TOTAAL htva/zbtw"
+msgstr "TOTAL/TOTAAL htva/zbtw"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TVA"
+msgstr "TVA"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TVA/BTW"
+msgstr "TVA/BTW"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "TVA/BTW :"
+msgstr "TVA/BTW :"
+
+#. module: delivery_carrier_pickingup
+#: constraint:account.invoice.discount:0
+msgid "The percentage should be between 0 and 100"
+msgstr "Le pourcentage doit se trouver entre 0 et 100"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "Total"
+msgstr "Total"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "UNITE"
+msgstr "UNITE"
+
+#. module: delivery_carrier_pickingup
+#: view:website:website_sale.checkout
+msgid "Zip / Postal Code"
+msgstr "Code postal"
+
+#. module: delivery_carrier_pickingup
+#: view:website:delivery_carrier_pickingup.report_group_invoice_document
+msgid "Échéance/Vervaldatum :"
+msgstr "Échéance/Vervaldatum :"

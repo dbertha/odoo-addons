@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="product_template_view_week_number">
+            <field name="name">product.template.weeknumber</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='sale_condition']" position="after"> 
+                    <group name="rotation_options">
+                        <field name="week_number" on_change="onchange_week_number(week_number)"/>
+                    </group>
+                    
+                </xpath>
+
+            </field>
+        </record>
+        
+    
+    
+    </data>
+</openerp>

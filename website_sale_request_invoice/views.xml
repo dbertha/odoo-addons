@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Doesn't work because email_template_edi_invoice is declared in a noupdate=1 data block, should be configured manually -->
+        <record id="account.email_template_edi_invoice" model="email.template">
+            <field name="partner_to">${object.partner_id.accept_invoice and object.partner_id.id or ''}</field>
+        </record> 
+            
+        <record id="view_partner_acceptinvoice_form" model="ir.ui.view">
+            <field name="name">res.partner.acceptinvoice.form.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email']" position="after">
+                    <field name="accept_invoice"/>
+                </xpath>
+            </field>
+    </record>
+    </data>
+</openerp>

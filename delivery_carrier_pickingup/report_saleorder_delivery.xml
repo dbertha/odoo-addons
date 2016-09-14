@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_saleorder_delivery">
+    <t t-call="report.html_container">
+        <t t-call="report.internal_layout">
+            <div class="page">
+                <h2>Rapport de livraison</h2>
+                <h3>Période du <t t-esc="period_start"/> au <t t-esc="period_end"/>.</h3>
+                Nombre de livraison : <t t-esc="len(docs)"/>
+                
+                <t t-foreach="docs" t-as="o">
+                
+                    
+                </t>
+            </div>
+        </t>
+    </t>
+</template>
+
+</data>
+</openerp>

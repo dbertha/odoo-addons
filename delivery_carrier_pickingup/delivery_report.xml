@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="action_report_saleorder_delivery" 
+        model="sale.order" 
+        report_type="qweb-pdf" 
+        name="delivery_carrier_pickingup.report_saleorder_delivery" 
+        string="Sale Order Deliveries" 
+        file="delivery_carrier_pickingup.report_saleorder_delivery"/>
+
+    </data>
+</openerp>
+
+

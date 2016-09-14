@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report 
+            id="delivery_grouped_invoice"
+            model="account.invoice"
+            string="Reversed grouped invoice"
+            report_type="qweb-pdf"
+            name="account_invoice_reverse.report_group_invoice"
+            file="account_invoice_reverse.report_group_invoice"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+        />
+
+    </data>
+</openerp>
+
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <template id="nav_bar_for_group_admin" inherit_id="web.webclient_bootstrap">
+        <xpath expr="//nav[@id='oe_main_menu_navbar']" position="attributes">
+            <attribute name="groups">base.group_user,base.group_portal,portal_sale_group.group_portal_admins</attribute>
+        </xpath>
+        
+        <xpath expr="//div[@groups='base.group_user,base.group_portal']" position="attributes">
+            <attribute name="groups">base.group_user,base.group_portal,portal_sale_group.group_portal_admins</attribute>
+        </xpath>
+        
+        
+
+    </template>
+    
+    <template id="checkout_group_address" name="checkout group address" inherit_id="delivery_carrier_pickingup.checkout_pickingup">
+        <xpath expr="//t[@t-set='delivery_address']" position="attributes">
+            <attribute name="t-value">group_partner or (delivery_id and delivery_id.is_pickup and delivery_id.address_partner)</attribute>
+        </xpath>
+    </template>
+    
+    <template id="group_order_check" name="Warning for group order with unsufficient money" inherit_id="website_sale.cart">
+        <xpath expr="//a[@href='/shop/checkout']" position="attributes">
+            <attribute name="t-if">not optional_products and website_sale_order and website_sale_order.website_order_line and (not website_sale_order.portal_group_id or (website_sale_order.amount_total &lt;= user_available_amount))</attribute>
+        </xpath>
+        <xpath expr="//div[@class='well well-lg']" position="before">
+            <div t-if="not website_sale_order or (website_sale_order.portal_group_id and (website_sale_order.amount_total &gt; user_available_amount))" class="well well-lg">
+                The total amount is greater than your available credit!
+            </div>
+        </xpath>
+    </template>
+    
+    <template id="group_order_amount_display" name="Display credit" inherit_id="website.layout">
+        <xpath expr="//ul[@class='dropdown-menu js_usermenu']/li" position="after">
+            <li t-if="user_id.portal_group_id">Credit : <t t-esc="user_id.available_amount"/></li>
+        </xpath>
+    </template>
+    </data>
+</openerp>

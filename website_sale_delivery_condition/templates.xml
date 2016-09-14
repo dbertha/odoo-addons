@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>    
+    
+        <template id="category_link_to_condition_page" inherit_id="website_sale.categories_recursive">
+            <xpath expr="//a" position="replace">
+                <a  t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or '') + '/category/' + slug(c), category=0)" t-field="c.name"/>
+                <!--
+                <t t-if="(not current_condition) or (c.condition_id.id == current_condition)">
+                    <a name="test-condition"  t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name"/>
+                </t>
+                <t t-if="current_condition and (c.condition_id.id != current_condition)">
+                    <a name="test-not-condition"  t-field="c.name"/>
+                </t>
+                -->
+            </xpath>
+        </template>
+        
+        <template id="all_products_link_to_condition_page" inherit_id="website_sale.products" name="Product Categories with correct link to condition page">
+            <xpath expr="//ul[@class='nav nav-pills nav-stacked mt16']//li//a" position="replace">
+                <a t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or ''),category=0)">All Products</a>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']/table" position="before">
+            <div id="delivery_image" t-if="chosen_condition and chosen_condition.image">
+                <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(chosen_condition, 'image', None)"/>
+            </div>
+            </xpath>
+        </template>
+    
+        
+        <template id="shop_warning_delivery_conditions"  active="True" customize_show="True" name="Show delivery condition description" inherit_id="delivery_date.checkout_delivery_date">
+            <xpath expr="//input[@id='delivery_date']" position="before">
+                <div t-if="delivery_condition and delivery_condition.website_description" id="condition_warning">
+                    <span class="text-warning" t-field="delivery_condition.website_description"/>
+                </div>
+            </xpath>
+        </template>
+        
+        <template id="shop_product_warning_delivery_conditions" inherit_id="website_sale.product">
+            <xpath expr="//a[@id='add_to_cart']" position="replace">
+                <t t-if="is_compatible_with_cart">
+                    <a id="add_to_cart" class="btn btn-primary btn-lg mt8 js_check_product a-submit" href="#">Add to Cart</a>
+                </t>
+                <t t-if="not is_compatible_with_cart">
+                    <t>This product is not compatible with your cart.</t>
+                    <a id="add_to_cart" class="btn btn-primary btn-lg mt8 disabled" href="#">Add to Cart</a>
+                </t>
+            </xpath>
+        </template>
+        
+        
+        <template id="shop_product_correct_link_delivery_condition" inherit_id="website_sale.product">
+            <xpath expr="//li[@t-if='category']" position="replace">
+                <li t-if="category">
+                    <a t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or '') + '/category/' + slug(category), category=0)" t-field="category.name"/>
+                </li>
+            </xpath>
+        </template>
+    </data>
+</openerp>

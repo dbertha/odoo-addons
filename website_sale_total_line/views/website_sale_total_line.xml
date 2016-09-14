@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/website_sale_total_line/static/src/js/website_sale_total_line.js"></script>
+      </xpath>
+    </template>
+    
+    <template id="order_line_total_cart" name="Line total in cart display" inherit_id="website_sale.cart">
+        <xpath expr="//th[@width='120']" position="after">
+            <th width="100">Total</th>                
+        </xpath>
+        
+        <xpath expr="//table[@id='cart_products']/tbody//td[last()]" position="after">
+            <td class="text-center" name="total_line">
+                <div>
+                    
+                    <span style="white-space: nowrap;"><span class="oe_currency_value" id="custom_line_total"><t t-esc="int(line.product_uom_qty) * line.price_unit"/> </span>  € </span>
+                </div>
+            </td>
+        </xpath>
+        
+    </template>
+    
+
+</data>
+</openerp>

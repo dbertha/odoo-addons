@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+         <record id="view_sales_config_sale_stock" model="ir.ui.view">
+             <field name="name">sale settings</field>
+             <field name="model">sale.config.settings</field>
+             <field name="inherit_id" ref="sale.view_sales_config"/>
+             <field name="arch" type="xml">
+                 <data>
+                     <xpath expr="//div[@name='Sale Features']" position="after">
+                         <group id="rotating_week_number">
+                             <field name="current_week_number" class="oe_inline"/>
+                         </group>
+                     </xpath>
+                     
+                </data>
+             </field>
+         </record>
+    </data>
+</openerp>

@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_group_invoice_document">
+<!--<t t-name="delivery_carrier_pickingup.report_group_invoice_document">-->
+    <!--- <t t-call="report.external_layout">-->
+       <div class="page">
+            <div class="row">
+                <div class="col-xs-5 text-center font-times">
+                <t t-set="partner" t-value="res_company.partner_id if reverse else o.partner_id"/>
+                <t t-set="sender" t-value="o.partner_id if reverse else res_company.partner_id"/>
+                    <h4>
+                        <t t-if="sender.parent_id.name">
+                            <span style="text-transform:uppercase;" t-field="sender and sender.parent_id.title"/>
+                            <span style="text-transform:uppercase;" t-field="sender and sender.parent_id.name"/>
+                        </t>
+                        <t t-if="not sender.parent_id.name">
+                            <span style="text-transform:uppercase;" t-field="sender and sender.title"/>
+                            <span style="text-transform:uppercase;" t-field="sender and sender.name"/>
+                        </t>
+                        <br/><br/>
+                        <span t-field="sender.street"/><br/>
+                        <p t-if="sender.street2">
+                        <span t-field="sender.street2"/>
+                        </p>
+                        <span style="text-transform:uppercase;" t-field="sender.zip"/>&amp;nbsp;<span style="text-transform:uppercase;" t-field="sender.city"/><br/>
+                        <span style="text-transform:uppercase;" t-field="sender.country_id"/><br/>
+                                                <t t-if="sender.vat">
+                             TVA/BTW : <span t-field="sender.vat"/>
+                                                </t>
+                        <t t-if="sender.bank_ids">
+                             IBAN : <span t-field="sender.bank_ids[0].acc_number"/>
+                        </t>
+                    </h4>
+                    <!-- <h3><i> <span style="text-transform:uppercase;" t-field="res_company.name"/> </i></h3>
+                    <span t-field="res_company.partner_id.street"/><br/>
+                    <p t-if="res_company.partner_id.street2">
+                    <span t-field="res_company.partner_id.street2"/>
+                    </p> 
+                    <span t-field="res_company.partner_id.zip"/>&amp;nbsp;<span t-field="res_company.partner_id.city"/><br/>
+                    <span t-field="res_company.partner_id.country_id"/><br/>
+
+                    TVA/BTW : <span style="text-transform:uppercase;" t-field="res_company.partner_id.vat"/><br/> -->
+                     <!-- <br/> <br/>
+                    <img t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" width="200px" height="100px"/> -->
+                </div>
+                <div class="mt92 col-xs-5 col-xs-offset-1">     
+                    <h3><i> <span style="text-transform:uppercase;" t-field="partner.name"/> <span style="text-transform:uppercase;" t-field="partner.title"/> </i></h3>
+                    <span t-field="partner.street"/> <br/>
+                    <t t-if="partner.street2">
+                             <span t-field="partner.street2"/> <br/>
+                        </t>
+                    <span t-field="partner.zip"/> &amp;nbsp;<span t-field="partner.city"/><br/>
+                   TVA/BTW : <span style="text-transform:uppercase;" t-field="partner.vat"/><br/>
+                    
+                    <!--<a a-attr-href="res_company.website">
+                        <u><span t-field="res_company.website"/></u>
+                    </a> <br/>
+                   <img src="data:image/gif;base64,R0lGODlhHQAUAKIHAExMTfHx8SQlJYWGhqenqNPT1AAAAP///yH5BAEAAAcALAAAAAAdABQAAAOreHpRNAMAQauQYBAS1gqDIY5kaQ7FJ5hsKwrdAbi0CTSuoG3bsLaFUEnwEBQCSGTBoGE9Xq8OwUU4TKFM34RSXY4qX+QFo/uNbt8MYPNrlgBBHiF4vsEz7YcGkvIwvgQ3SGtXN36HB14Ga30MbgYxiAszIj5VCgEXIwOSHyRwAzEoQouRiKSVRHeoBo2HmUN2GyemHgEtFC2GiLA1b7ULir5nwJgYx8jJuwoJADs="  width="20" height="15"/> -->
+                    <!--<span t-field="res_company.phone"/>-->
+                </div>
+            </div>
+            <!--
+            <div>
+                <div class="mt16">
+                    <div id="circle" class="inline">
+                        <strong>
+                            <span>BE<br/>B101694-H<br/>CE</span>
+                        </strong>
+                    </div>
+                    <div id="circle" class="inline">
+                        <strong>
+                            <span>BE<br/>B101694<br/>CE</span>
+                        </strong>
+                    </div>
+                    <div id="circle" class="inline">
+                        <strong>
+                            <span>BE<br/>VE101694<br/>CE</span>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            -->
+            <table class="mt32 table_border">
+                <tr>
+                    <td class="col-xs-4 text-center">
+                        <!--
+                        <t t-if="o.type == 'out_invoice'"><strong>FACTURE / FACTUUR</strong><br/></t>
+                        <t t-if="o.type == 'out_refund'"><strong>NOTE DE CREDIT / CREDIT NOTA</strong><br/></t>
+                        -->
+                        <strong>FACTURE / FACTUUR</strong><br/>
+                        <t t-if="o.number"><span t-field="o.number"/></t>
+                        <t t-if="o.origin"><span t-field="o.origin"/></t>
+                    </td>
+                    <td class="col-xs-4 text-center" style="background:lightgrey">
+                        <strong><i>A RAPPELER LORS DU PAIEMENT<br/>
+                                 BIJ BETALING TE VERMELDEN</i></strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">
+                        <strong>DATE / DATUM :</strong><br/>
+                        <span t-field="o.date_invoice"/>
+                    </td>
+                    <td class="text-center">
+                        <strong>PERIODE / PERIOD :</strong><br/>
+                        <span t-esc="period_start"/> - <span t-esc="period_end"/>
+                    <!--
+                        <t t-if="o.partner_id.parent_id.name">
+                            <span t-field="o.partner_id and o.partner_id.parent_id.name"/>/<span t-esc="o.number"/>
+                        </t>
+                        <t t-if="not o.partner_id.parent_id.name">
+                            <span t-field="o.partner_id and o.partner_id.name"/>/<span t-esc="o.number"/>
+                        </t>
+                    -->
+                    </td>
+                </tr>
+            </table>
+             <table class="mt32 table_border" style="font-size:11px;">
+                <thead>
+                    <tr>
+                        <th>ART.</th>
+                        <th>
+                            DESIGNATION – OMSCHRIJVING
+                        </th>
+                        <th class="text-center">
+                            QUANTITE<br/> HOEVEELHEID
+                        </th>
+                        <th class="text-center">
+                            UNITE<br/> EENHEID
+                        </th>
+                        <th class="text-center">
+                            PRIX UNIT<br/> EENHEIDSPRIJS
+                        </th>
+                        <th class="text-center">
+                            &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+                        </th>
+                        <th class="text-center">
+                            TOTAL <br/>TOTAAL
+                        </th>
+                        <th class="text-center">
+                            TVA<br/>BTW
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                <t t-foreach="list(set([line.origin for line in o.invoice_line]))" t-as="sale">
+                    <tr>
+                        <td colspan="100%">
+                            <i><strong><span>REFER. SO/CL:&amp;nbsp;</span></strong></i><span t-esc="sale"/> 
+                        </td>
+                    </tr>
+                 <!--
+<t t-foreach="list(set([line.x_sale_order_id for line in o.invoice_line]))" t-as="sale">
+                    <t t-if="sale.id">
+                    <tr>
+                        <td colspan="100%">
+                            <i><strong><span>REFER.:&amp;nbsp;</span></strong></i><span t-field="sale.partner_id.x_shop_number"/>/<span t-esc="sale.name"/> - 
+                            <i><strong><span>REFER. CL./KL.:&amp;nbsp;</span></strong></i><span t-esc="sale.client_order_ref"/> 
+                        </td>
+                    </tr>
+                    </t>
+                    <t t-foreach="list(set([line.x_picking_id for line in o.invoice_line if line.x_sale_order_id.id == sale.id]))" t-as="pick">
+                         <t t-if="pick.id">
+                         <tr>
+                           <td colspan="100%">
+                                   <i><strong><span>EXPED.:&amp;nbsp; </span></strong></i><span t-field="pick.name"/> &amp;nbsp;-&amp;nbsp; <span t-field="pick.min_date" t-field-options='{"format": "dd/MM/YYYY"}'/>
+                           </td>
+                         </tr>
+                         </t> -->
+                         <tr t-foreach="[line for line in o.invoice_line if line.origin==sale]" t-as="l">
+                            <td>
+                                <span t-field="l.product_id and l.product_id.default_code"/>
+                            </td>
+                            <td>
+                                 <t t-if="l.product_id"><span t-field="l.product_id.name"/></t>
+                                 <t t-if="not l.product_id"><span t-field="l.name"/></t>
+                            </td>
+                            <td class="text-center">
+                                <span t-esc="('%.2f' %l.quantity).replace('.', ',')"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="l.uos_id" groups="product.group_uom"/>
+                            </td>
+                            <td class="text-center">
+                                <t t-set="txonln" t-value="any([ln for ln in l.invoice_line_tax_id if ln.price_include or ln.type!='percent'])"/>
+                                <t t-if="txonln">
+                                    <span t-esc="('%.4f' %l.invoice_line_tax_id.compute_all((l.price_unit * (1.0 - (l.discount or 0.0) / 100.0)),
+                l.quantity, l.product_id, o.partner_id)['taxes'][0]['price_unit']).replace('.', ',')"/>&amp;nbsp;€
+                               </t>
+                               <t t-if="not txonln"> 
+                                     <span t-esc="('%.4f' %l.price_unit).replace('.', ',')"/>&amp;nbsp;€
+                               </t>  
+                           </td>
+                            <td class="text-center">
+                                <t t-if="l.discount > 0"><span t-field="l.discount"/> %</t>
+                            </td>
+                            <td class="text-center" style="white-space:nowrap;">
+                                <span t-esc="round(l.price_subtotal,2)"  t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                            </td>
+                            <td class="text-center">
+                                <span t-esc="', '.join(map(lambda x: x.name, l.invoice_line_tax_id))"/>
+                            </td>
+                    </tr>
+                    
+                </t>
+                </tbody>
+            </table>
+
+            <div class="row mt32" t-if="o.tax_line">
+                <div class="col-xs-8">
+                    <table class="table_border text-center" style="font-size:11px;">
+                        <thead>
+                            <tr>
+                                <th class="text-center">%TVA/BTW</th>
+                                <th class="text-center">TOTAL/TOTAAL htva/zbtw</th>
+                                <th class="text-center">TVA/BTW</th>
+                                <th class="text-center">TOTAL/TOTAAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.tax_line" t-as="t">
+                                <td><span t-field="t.name"/></td>
+                                <td>
+                                    <span t-esc="t.base" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                </td>
+                                <td>
+                                    <span t-esc="t.amount" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                </td>
+                               <td>
+                                    <t t-if="o.type == 'out_refund'">-</t>
+                                    <span t-esc="(t.base + t.amount)" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td><t t-esc="reduce(lambda x, obj: x + obj.base, o.tax_line, 0)" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/> 
+                            </td>
+                            <td><t t-esc="round(reduce(lambda x, obj: x + obj.amount, o.tax_line, 0),2) " t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/></td>
+                            <td>
+                                   <t t-if="o.type == 'out_refund'">-</t>
+                                   <t t-esc="round(reduce(lambda x, obj: x + (obj.base + obj.amount), o.tax_line, 0),2) " t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                           </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <table class="mt32 table_border" style="page-break-inside:avoid;">
+                <tr>
+                    <td class="col-xs-4" rowspan="2"></td>
+                    <td class="col-xs-4" rowspan="2"></td>
+                    <td class="col-xs-4 text-center" style="background:lightgrey">
+                        <strong>
+                               <i>
+                                    <t t-if="o.type == 'out_invoice' or o.type == 'in_invoice'">
+                                          <t t-if="o.state == 'paid'">ACQUITTÉE</t>
+                                          <t t-if="o.state != 'paid'">A PAYER</t>
+                                    </t>
+                                    <t t-if="o.type == 'out_refund'">
+                                          <t t-if="o.state == 'paid'">REMBOURSE</t>
+                                          <t t-if="o.state != 'paid'">A REMBOURSER</t>
+                                    </t>
+                               </i>
+                        </strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center" style="background:lightgrey">
+                        <strong>
+                               <i>
+                                    <t t-if="o.type == 'out_invoice'">
+                                          <t t-if="o.state == 'paid'">BETAALD</t>
+                                          <t t-if="o.state != 'paid'">TE BETALEN</t>
+                                    </t>
+                                    <t t-if="o.type == 'out_refund'">
+                                          <t t-if="o.state == 'paid'">TERUG BETAALD</t>
+                                          <t t-if="o.state != 'paid'">TERUG TE BETALEN</t>
+                                    </t>
+                               </i>
+                        </strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Échéance/Vervaldatum :
+                        <span t-field="o.date_due"/><br/>
+                        <span t-field="o.payment_term"/>
+                    </td>
+                    <td></td>
+                    <td class="text-center">
+                        <t t-if="o.type == 'out_refund'">-</t>
+                        <span t-field="o.amount_total" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                    </td>
+                </tr>
+            </table>
+            
+            <p t-if="o.comment">
+                <strong>REMARQUES/ OPMERKINGEN :</strong>
+                <span t-field="o.comment"/>
+            </p>
+            <p t-if="o.fiscal_position.note">
+                <br/>
+                <span t-field="o.fiscal_position.note"/>
+            </p>
+            <!--
+            <p style="page-break-after:always;"/>
+            <table width="100%" style="font-size:8px;">
+                <tr>
+                    <td colspan="2"><strong>ALGEMENE VERKOOPSVOORWAARDEN</strong></td>
+                    <td colspan="2"><strong>CONDITIONS GENERALES DE VENTE</strong></td>
+                </tr>
+                <tr>
+                    <td width="4%">1.</td>
+                    <td width="46%"> <strong>BESTELLINGEN</strong></td>
+                    <td width="4%">1.</td>
+                    <td width="46%"><strong>COMMANDES</strong></td>
+                </tr>
+                <tr height="10px;">
+                    <td/>
+                </tr>
+                <tr>
+                    <td>1.1</td>
+                    <td>
+                        <strong>Aanvaarding en bevestiging :</strong> Om onze firma te verbinden, moet
+iedere bestelling door onze diensten bevestigd worden.
+                    </td>
+                    <td>1.1</td>
+                    <td>
+                        <strong>Acceptation et confirmation :</strong> Pour engager notre société, toute
+commande doit faire l’objet d’une confirmation par nos services. (*)
+                    </td>
+                </tr>
+                <tr>
+                    <td>1.2</td>
+                    <td>
+                        <strong>Aanpassing en annulering :</strong> Behoudens uitdrukkelijk akkoord van
+onze burelen, kan elke bestelling slechts aangepast worden tot ten
+laatste om 14 uur van de dag voorafgaand aan de datum van de
+levering. Elke aanpassing dient te worden goedgekeurd door onze
+diensten, zo niet zal ze in rekening worden gebracht en aan de klant
+gefactureerd worden. Behoudens anders bepaald, dient een annulering aan onze burelen schriftelijk te worden gemeld en door ons gevalideerd te worden, ten laatste 48 uur voor de datum van de levering. (*)</td>
+                    <td>1.2</td>
+                    <td>
+                        <strong>Modification et annulation :</strong> Sauf accord exprès de nos bureaux,
+toute commande ne peut être modifiée qu’ au plus tard à 14.00 h,
+la veille de la livraison. Toute modification éventuelle doit être validée
+par nos services, faute de quoi elle sera portée en compte et facturée au client. Sauf stipulé autrement, les annulations éventuelles
+doivent être passées, et validées par nos bureaux, au plus tard 48
+heures avant leur date de livraison. (*)</td>
+                </tr>
+                <tr height="10px;">
+                    <td/>
+                </tr>
+                <tr>
+                    <td>2.</td>
+                    <td><strong>LEVERINGEN</strong></td>
+                    <td>2.</td>
+                    <td><strong>LIVRAISONS</strong></td>
+                </tr>
+                <tr>
+                    <td>2.1</td>
+                    <td>
+                        <strong>Eerbiediging van de leveringstermijn :</strong> Wij nemen de nodige maatregelen om de leveringstermijnen te eerbiedigen. (*) Een mogelijke
+vertraging in de levering kan in geen geval aanleiding geven tot
+annulering van de bestelling of schadevergoeding.</td>
+                    <td>2.1</td>
+                    <td>
+                        <strong>Respect des délais :</strong> Nous prenons toutes nos dispositions pour
+respecter les délais de livraison. (*) Un retard éventuel dans la livraison
+ne peut en aucun cas donner lieu à l’annulation de la commande ou
+à la réclamation de dommages et intérêts.</td>
+                </tr>
+                <tr>
+                    <td>2.2</td>
+                    <td>
+                        <strong>Leveringskosten :</strong> Er wordt steeds aan de klant een deelname in
+de leveringskosten aangerekend. De toepasbare tarieven zijn in de
+specifieke verkoopsvoorwaarden opgenomen. (*)
+                    </td>
+                    <td>2.2</td>
+                    <td>
+                        <strong>Frais de livraison :</strong> une participation aux frais de transport des
+marchandises est demandée à l’acheteur. Les tarifs applicables sont
+repris dans les conditions spécifiques de vente. (*)
+                    </td>
+                </tr>
+                <tr>
+                    <td>2.3</td>
+                    <td>
+                        <strong>Ophalen van de goederen :</strong> De goederen die opgehaald worden
+op kosten van de klant, worden vervoerd op risico van de klant.
+De vervoerder dient zich te houden aan de van kracht zijnde HACCP
+hygiënenormen.
+                    </td>
+                    <td>2.3</td>
+                    <td>
+                        <strong>Enlèvement des marchandises :</strong> Les marchandises, enlevées aux
+frais de l’acheteur, sont transportées aux risques et périls de celui-ci.
+Le transporteur des marchandises doit se conformer aux normes
+d’hygiène HACCP en vigueur
+                    </td>
+                </tr>
+                <tr height="10px;">
+                    <td/>
+                </tr>
+                <tr>
+                    <td>3.</td>
+                    <td><strong> KLACHTEN EN GOEDEREN TERUGSTUREN</strong></td>
+                    <td>3.</td>
+                    <td><strong> RECLAMATIONS ET RETOURS DES MARCHANDISES</strong></td>
+                </tr>
+                <tr>
+                    <td>3.1</td>
+                    <td>
+                        <strong>Klachten :</strong> De klacht is ontvankelijk indien neergelegd bij ontvangst
+der goederen. Elke weigering van ontvangst der goederen moet
+binnen de 12 uur volgend op de levering, schriftelijk worden gecommuniceerd en gemotiveerd.</td>
+                    <td>3.1</td>
+                    <td>
+                        <strong>Toute réclamation</strong> pour être recevable doit se faire à la réception
+de la marchandise. Tout refus de réceptionner la marchandise doit être communiqué et motivé par écrit dans les 12 heures suivant la livraison.
+                    </td>
+                </tr>
+                <tr>
+                    <td>3.2</td>
+                    <td>
+                        <strong>Terugsturen van de goederen : </strong>Het terugsturen van de goederen
+vereist het uitdrukkelijk akkoord van onze burelen. De terug te sturen
+goederen moeten volgens de van kracht zijnde HACCP hygiënenormen worden bewaard en getransporteerd.</td>
+                    <td>3.2</td>
+                    <td>
+                        <strong>Les retours de marchandises</strong> doivent faire l’objet d’un accord
+exprès de nos bureaux. Les marchandises à retourner doivent être
+conservées et transportées suivant les normes HACCP en vigueur.</td>
+                </tr>
+                <tr height="10px;">
+                    <td/>
+                </tr>
+                <tr>
+                    <td>4.</td>
+                    <td><strong>GEHUURD MATERIAAL</strong> <br/>
+Materiaal dat samen met de goederen wordt geleverd, blijft eigenaar
+van de verkoper. In geval van schade of verdwijning, wordt dit gefactureerd aan de klant. (*)</td>
+                    <td>4.</td>
+                    <td><strong>MATERIEL MIS A DISPOSITION DE L’ACHETEUR</strong><br/>
+Tout matériel livré avec la marchandise reste propriété du vendeur.
+En cas de dommage ou de disparition de matériel, celui-ci sera
+facturé au client. (*)</td>
+                </tr>
+                <tr height="10px;">
+                    <td/>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td><strong>BETALINGEN</strong></td>
+                    <td>5.</td>
+                    <td><strong>PAIEMENTS</strong></td>
+                </tr>
+                <tr>
+                    <td>5.1</td>
+                    <td>
+                        <strong>Behoudens andersluidende en schriftelijke bepaling, zijn de
+bestellingen vanaf ontvangst van de factuur, contant, netto en
+zonder disconto betaalbaar.</strong>
+                    </td>
+                    <td>5.1</td>
+                    <td>
+                        <strong>Sauf stipulation contraire, les commandes sont payables au
+comptant, net et sans escompte, dès réception de la facture.</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>5.2</td>
+                    <td>
+                        <strong>De bestellingen van goederen door particulieren,</strong> dienen steeds
+te worden betaald ten laatste de dag voor de levering volgens de
+modaliteiten in de specifieke verkoopsvoorwaarden. (*)
+                    </td>
+                    <td>5.2</td>
+                    <td>
+                        <strong>Les commandes de marchandises passées par des particuliers</strong> doivent faire l’objet d’un paiement au plus tard la veille du jour de leur livraison et suivant les modalités reprises dans les conditions spécifiques de vente (*).
+                    </td>
+                </tr>
+                <tr>
+                    <td>5.3</td>
+                    <td>
+                        <strong>Betalingsachterstand :</strong> Elk bedrag dat onbetaald blijft op zijn vervaldag, zal van rechtswege en zonder ingebrekestelling, rente geven berekend op basis van het door de Nationale Bank van België op het moment van de uitgifte van de factuur toegepaste tarief voor voor-schotten in rekening-courant op overheidspapier, vermeerderd met 2%. In geval van niet-betaling op de vervaldag, behoudt de verkoper zich het recht voor het bedrag van de factuur met 10% te verhogen, de eventuele juridische kosten niet inbegrepen. Elke betalings-
+herinnering brengt de facturatie van een forfaitair bedrag van € 30 (excl. btw) mee om de hieruit voortvloeiende administratieve kosten te dekken. De verkoper behoudt tevens het recht alle beschikbare rechtsmiddelen te gebruiken om de verschuldigde betalingen te vorderen.
+                    </td>
+                    <td>5.3</td>
+                    <td>
+                        <strong>Retard de paiement :</strong> Toute somme non payée à l’échéance porte, de plein droit et sans mise en demeure, un intérêt au tarif appliqué par la Banque Nationale de Belgique au moment de l’émission de la facture, pour les avances en compte-courant sur des effets publics, majorés de 2%. En cas de non-paiement d’une facture à son échéance, le vendeur se réserve le droit d’augmenter son montant de 10%, non compris les frais judiciaires éventuels. Tout rappel de paiement occasionnera la facturation d’un montant forfaitaire de 30€ (htva) couvrant les frais administratifs en découlant. Le vendeur se réserve également le droit de recourir à tous les moyens légaux aux fins de recouvrement des paiements dus.
+                    </td>
+                </tr>
+                <tr>
+                    <td>5.4</td>
+                    <td>
+                        <strong>Opschorting van bestellingen: </strong>Bij gebrek aan betaling op de vervaldag, behoudt de verkoper zich het recht voor om de lopen-de bestellingen op te schorten, zonder verwittiging noch schade-vergoeding en onder behoud van al zijn rechten. De goederen blijven eigendom van de verkoper tot de volledige betaling van de betrokken factuur; het risico van verlies der goederen blijft ten laste van de koper. De betaalde voorschotten kunnen worden ingehouden om eventuele verliezen bij herverkoop te dekken.
+                    </td>
+                    <td>5.4</td>
+                    <td>
+                        <strong>Suspension des commandes :</strong> A défaut de paiement à l’échéance, le vendeur se réserve le droit de suspendre les commandes en cours, sans préavis ni indemnités et sous réserve de ses droits. Les marchandises resteront la propriété du vendeur jusqu’à l’acquitte-ment intégral de la facture qui s’y rapporte, étant bien entendu que les risques de perte des marchandises restent quant à eux à charge de l’acheteur. Les acomptes payés pourront être conservés pour couvrir les pertes éventuelles à la revente.
+                    </td>
+                </tr>
+                <tr height="10px;">
+                    <td/>
+                </tr>
+                <tr>
+                    <td>6.</td>
+                    <td>
+                        <strong>GESCHILLEN</strong><br/>
+Voor alle betwistingen of geschillen voortvloeiend uit de toepassing van dit contract, zal de Rechtbank van Brussel als enige bevoegd zijn. 
+                    </td>
+                    <td>6.</td>
+                    <td>
+                        <strong>LITIGES</strong><br/>
+En cas de contestation ou de litige portant sur l’application du présent contrat, les tribunaux de Bruxelles seront seuls compétents.
+                    </td>
+                </tr>
+                <tr height="10px;">
+                    <td/>
+                </tr>
+                <tr>
+                    <td>(*)</td>
+                    <td><strong>De specifieke voorwaarden verbonden aan de bestellingen,
+betalingen, toepasbare btw-tarieven, levering en beschik-
+baar stellen van materiaal aan de klant staan op de site
+www.fonteynethekitchen.be.</strong>
+                    </td>
+                    <td>(*)</td>
+                    <td><strong>Les modalités spécifiques liées aux commandes, aux paie-ments, aux montants de la tva applicable, à la livraison et à la mise à disposition de matériel au client sont disponibles sur le site www.fonteynethekitchen.be.</strong>
+                    </td>
+                </tr>
+            </table>
+        -->
+        </div>
+    <!--</t>-->
+</template>
+
+<template id="report_group_invoice">
+    <t t-call="report.html_container">
+        <t t-foreach="doc_ids" t-as="doc_id">
+            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'account_grouped_invoice.report_group_invoice_document')"/>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>

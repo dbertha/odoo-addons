@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--Tick scheduled action : rotate products-->
+        <record id="tick_in_rotation_scheduler" model="ir.cron">
+            <field name="name" >Rotation for rotating product</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root" />
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True" />
+            <field eval="'product.template'" name="model"></field>
+            <field eval="'tick'" name="function"/>
+            <field eval="''" name="args"/>
+            
+        </record>
+    
+    </data>
+</openerp>

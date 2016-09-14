@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="checkout_delivery_method" name="Delivery Costs" inherit_id="website_sale.checkout">
+            <xpath expr="//input[@name='email']" position="after">
+                 <input type="checkbox" name="accept_invoice" value="1"/>I want to receive invoice by mail<br/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
