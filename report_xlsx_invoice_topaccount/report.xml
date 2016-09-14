@@ -1,0 +1,9 @@
+<report
+    id="invoice_top_account_xlsx"
+    model="account.invoice"
+    string="Export to topAccount"
+    report_type="xlsx"
+    name="report.account.invoice.xlsx"
+    file="report.account.invoice.xlsx"
+    attachment_use="False"
+/>
