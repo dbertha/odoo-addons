@@ -29,12 +29,16 @@ class SaleOrder(osv.osv):
     def _delivery_unset(self, cr, uid, ids, context=None):
         #Overload to handle relational product with delivery product
         for so in self.browse(cr, SUPERUSER_ID, ids, context=context) :
+            _logger.debug("looking after accompanying product to remove with delivery line")
             companions_quantities = {}
             for line in so.order_line :
                 if line.is_delivery : #line to be removed in super call
+                    _logger.debug("delivery line find")
                     for companion_product in line.product_id.companion_product_ids :
+                        _logger.debug("companion product find : %s", companion_product.name)
                         companions_quantities[companion_product.id] = 0
             for companion_id, companion_quantity in companions_quantities.iteritems() :
+                _logger.debug("companion product to update, id : %s, quantity : %s", companion_id, companion_quantity)
                 self._cart_update(cr, uid, ids, product_id=companion_id, set_qty=companion_quantity, add_qty=-1)
         result = super(SaleOrder,self)._delivery_unset(cr,uid,ids, context=context)
         #self.pool['sale.order']._cart_update(cr, uid,ids, context=context)
