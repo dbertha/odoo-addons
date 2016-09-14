@@ -1,0 +1,3 @@
+[submodule "fonteyne_style"]
+	path = fonteyne_style
+	url = ssh://root@128.199.43.159:/var/git/odoo_fonteyne_style.git
