@@ -28,7 +28,7 @@ class SaleOrder(osv.osv):
     
     def _delivery_unset(self, cr, uid, ids, context=None):
         #Overload to handle relational product with delivery product
-        result = super(sale_order,self)._delivery_unset(cr,uid,ids, context=context)
+        result = super(SaleOrder,self)._delivery_unset(cr,uid,ids, context=context)
         self.pool['sale.order']._cart_update(cr, uid,ids, context=context)
         return result
     
