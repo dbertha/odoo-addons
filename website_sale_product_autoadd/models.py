@@ -37,10 +37,12 @@ class SaleOrder(osv.osv):
                     for companion_product in line.product_id.companion_product_ids :
                         _logger.debug("companion product find : %s", companion_product.name)
                         companions_quantities[companion_product.id] = 0
-            for companion_id, companion_quantity in companions_quantities.iteritems() :
+        result = super(SaleOrder,self)._delivery_unset(cr,uid,ids, context=context)
+        #we suppose only one SO
+        for companion_id, companion_quantity in companions_quantities.iteritems() :
                 _logger.debug("companion product to update, id : %s, quantity : %s", companion_id, companion_quantity)
                 self._cart_update(cr, uid, ids, product_id=companion_id, set_qty=companion_quantity, add_qty=-1)
-        result = super(SaleOrder,self)._delivery_unset(cr,uid,ids, context=context)
+        
         #self.pool['sale.order']._cart_update(cr, uid,ids, context=context)
         return result
     
