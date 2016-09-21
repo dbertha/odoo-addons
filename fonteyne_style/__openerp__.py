@@ -40,7 +40,6 @@
     # Technical options
     'demo': [],
     'test': [],
-    'installable': True,
     # 'auto_install':False,
     # 'active':True,
 
