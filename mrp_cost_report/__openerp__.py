@@ -5,8 +5,7 @@
 {
     'name': 'MRP bom cost upgrade',
     'version': '1.1',
-    'category': 'Manufacturing',
-    'sequence': 14,
+    'sequence': 10,
     'depends': ['mrp', 'report'],
     'description': """
 Upgrade Bom cost report with work center infos and custom fields
@@ -16,6 +15,6 @@ Upgrade Bom cost report with work center infos and custom fields
         #'views/report_mrpbomcost.xml',
     ],
     'installable': True,
-    'application': True,
+    'application': False,
     'auto_install': False,
 }
