@@ -2,6 +2,21 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from openerp import api, models
+from openerp.osv import fields, osv
+
+
+class mrp_bom(osv.osv):
+    """
+    Defines bills of material for a product.
+    """
+    _name = 'mrp.bom'
+    _inherit = 'mrp.bom'
+
+    def _prepare_consume_line(self, cr, uid, bom_line_id, quantity, context=None):
+        #"""add custom fields"""
+        res = super(mrp_bom,self)._prepare_consume_line(cr, uid, bom_line_id, quantity, context=context)
+        res.update({'x_percentage' : bom_line_id.x_percentage})
+        return res
 
 
 class MrpBomCost(models.AbstractModel):
