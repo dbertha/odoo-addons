@@ -17,5 +17,4 @@ This module add a column "total" in the cart, so each line has a total.
     ],
     'demo': [],
     'qweb': [],
-    'installable': True,
-}
+    'installable' : False,}

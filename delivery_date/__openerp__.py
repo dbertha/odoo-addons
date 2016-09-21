@@ -35,6 +35,6 @@
     'data': ['delivery_date_view.xml', 'delivery_date.xml'],
     'demo': [], #TODO
     'test': [], #TODO
-    'installable': True,
+    'installable' : False,
     'auto_install': False,
 }

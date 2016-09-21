@@ -19,4 +19,5 @@
         'base',
         'report_xlsx'
     ],
+    'installable' : False,
 }

@@ -12,5 +12,4 @@
         'views/ogone.xml',
         'views/payment_acquirer.xml',
     ],
-    'installable': True,
-}
+    'installable' : False,}

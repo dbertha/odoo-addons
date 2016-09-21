@@ -11,7 +11,7 @@
 
     'author': "David Bertha",
     'website': "",
-
+    'installable' : False,
 
     'category': 'Uncategorized',
     'version': '0.1',

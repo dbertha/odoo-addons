@@ -13,7 +13,7 @@
 
     'author': "David Bertha",
     'website': "www.github.com/dbertha",
-
+    'installable' : False,
 
     'category': 'Uncategorized',
     'version': '0.1',
