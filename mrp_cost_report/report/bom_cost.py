@@ -16,9 +16,10 @@ class mrp_bom(osv.osv):
 
     def _prepare_consume_line(self, cr, uid, bom_line_id, quantity, context=None):
         #"""add custom fields"""
-        _logger.info("overloaded consume_line")
+        
         res = super(mrp_bom,self)._prepare_consume_line(cr, uid, bom_line_id, quantity, context=context)
         res.update({'x_percentage' : bom_line_id.x_percentage})
+        _logger.info("overloaded consume_line, res : %s", res)
         return res
 
 
