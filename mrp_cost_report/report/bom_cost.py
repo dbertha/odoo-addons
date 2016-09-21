@@ -3,6 +3,8 @@
 
 from openerp import api, models
 from openerp.osv import fields, osv
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class mrp_bom(osv.osv):
@@ -14,6 +16,7 @@ class mrp_bom(osv.osv):
 
     def _prepare_consume_line(self, cr, uid, bom_line_id, quantity, context=None):
         #"""add custom fields"""
+        _logger.info("overloaded consume_line")
         res = super(mrp_bom,self)._prepare_consume_line(cr, uid, bom_line_id, quantity, context=context)
         res.update({'x_percentage' : bom_line_id.x_percentage})
         return res
