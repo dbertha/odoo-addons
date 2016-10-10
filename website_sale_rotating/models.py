@@ -80,8 +80,8 @@ class product_template(osv.Model):
         _logger.debug("entrees : %s", entrees_ids)
         chosen_plats_ids = random.sample(plats_ids, 7)
         chosen_entrees_ids = random.sample(entrees_ids, 7)
-        entrees_desc = u'SEMAINE' + str(weeknumber) + '\nLes entrées de la semaine : \n'
-        plats_desc = u'\nLes plats de la semaine : \n'
+        entrees_desc = 'SEMAINE' + str(weeknumber) + '\nLes entrées de la semaine : \n'
+        plats_desc = '\nLes plats de la semaine : \n'
         for index in range(0,3) :
             entrees_desc += unicode(self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name, 'utf-8') + '\n'
             plats_desc += unicode(self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name, 'utf-8') + '\n'
