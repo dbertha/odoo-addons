@@ -3,6 +3,7 @@
 from openerp import SUPERUSER_ID
 from openerp import models
 from openerp.osv import osv, fields
+import random
 
 
 import logging
@@ -68,6 +69,29 @@ class product_template(osv.Model):
         """Set the published attribute of the product of that weeknumber to True"""
         product_ids = self.search(cr, uid, 
                             [('website_published', '=', False), ('week_number', '=', weeknumber)], context=context)
+        #custom : elect some products to be the boxes content
+        plats_ids = self.search(cr, uid, 
+                            ['&',('website_published', '=', False), '&', 
+                             ('week_number', '=', weeknumber), ('public_categ_ids', 'in', [42])], context=context)
+        entrees_ids = self.search(cr, uid, 
+                            ['&',('website_published', '=', False), '&', 
+                             ('week_number', '=', weeknumber), ('public_categ_ids', 'in', [41])], context=context)
+        _logger.debug("plats : %s", plats_ids)
+        _logger.debug("entrees : %s", entrees_ids)
+        chosen_plats_ids = random.sample(plats_ids, 7)
+        chosen_entrees_ids = random.sample(entrees_ids, 7)
+        entrees_desc = 'SEMAINE' + weeknumber + '\nLes entrées de la semaine : \n'
+        plats_desc = '\nLes plats de la semaine : \n'
+        for index in range(0,3) :
+            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name + '\n'
+            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name + '\n'
+        self.write(cr, uid, [3708], {'description_sale' : entrees_desc + plats_desc},context=context) #Box 3/7
+        for index in range(3,5) :
+            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name + '\n'
+            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name + '\n'
+        self.write(cr, uid, [3707], {'description_sale' : entrees_desc + plats_desc},context=context) #Box 5/7
+        
+        #end custom
         _logger.debug("number of articles with week %d : %d", weeknumber, len(product_ids))
         #TODO : more efficient : write method with ids
         for product in self.browse(cr, uid, product_ids, context=context) :
