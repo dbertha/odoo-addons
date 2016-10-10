@@ -15,7 +15,7 @@
     'author': "Six vallées",
     'website': "http://sixvallees.com",
 
-    'installable' : False,
+
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
     # for the full list
@@ -40,6 +40,7 @@
     # Technical options
     'demo': [],
     'test': [],
+    'installable': True,
     # 'auto_install':False,
     # 'active':True,
 

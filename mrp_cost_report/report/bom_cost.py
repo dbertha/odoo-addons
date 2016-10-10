@@ -55,7 +55,7 @@ class MrpBomCost(models.AbstractModel):
                     line_product = self.env['product.product'].browse(bom_line['product_id'])
                     price_uom = self.env['product.uom']._compute_qty(line_product.uom_id.id, line_product.standard_price, bom_line['product_uom'])
                     line = {
-                        'percentage': bom_line.x_percentage,
+                        'percentage': bom_line['x_percentage'],
                         'product_id': line_product,
                         'seller' : line_product.seller_ids and line_product.seller_ids[0].display_name or '',
                         'product_uom_qty': bom_line['product_qty'],
