@@ -83,12 +83,14 @@ class product_template(osv.Model):
         entrees_desc = 'SEMAINE' + str(weeknumber) + '\nLes entrées de la semaine : \n'
         plats_desc = '\nLes plats de la semaine : \n'
         for index in range(0,3) :
-            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name.decode('utf-8') + '\n'
-            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name.decode('utf-8') + '\n'
+            name = self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name
+            _logger.debug("entree name type, str : %s # %s # %s", name, type(name), str(name))
+            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name + '\n'
+            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name + '\n'
         self.write(cr, uid, [3708], {'description_sale' : entrees_desc + plats_desc},context=context) #Box 3/7
         for index in range(3,5) :
-            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name.decode('utf-8') + '\n'
-            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name.decode('utf-8') + '\n'
+            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name + '\n'
+            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name + '\n'
         self.write(cr, uid, [3707], {'description_sale' : entrees_desc + plats_desc},context=context) #Box 5/7
         
         #end custom
