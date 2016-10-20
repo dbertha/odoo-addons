@@ -80,19 +80,30 @@ class product_template(osv.Model):
         _logger.debug("entrees : %s", entrees_ids)
         chosen_plats_ids = random.sample(plats_ids, 7)
         chosen_entrees_ids = random.sample(entrees_ids, 7)
-        entrees_desc = u'SEMAINE' + unicode(weeknumber) + u'\nLes entrées de la semaine : \n'
-        plats_desc = u'\nLes plats de la semaine : \n'
+        fr_context = dict(context)
+        fr_context['lang'] = 'fr_BE'
+        nl_context = dict(context)
+        nl_context['lang'] = 'nl_BE'
+        entrees_desc_nl = u'WEEK ' + unicode(weeknumber) + u'\nVOORGERECHTEN : \n'
+        plats_desc_nl = u'\nHOOFDGERECHTEN : \n'
+        entrees_desc_fr = u'SEMAINE ' + unicode(weeknumber) + u'\nLes entrées de la semaine : \n'
+        plats_desc_fr = u'\nLes plats de la semaine : \n'
         for index in range(0,3) :
             name = self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name
             _logger.debug("entree name type : %s # %s", name, type(name))
-            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name + u'\n'
-            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name + u'\n'
-        self.write(cr, uid, [3708], {'description_sale' : entrees_desc + plats_desc},context=context) #Box 3/7
+            entrees_desc_fr += self.browse(cr, uid, chosen_entrees_ids[index], context=fr_context)[0].name + u'\n'
+            plats_desc_fr += self.browse(cr, uid, chosen_plats_ids[index], context=fr_context)[0].name + u'\n'
+            entrees_desc_nl += self.browse(cr, uid, chosen_entrees_ids[index], context=nl_context)[0].name + u'\n'
+            plats_desc_nl += self.browse(cr, uid, chosen_plats_ids[index], context=nl_context)[0].name + u'\n'
+        self.write(cr, uid, [3708], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 3/7
+        self.write(cr, uid, [3708], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 3/7
         for index in range(3,5) :
-            entrees_desc += self.browse(cr, uid, chosen_entrees_ids[index], context=context)[0].name + u'\n'
-            plats_desc += self.browse(cr, uid, chosen_plats_ids[index], context=context)[0].name + u'\n'
-        self.write(cr, uid, [3707], {'description_sale' : entrees_desc + plats_desc},context=context) #Box 5/7
-        
+            entrees_desc_fr += self.browse(cr, uid, chosen_entrees_ids[index], context=fr_context)[0].name + u'\n'
+            plats_desc_fr += self.browse(cr, uid, chosen_plats_ids[index], context=fr_context)[0].name + u'\n'
+            entrees_desc_nl += self.browse(cr, uid, chosen_entrees_ids[index], context=nl_context)[0].name + u'\n'
+            plats_desc_nl += self.browse(cr, uid, chosen_plats_ids[index], context=nl_context)[0].name + u'\n'
+        self.write(cr, uid, [3707], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 5/7
+        self.write(cr, uid, [3707], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 5/7
         #end custom
         _logger.debug("number of articles with week %d : %d", weeknumber, len(product_ids))
         #TODO : more efficient : write method with ids
