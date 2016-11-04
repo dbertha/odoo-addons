@@ -67,6 +67,7 @@ class product_template(osv.Model):
     
     def publish_tagged_products(self, cr, uid, ids, weeknumber, context=None):
         """Set the published attribute of the product of that weeknumber to True"""
+        context = context or {}
         product_ids = self.search(cr, uid, 
                             [('website_published', '=', False), ('week_number', '=', weeknumber)], context=context)
         #custom : elect some products to be the boxes content
