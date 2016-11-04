@@ -77,9 +77,10 @@ class product_template(osv.Model):
         name_query = ['|', '|', '|']
         for name in ['potage', 'minestrone', 'veloute', 'bouillon'] :
             name_query.append(('name', 'ilike', name));
-        entree_query = ['&'].extend(['&',('website_published', '=', False), '&', 
+        entree_query = ['&']
+        entree_query.extend(['&',('website_published', '=', False), '&', 
                              ('week_number', '=', weeknumber), ('public_categ_ids', 'in', [41])])
-        entree_query = entree_query.extend(name_query)
+        entree_query.extend(name_query)
         entrees_ids = self.search(cr, uid, entree_query
                             , context=context)
         _logger.debug("entree query and count : %s # %s", str(entree_query), len(entrees_ids))
