@@ -49,7 +49,7 @@
                 </form>
             </field>
         </record>
-        <record id="action_delivery_blocked_dates_form" model="ir.actions.act_window">
+        <record id="action_view_delivery_blocked_dates_form" model="ir.actions.act_window">
             <field name="name">Delivery Blocked Dates</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">delivery.blocked_date</field>
@@ -63,7 +63,7 @@
               </p>
             </field>
         </record>
-        <menuitem action="action_delivery_blocked_dates_form" id="menu_delivery_blocked_dates_form" parent="delivery.menu_delivery"/>
+        <menuitem action="action_view_delivery_blocked_dates_form" id="menu_view_delivery_blocked_dates_form" parent="delivery.menu_delivery"/>
 
     
     
