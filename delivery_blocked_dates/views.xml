@@ -63,7 +63,7 @@
               </p>
             </field>
         </record>
-        <menuitem action="action_delivery_blocked_dates_form" id="action_delivery_blocked_dates_form" parent="delivery.menu_delivery"/>
+        <menuitem action="action_delivery_blocked_dates_form" id="menu_delivery_blocked_dates_form" parent="delivery.menu_delivery"/>
 
     
     
