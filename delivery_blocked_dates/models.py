@@ -41,7 +41,7 @@ class DeliveryBlockedDate(osv.osv) :
     
     def _name_get(self, cr, uid, ids, name, arg, context=None) :
         result = dict.fromkeys(ids, False)
-        for blocked_date in self.browse(cr, uid, ids, context=context) :
+        for blocked_date in self.browse(cr, SUPERUSER_ID, ids, context=context) :
             computed_name = "{0}/{1}/{2} ".format(blocked_date.day, blocked_date.month, blocked_date.year)
             computed_name += blocked_date.carrier_id and blocked_date.carrier_id.name or ''
             computed_name += " "
@@ -95,10 +95,10 @@ class SaleOrder(osv.osv):
                         '&', ['carrier_id', '=', False], ['condition_id', '=', False],
                         #for any delivery carrier or condition
                         ]
-        forbidden_days_ids = self.pool['delivery.blocked_date'].search(cr, uid, search_domain, context=context)
+        forbidden_days_ids = self.pool['delivery.blocked_date'].search(cr, SUPERUSER_ID, search_domain, context=context)
         tzone = timezone('Europe/Brussels') #TODO : timezone usefull here ?
         _logger.debug(forbidden_days_ids)
-        for forbidden_day in self.pool['delivery.blocked_date'].browse(cr, uid, forbidden_days_ids) :
+        for forbidden_day in self.pool['delivery.blocked_date'].browse(cr, SUPERUSER_ID, forbidden_days_ids) :
             min_datetime = tzone.localize(datetime(forbidden_day.year, forbidden_day.month, forbidden_day.day, 0, 0))
             _logger.debug(min_datetime)
             today = date.today()
