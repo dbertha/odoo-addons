@@ -103,8 +103,8 @@ class SaleOrder(osv.osv):
             _logger.debug(min_datetime)
             today = date.today()
             should_be_add = min_datetime > tzone.localize(datetime(today.year, today.month, today.day))  #in the future
-            if min_date : should_be_add = should_be_add and tzone.localize(datetime(*min_date)) < min_datetime
-            if max_date : should_be_add = should_be_add and tzone.localize(datetime(*max_date)) > min_datetime
+            if min_date : should_be_add = should_be_add and tzone.localize(datetime(*min_date)).replace(hour=0, minute=0) <= min_datetime
+            if max_date : should_be_add = should_be_add and tzone.localize(datetime(*max_date)).replace(hour=23, minute=0) > min_datetime
             #TODO : check if date not already in blocked intervals
             if should_be_add :
                 start_of_interval = [min_datetime.year, min_datetime.month, min_datetime.day, 0, 0]
