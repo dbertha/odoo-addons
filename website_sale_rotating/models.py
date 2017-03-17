@@ -105,6 +105,8 @@ class product_template(osv.Model):
             plats_desc_nl += self.browse(cr, uid, chosen_plats_ids[index], context=nl_context)[0].name + u'\n'
         self.write(cr, uid, [3708], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 3/7
         self.write(cr, uid, [3708], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 3/7
+        self.write(cr, uid, [3729], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 3/7 the horizon
+        self.write(cr, uid, [3729], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 3/7 the horizon
         for index in range(3,5) :
             entrees_desc_fr += self.browse(cr, uid, chosen_entrees_ids[index], context=fr_context)[0].name + u'\n'
             plats_desc_fr += self.browse(cr, uid, chosen_plats_ids[index], context=fr_context)[0].name + u'\n'
@@ -112,6 +114,8 @@ class product_template(osv.Model):
             plats_desc_nl += self.browse(cr, uid, chosen_plats_ids[index], context=nl_context)[0].name + u'\n'
         self.write(cr, uid, [3707], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 5/7
         self.write(cr, uid, [3707], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 5/7
+        self.write(cr, uid, [3730], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 5/7 the horizon
+        self.write(cr, uid, [3730], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 5/7 the horizon
         for index in range(5,7) :
             entrees_desc_fr += self.browse(cr, uid, chosen_entrees_ids[index], context=fr_context)[0].name + u'\n'
             plats_desc_fr += self.browse(cr, uid, chosen_plats_ids[index], context=fr_context)[0].name + u'\n'
@@ -119,6 +123,8 @@ class product_template(osv.Model):
             plats_desc_nl += self.browse(cr, uid, chosen_plats_ids[index], context=nl_context)[0].name + u'\n'
         self.write(cr, uid, [3742], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 7/7
         self.write(cr, uid, [3742], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 7/7
+        self.write(cr, uid, [3741], {'description_sale' : entrees_desc_fr + plats_desc_fr},context=fr_context) #Box 7/7 the horizon
+        self.write(cr, uid, [3741], {'description_sale' : entrees_desc_nl + plats_desc_nl},context=nl_context) #Box 7/7 the horizon
         #end custom
         _logger.debug("number of articles with week %d : %d", weeknumber, len(product_ids))
         #TODO : more efficient : write method with ids
