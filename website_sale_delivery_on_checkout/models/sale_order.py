@@ -1,38 +1,46 @@
 # -*- coding: utf-8 -*-
+import logging
 
 from openerp.osv import orm, fields
 from openerp import SUPERUSER_ID
 from openerp.addons import decimal_precision
-from openerp.addons.web.http import request
-import logging
+from openerp.exceptions import ValidationError
+from openerp.tools.translate import _
+
 
 _logger = logging.getLogger(__name__)
+
+
 class delivery_carrier(orm.Model):
-    _inherit = 'delivery.carrier'
+    _name = 'delivery.carrier'
+    _inherit = ['delivery.carrier', 'website.published.mixin']
+
     _columns = {
-        'website_published': fields.boolean('Available in the website', copy=False),
-        'website_description': fields.text('Description for the website'),
+        'website_description': fields.related('product_id', 'description_sale', type="text", string='Description for Online Quotations'),
     }
     _defaults = {
-        'website_published': True
+        'website_published': False
     }
 
 
 class SaleOrder(orm.Model):
     _inherit = 'sale.order'
 
-    def _amount_all_wrapper(self, cr, uid, ids, field_name, arg, context=None):        
-        """ Wrapper because of direct method passing as parameter for function fields """
-        return self._amount_all(cr, uid, ids, field_name, arg, context=context)
-
-    def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
-        res = super(SaleOrder, self)._amount_all(cr, uid, ids, field_name, arg, context=context)
-        currency_pool = self.pool.get('res.currency')
+    def _amount_delivery(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
         for order in self.browse(cr, uid, ids, context=context):
-            line_amount = sum([line.price_subtotal for line in order.order_line if line.is_delivery])
-            currency = order.pricelist_id.currency_id
-            res[order.id]['amount_delivery'] = currency_pool.round(cr, uid, currency, line_amount)
+            res[order.id] = {}
+            res[order.id]['amount_delivery'] = sum([line.price_subtotal for line in order.order_line if line.is_delivery])
         return res
+
+    def _has_delivery(self, cr, uid, ids, field_name, arg, context=None):
+        result = dict.fromkeys(ids, False)
+        for so in self.browse(cr, uid, ids, context=context):
+            for line in so.order_line:
+                if line.is_delivery:
+                    result[so.id] = True
+                    break
+        return result
 
     def _get_order(self, cr, uid, ids, context=None):
         result = {}
@@ -42,13 +50,21 @@ class SaleOrder(orm.Model):
 
     _columns = {
         'amount_delivery': fields.function(
-            _amount_all_wrapper, type='float', digits_compute=decimal_precision.get_precision('Account'),
+            _amount_delivery, type='float', digits=0,
             string='Delivery Amount',
             store={
                 'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line'], 10),
                 'sale.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
             },
             multi='sums', help="The amount without tax.", track_visibility='always'
+        ),
+        'has_delivery': fields.function(
+            _has_delivery, type='boolean', string='Has delivery',
+            store={
+                'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line'], 10),
+                'sale.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
+            },
+            help="Has an order line set for delivery"
         ),
         'website_order_line': fields.one2many(
             'sale.order.line', 'order_id',
@@ -60,10 +76,11 @@ class SaleOrder(orm.Model):
 
     def _check_carrier_quotation(self, cr, uid, order, force_carrier_id=None, context=None):
         carrier_obj = self.pool.get('delivery.carrier')
+
         # check to add or remove carrier_id
         if not order:
             return False
-        if all(line.product_id.type == "service" for line in order.website_order_line):
+        if all(line.product_id.type in ("service", "digital") for line in order.website_order_line):
             order.write({'carrier_id': None})
             self.pool['sale.order']._delivery_unset(cr, SUPERUSER_ID, [order.id], context=context)
             return True
@@ -78,35 +95,49 @@ class SaleOrder(orm.Model):
                     carrier_ids.insert(0, carrier_id)
             if force_carrier_id or not carrier_id or not carrier_id in carrier_ids:
                 for delivery_id in carrier_ids:
-                    grid_id = carrier_obj.grid_get(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id.id, context=context) #transmit context
-                    if grid_id:
+                    carrier = carrier_obj.verify_carrier(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id)
+                    if carrier:
                         carrier_id = delivery_id
                         break
                 order.write({'carrier_id': carrier_id})
             if carrier_id:
-                self.pool['sale.order'].delivery_set(cr, SUPERUSER_ID, [order.id], context=context) #transmit context
+                order.delivery_set()
             else:
-                order._delivery_unset()                 
-        _logger.debug('force carrier id : %s carrier_id : %s', force_carrier_id, carrier_id)   
-        return force_carrier_id == carrier_id if force_carrier_id else bool(carrier_id)
+                order._delivery_unset()
+
+        return bool(carrier_id)
 
     def _get_delivery_methods(self, cr, uid, order, context=None):
         carrier_obj = self.pool.get('delivery.carrier')
-        delivery_ids = carrier_obj.search(cr, uid, [('website_published','=',True)], context=context)
+        carrier_ids = carrier_obj.search(cr, SUPERUSER_ID, [('website_published', '=', True)], context=context)
+        available_carrier_ids = []
         # Following loop is done to avoid displaying delivery methods who are not available for this order
         # This can surely be done in a more efficient way, but at the moment, it mimics the way it's
         # done in delivery_set method of sale.py, from delivery module
-        for delivery_id in carrier_obj.browse(cr, SUPERUSER_ID, delivery_ids, context=dict(context, order_id=order.id)):
-            if not delivery_id.available:
-                delivery_ids.remove(delivery_id.id)
-        return delivery_ids
+
+        new_context = dict(context, order_id=order.id)
+        for carrier in carrier_ids:
+
+            try:
+                _logger.debug("Checking availability of carrier #%s" % carrier)
+                available = carrier_obj.read(cr, SUPERUSER_ID, [carrier], fields=['available'], context=new_context)[0]['available']
+                if available:
+                    available_carrier_ids = available_carrier_ids + [carrier]
+            except ValidationError as e:
+                # RIM: hack to remove in master, because available field should not depend on a SOAP call to external shipping provider
+                # The validation error is used in backend to display errors in fedex config, but should fail silently in frontend
+                _logger.debug("Carrier #%s removed from e-commerce carrier list. %s" % (carrier, e))
+
+        return available_carrier_ids
 
     def _get_errors(self, cr, uid, order, context=None):
         errors = super(SaleOrder, self)._get_errors(cr, uid, order, context=context)
         if not self._get_delivery_methods(cr, uid, order, context=context):
-            errors.append(('No delivery method available', 'There is no available delivery method for your order'))            
+            errors.append(
+                (_('Sorry, we are unable to ship your order'),
+                 _('No shipping method is available for your current order and shipping address. '
+                   'Please contact us for more information.')))
         return errors
-
 
     def _get_website_data(self, cr, uid, order, context=None):
         """ Override to add delivery-related website data. """
@@ -126,76 +157,44 @@ class SaleOrder(orm.Model):
         values['deliveries'] = DeliveryCarrier.browse(cr, SUPERUSER_ID, delivery_ids, context=delivery_ctx)
         return values
 
-class website(orm.Model):
-    _inherit = 'website'
-    #override for logging :
-    
-    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
-        sale_order_obj = self.pool['sale.order']
-        sale_order_id = request.session.get('sale_order_id')
-        sale_order = None
-        # create so if needed
-        if not sale_order_id and (force_create or code):  
-            _logger.debug("creating new order")
-            # TODO cache partner_id session
-            partner = self.pool['res.users'].browse(cr, SUPERUSER_ID, uid, context=context).partner_id
+    def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
+        """ Override to update carrier quotation if quantity changed """
 
-            for w in self.browse(cr, uid, ids):
-                values = {
-                    'user_id': w.user_id.id,
-                    'partner_id': partner.id,
-                    'pricelist_id': partner.property_product_pricelist.id,
-                    'section_id': self.pool.get('ir.model.data').get_object_reference(cr, uid, 'website', 'salesteam_website_sales')[1],
-                }
-                sale_order_id = sale_order_obj.create(cr, SUPERUSER_ID, values, context=context)
-                values = sale_order_obj.onchange_partner_id(cr, SUPERUSER_ID, [], partner.id, context=context)['value']
-                sale_order_obj.write(cr, SUPERUSER_ID, [sale_order_id], values, context=context)
-                request.session['sale_order_id'] = sale_order_id
-        if sale_order_id:
-            # TODO cache partner_id session
-            partner = self.pool['res.users'].browse(cr, SUPERUSER_ID, uid, context=context).partner_id
+        self._delivery_unset(cr, uid, ids, context=context)
 
-            sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order_id, context=context)
-            if not sale_order.exists():
-                request.session['sale_order_id'] = None
-                return None
-            # check for change of pricelist with a coupon
-            if code and code != sale_order.pricelist_id.code:
-                pricelist_ids = self.pool['product.pricelist'].search(cr, SUPERUSER_ID, [('code', '=', code)], context=context)
-                if pricelist_ids:
-                    pricelist_id = pricelist_ids[0]
-                    request.session['sale_order_code_pricelist_id'] = pricelist_id
-                    update_pricelist = True
+        # When you update a cart, it is not enouf to remove the "delivery cost" line
+        # The carrier might also be invalid, eg: if you bought things that are too heavy
+        # -> this may cause a bug if you go to the checkout screen, choose a carrier,
+        #    then update your cart (the cart becomes uneditable)
+        self.write(cr, uid, ids, {'carrier_id': False}, context=context)
 
-            pricelist_id = request.session.get('sale_order_code_pricelist_id') or partner.property_product_pricelist.id
+        values = super(SaleOrder, self)._cart_update(
+            cr, uid, ids, product_id, line_id, add_qty, set_qty, context, **kwargs)
 
-            # check for change of partner_id ie after signup
-            if sale_order.partner_id.id != partner.id and request.website.partner_id.id != partner.id:
-                flag_pricelist = False
-                if pricelist_id != sale_order.pricelist_id.id:
-                    flag_pricelist = True
-                fiscal_position = sale_order.fiscal_position and sale_order.fiscal_position.id or False
+        if add_qty or set_qty is not None:
+            for sale_order in self.browse(cr, uid, ids, context=context):
+                self._check_carrier_quotation(cr, uid, sale_order, context=context)
 
-                values = sale_order_obj.onchange_partner_id(cr, SUPERUSER_ID, [sale_order_id], partner.id, context=context)['value']
-                if values.get('fiscal_position'):
-                    order_lines = map(int,sale_order.order_line)
-                    values.update(sale_order_obj.onchange_fiscal_position(cr, SUPERUSER_ID, [],
-                        values['fiscal_position'], [[6, 0, order_lines]], context=context)['value'])
+        return values
 
-                values['partner_id'] = partner.id
-                sale_order_obj.write(cr, SUPERUSER_ID, [sale_order_id], values, context=context)
+    def _get_shipping_country(self, cr, uid, values, context=None):
+        country_ids = set()
+        state_ids = set()
+        values['shipping_countries'] = values['countries']
+        values['shipping_states'] = values['states']
 
-                if flag_pricelist or values.get('fiscal_position') != fiscal_position:
-                    update_pricelist = True
-            # update the pricelist
-            if update_pricelist:
-                values = {'pricelist_id': pricelist_id}
-                values.update(sale_order.onchange_pricelist_id(pricelist_id, None)['value'])
-                sale_order.write(values)
-                for line in sale_order.order_line:
-                    sale_order._cart_update(product_id=line.product_id.id, line_id=line.id, add_qty=0)
-            # update browse record
-            if (code and code != sale_order.pricelist_id.code) or sale_order.partner_id.id !=  partner.id:
-                sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order.id, context=context)
-        
-        return sale_order
+        DeliveryCarrier = self.pool['delivery.carrier']
+        delivery_carrier_ids = DeliveryCarrier.search(cr, SUPERUSER_ID, [('website_published', '=', True)], context=context)
+        for carrier in DeliveryCarrier.browse(cr, SUPERUSER_ID, delivery_carrier_ids, context):
+            if not carrier.country_ids and not carrier.state_ids:
+                return values
+            # Authorized shipping countries
+            country_ids = country_ids|set(carrier.country_ids.ids)
+            # Authorized shipping countries without any state restriction
+            state_country_ids = [country.id for country in carrier.country_ids if country.id not in carrier.state_ids.mapped('country_id.id')]
+            # Authorized shipping states + all states from shipping countries without any state restriction
+            state_ids = state_ids|set(carrier.state_ids.ids)|set(values['states'].filtered(lambda r: r.country_id.id in state_country_ids).ids)
+
+        values['shipping_countries'] = values['countries'].filtered(lambda r: r.id in list(country_ids))
+        values['shipping_states'] = values['states'].filtered(lambda r: r.id in list(state_ids))
+        return values

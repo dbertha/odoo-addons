@@ -22,5 +22,5 @@ website_sale_delivery module from OpenERP SA modified to move delivery method ch
     ],
     'demo': [],
     'qweb': [],
-    'installable' : False,
+    'installable' : True,
 }
