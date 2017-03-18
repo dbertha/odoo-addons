@@ -70,7 +70,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         # return request.website.render("website_sale.checkout", values)
     
-        def order_lines_2_google_api(self, order_lines):
+    def order_lines_2_google_api(self, order_lines):
         """ Transforms a list of order lines into a dict for google analytics """
         order_lines_not_delivery = [line for line in order_lines if not line.is_delivery]
         return super(website_sale, self).order_lines_2_google_api(order_lines_not_delivery)
