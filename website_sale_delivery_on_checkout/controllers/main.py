@@ -22,6 +22,9 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         order = request.website.sale_get_order(context=context)
         _logger.debug("checkout values order : " + str(order))
         values.update(sale_order_obj._get_website_data(cr, uid, order, context))
+        values.update({
+            'website_sale_order': order
+        })
         _logger.debug("checkout values : " + str(values))
         return request.env['sale.order']._get_shipping_country(values)
 
