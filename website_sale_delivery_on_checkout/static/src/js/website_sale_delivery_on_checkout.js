@@ -4,7 +4,7 @@ $(document).ready(function () {
     var $carrier = $("#delivery_carrier");
     $carrier.find("input[name='delivery_type']").click(function (ev) {
         var carrier_id = $(ev.currentTarget).val();
-        window.location.href = '/shop/payment?carrier_id=' + carrier_id;
+        window.location.href = '/shop/checkout?carrier_id=' + carrier_id;
     });
 
     $(".oe_website_sale select[name='shipping_id']").on('change', function () {
