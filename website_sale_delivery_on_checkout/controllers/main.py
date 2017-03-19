@@ -36,7 +36,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             if carrier_id:
                 #refresh page with new delivery method
                 return request.redirect("/shop/checkout")
-
+        _logger.debug("will call original checkout func")
         res = super(website_sale, self).checkout(**post)
         return res
 
