@@ -42,7 +42,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         res = super(website_sale, self).checkout(**post)
         return res
 
-    
+    #TODO : carrier should be checked in checkout_form_validate : 
+    #maybe the data in the form invalid the carrier
 
     
     def order_lines_2_google_api(self, order_lines):
