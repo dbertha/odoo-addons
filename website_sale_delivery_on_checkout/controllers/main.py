@@ -15,7 +15,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
     @http.route(['/shop/checkout'], type='http', auth="public", website=True)
     def checkout(self, **post):
-
+        _logger.debug("overloaded checkout")
         cr, uid, context = request.cr, request.uid, request.context
         order = request.website.sale_get_order(context=context)
         carrier_id = post.get('carrier_id')
