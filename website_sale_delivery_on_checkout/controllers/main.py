@@ -17,7 +17,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         """Overload to add delivery data"""
         values = super(website_sale, self).checkout_values(data)
         sale_order_obj = request.registry.get('sale.order')
-        order = request.website.sale_get_order(context=context)
+        order = request.website.sale_get_order(context=request.context)
         _logger.debug("checkout values order : " + str(order))
         values.update(sale_order_obj._get_website_data(cr, uid, order, context))
         _logger.debug("checkout values : " + str(values))
