@@ -156,7 +156,7 @@ class SaleOrder(orm.Model):
 
         values['deliveries'] = DeliveryCarrier.browse(cr, SUPERUSER_ID, delivery_ids, context=delivery_ctx)
         _logger.debug("website data : %s" % str(values))
-        _logger.debug("price attr : %s" % str([deivery.price for delivery in values['deliveries']]))
+        _logger.debug("price attr : %s" % str([delivery.price for delivery in values['deliveries']]))
         return values
 
     def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
