@@ -127,7 +127,7 @@ class SaleOrder(orm.Model):
                 # RIM: hack to remove in master, because available field should not depend on a SOAP call to external shipping provider
                 # The validation error is used in backend to display errors in fedex config, but should fail silently in frontend
                 _logger.debug("Carrier #%s removed from e-commerce carrier list. %s" % (carrier, e))
-
+        _logger.debug("Available carriers : %s" % carrier)
         return available_carrier_ids
 
     def _get_errors(self, cr, uid, order, context=None):
