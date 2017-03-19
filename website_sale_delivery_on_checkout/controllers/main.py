@@ -21,7 +21,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         _logger.debug("checkout values order : " + str(order))
         values.update(sale_order_obj._get_website_data(cr, uid, order, context))
         _logger.debug("checkout values : " + str(values))
-        return return request.env['sale.order']._get_shipping_country(values)
+        return request.env['sale.order']._get_shipping_country(values)
 
     @http.route(['/shop/checkout'], type='http', auth="public", website=True)
     def checkout(self, **post):
