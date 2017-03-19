@@ -13,6 +13,16 @@ import logging
 _logger = logging.getLogger(__name__)
 class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
+    def checkout_values(self, data=None):
+        """Overload to add delivery data"""
+        values = super(website_sale, self).checkout_values(data)
+        sale_order_obj = request.registry.get('sale.order')
+        order = request.website.sale_get_order(context=context)
+        _logger.debug("checkout values order : " + str(order))
+        values.update(sale_order_obj._get_website_data(cr, uid, order, context))
+        _logger.debug("checkout values : " + str(values))
+        return values
+
     @http.route(['/shop/checkout'], type='http', auth="public", website=True)
     def checkout(self, **post):
         _logger.debug("overloaded checkout")
@@ -30,15 +40,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         res = super(website_sale, self).checkout(**post)
         return res
 
-    def checkout_values(self, data=None):
-        """Overload to add delivery data"""
-        values = super(website_sale, self).checkout_values(data)
-        sale_order_obj = request.registry.get('sale.order')
-        order = request.website.sale_get_order(context=context)
-        _logger.debug("checkout values order : " + str(order))
-        values.update(sale_order_obj._get_website_data(cr, uid, order, context))
-        _logger.debug("checkout values : " + str(values))
-        return values
+    
 
 
         # cr, uid, context = request.cr, request.uid, request.context
