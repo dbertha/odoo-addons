@@ -91,11 +91,11 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     def checkout_form_validate(self, data):
         _logger.debug("Validating form")
         error, error_messages = super(website_sale, self).checkout_form_validate(data)
-        if not data.get("delivery_datetime_start") : 
+        if not data.get("requested_date") : 
             _logger.debug("form validate : delivery date missing")
             error['delivery_date'] = 'missing'
             error_messages.append('Delivery date is missing')
-        elif not self.check_date_validity(data.get('delivery_datetime_start')) :
+        elif not self.check_date_validity(data.get('requested_date')) :
             _logger.debug("form validate : delivery date not correct")
             error['delivery_date'] = 'notAcceptable'
             error_messages.append('Delivery date is out of the allowed range')
