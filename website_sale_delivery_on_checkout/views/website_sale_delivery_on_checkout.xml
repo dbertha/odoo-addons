@@ -24,8 +24,7 @@
 
     <template id="checkout_delivery_method" name="Delivery Costs" inherit_id="website_sale.checkout">
         <xpath expr="//form/div[contains(@class, 'row')]//div[contains(@class, 'oe_cart')]" position="before">
-            <div t-if="deliveries" class="row" id="delivery_carrier">
-                <div class="col-lg-5 col-sm-6">
+            <div t-if="deliveries" class="col-lg-5 col-sm-6" id="delivery_carrier">
                 <h4>Choose your Delivery Method</h4>
                     <ul class="list-unstyled">
                         <li t-foreach="deliveries" t-as="delivery">
