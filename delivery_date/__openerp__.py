@@ -24,17 +24,17 @@
     'version': '0.1',
     'category': 'Sales Management', #TODO : e-commerce
     'description': """
-    Add an additional requested_delivery_date field to the sales order 
-    with the date from the cart (checkout form).
+    Use the requested_date field of sales order 
+    with the date from the checkout form on website.
 ===================================================
 """,
     'author': 'David Bertha',
     'website': 'http://www.github.com/dbertha',
-    'depends': ['sale_stock', 'product', 'website_sale', 'website_sale_delivery_on_checkout', 'fonteyne_style'],
+    'depends': ['sale_stock', 'product', 'website_sale'],
     #fonteyne_style : datetimepicker, moment.js (2.9)
     'data': ['delivery_date_view.xml', 'delivery_date.xml'],
     'demo': [], #TODO
     'test': [], #TODO
-    'installable' : False,
+    'installable' : True,
     'auto_install': False,
 }

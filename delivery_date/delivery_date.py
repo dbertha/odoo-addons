@@ -34,13 +34,7 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _name = "sale.order"
     _inherit = 'sale.order'
-    _columns = {
-        #'requested_delivery_date' : fields.date(string='Requested Delivery Date', help="Date requested by the customer for the delivery."),
-        'requested_delivery_datetime_start' : fields.datetime(string='Requested Delivery Interval Beginning',
-            help='The begin of the time interval requested for the delivery'),
-        'requested_delivery_datetime_end' : fields.datetime(string='Requested Delivery Interval Ending',
-            help='The end of the time interval requested for the delivery')
-    }
+    
     
     def get_forbidden_time_intervals(self,cr,uid, ids, min_date=None, max_date=None, context=None) :
         """Compute rules for delivery based on the sale order.

@@ -3,7 +3,7 @@
 <data>
     <template id="checkout_delivery_date" name="Delivery Date" inherit_id="website_sale.checkout">
         <!--<xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="after">-->
-        <xpath expr="//div[@id='delivery_carrier']" position="inside">
+        <xpath expr="//form/div[contains(@class, 'row')]//div[contains(@class, 'oe_cart')]" position="before">
                 <div t-attf-class="form-group #{error.get('delivery_date') and 'has-error' or ''} col-lg-5 col-sm-6">
                 <h3>Choose your delivery or pick-up date</h3>
                     <input type='text' class="form-control" id='delivery_date' name='delivery_date'/>
@@ -37,27 +37,24 @@
     </template>
     
     
-    <template id="sale_report_delivery_date" name="Delivery Date on Sale Report" inherit_id="sale.report_saleorder_document">
-        <xpath expr="//div[@id='informations']" position="inside">
-                <div t-if="o.requested_delivery_datetime_start" class="col-xs-3">
-                    <strong>Delivery interval : from </strong>
-                    <p t-field="o.requested_delivery_datetime_start"/>
-                    <strong>to :</strong>
-                    <p t-field="o.requested_delivery_datetime_end"/>
-                </div>
-        </xpath>
-    </template>
+
     
-    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
+    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Datetimepicker bootstrap ">
       <xpath expr="." position="inside">
         <script type="text/javascript" src="/delivery_date/static/src/js/delivery_date.js"></script>
+
+
+         <!-- Bootstrap datetimepicker is currently only included in the backend -->
+        <link rel="stylesheet" href="/web/static/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"/>
+        <script type="text/javascript" src="/web/static/lib/bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"/>
+        </template>
       </xpath>
     </template>
     
     <template id="payment_delivery_date" name="Delivery Date" inherit_id="website_sale.payment">
       <xpath expr="//div[@id='right_column']" position="inside">
         <h4>Delivery/Pick-up date:</h4>
-        <div t-field="order.requested_delivery_datetime_start"/>
+        <div t-field="order.requested_date"/>
       </xpath>
     </template>
     

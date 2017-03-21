@@ -58,8 +58,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
             _logger.debug("checkout value end, checkout delivery datetime start : %s", datetime_start)
 
-            return {'delivery_datetime_start' : datetime_start,
-                'delivery_datetime_end' : datetime_start + delivery_interval_time }
+            return {'requested_date' : datetime_start,
+                 }
         _logger.debug("/!\\  no delivery_date /!\\ ")
         return {}
 
@@ -75,8 +75,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         #need to add delivery date
         _logger.debug("checkout form save, before write : checkout delivery date time start : %s", checkout.get('delivery_datetime_start'))
-        order_info = {'requested_delivery_datetime_start' : checkout.get('delivery_datetime_start'),
-                      'requested_delivery_datetime_end' : checkout.get('delivery_datetime_end')
+        order_info = {'requested_date' : checkout.get('requested_date'),
                       }
         
         order_obj.write(cr, SUPERUSER_ID, [order.id], order_info, context=context)
