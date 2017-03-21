@@ -64,7 +64,7 @@ $(document).ready(function () {
                     disabledTimeIntervals : forbidden_intervals,
                     inline: true
             }).show();
-            console.debug($delivery_field.data("DateTimePicker").date());
+            console.debug($delivery_field.data("DateTimePicker").date);
             //console.debug(picker.date());
         });
     }
