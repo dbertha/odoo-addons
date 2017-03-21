@@ -100,7 +100,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             error['delivery_date'] = 'notAcceptable'
             error_messages.append('Delivery date is out of the allowed range')
         _logger.debug("form validate : error : %s", str(error))
-        return error
+        return error, error_messages
     
     @http.route('/shop/checkout/get_dates', type='json', auth="public")
     def get_dates(self):
