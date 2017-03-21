@@ -39,13 +39,13 @@
     
 
     
-    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Datetimepicker bootstrap ">
+    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Datetimepicker bootstrap">
       <xpath expr="." position="inside">
         <script type="text/javascript" src="/delivery_date/static/src/js/delivery_date.js"></script>
 
 
          <!-- Bootstrap datetimepicker is currently only included in the backend -->
-        <link rel="stylesheet" href="/web/static/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"/>
+         <link rel="stylesheet" href="/web/static/lib/bootstrap-datetimepicker/src/less/bootstrap-datetimepicker.less"/>
         <script type="text/javascript" src="/web/static/lib/bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"/>
       </xpath>
     </template>
