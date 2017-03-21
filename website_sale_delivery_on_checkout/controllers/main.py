@@ -47,6 +47,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
     #TODO : carrier should be checked in checkout_form_validate : 
     #maybe the data in the form invalid the carrier
+    # better as it is : force form to be valid
 
     
     def order_lines_2_google_api(self, order_lines):

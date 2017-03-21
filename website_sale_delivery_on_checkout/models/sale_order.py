@@ -105,7 +105,7 @@ class SaleOrder(orm.Model):
             else:
                 order._delivery_unset()
 
-        return bool(carrier_id)
+        return carrier_id
 
     def _get_delivery_methods(self, cr, uid, order, context=None):
         carrier_obj = self.pool.get('delivery.carrier')
