@@ -3,6 +3,7 @@ odoo.define('delivery_date.delivery_date', function (require) {
 
 var ajax = require('web.ajax');
 
+
 $(document).ready(function () {
 
     var $delivery_field = $('#delivery_date')
