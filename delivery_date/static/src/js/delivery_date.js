@@ -16,6 +16,7 @@ $(document).ready(function () {
         var timeEnd;
         var timeDefault;
         var daysDisabled;
+        var forbidden_intervals_list;
         ajax.jsonRpc("/shop/checkout/get_dates", 'call', {}).then(function(result) {
             //result contains constraints
             //timeStart from result moment([year, month, day, hour, minutes]);
