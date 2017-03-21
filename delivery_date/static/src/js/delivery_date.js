@@ -1,3 +1,4 @@
+var ajax = require('web.ajax');
 $(document).ready(function () {
 
     var $delivery_field = $('#delivery_date')
@@ -10,7 +11,7 @@ $(document).ready(function () {
         var timeEnd;
         var timeDefault;
         var daysDisabled;
-        openerp.jsonRpc("/shop/checkout/get_dates", 'call', {}).then(function(result) {
+        ajax.jsonRpc("/shop/checkout/get_dates", 'call', {}).then(function(result) {
             //result contains constraints
             //timeStart from result moment([year, month, day, hour, minutes]);
             console.log(result.min_date)
