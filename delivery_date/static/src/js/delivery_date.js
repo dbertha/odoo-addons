@@ -1,4 +1,8 @@
+odoo.define('delivery_date.delivery_date', function (require) {
+"use strict";
+
 var ajax = require('web.ajax');
+
 $(document).ready(function () {
 
     var $delivery_field = $('#delivery_date')
@@ -63,4 +67,5 @@ $(document).ready(function () {
         });
     }
 
+});
 });
