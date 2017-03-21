@@ -47,7 +47,6 @@
          <!-- Bootstrap datetimepicker is currently only included in the backend -->
         <link rel="stylesheet" href="/web/static/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"/>
         <script type="text/javascript" src="/web/static/lib/bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"/>
-        </template>
       </xpath>
     </template>
     
