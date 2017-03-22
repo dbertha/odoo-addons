@@ -9,7 +9,8 @@
                 <xpath expr="//group[@name='general']" position="after">
                     <group name="pick_up" string="Pick Up">
                         <field name="is_pickup"/>
-                        <field name="address_partner"/>
+                        <field name="shop_location"/>
+                        <field name="address_partner" readonly="1"/>
                     </group>
                 </xpath>
             </field>

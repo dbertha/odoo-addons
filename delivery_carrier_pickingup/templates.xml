@@ -1,70 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-    <template id="checkout_pickingup" name="Delivery Address when pickup" inherit_id="website_sale.checkout">
-        <xpath expr="//select[@name='shipping_id']" position="replace">
-        </xpath>
-        <xpath expr="//div[contains(concat(' ',@class,' '),'js_shipping')]" position="replace">
-            <t t-set="delivery_address" t-value="delivery_id and delivery_id.is_pickup and delivery_id.address_partner"/>
-            <div t-attf-class="form-group col-lg-12 #{delivery_address and 'hidden' or ''}" id="shipping_address_choice">
-                      <!--<label>Shipping</label>-->
-                      <select name="shipping_id" class="form-control" t-att-style="delivery_address and 'display:none' or ''">
-                          <option value="0" t-att-selected="not delivery_address" >Ship to the same address</option>
-                          <option value="-1" t-att-selected="(shipping_id == -1) or (error and len(error) > 0 and shipping_id == -1)">-- Create a new address --</option>
-                      </select>
-                  </div>
-            <div class="js_shipping row mb16" t-att-style="not shipping_id and not delivery_address and 'display:none' or ''">
-                <h3 class="page-header oe_shipping col-lg-12 mt16">Shipping Information</h3>
-                <div t-attf-class="form-group #{error.get('shipping_name') and 'has-error' or ''} col-lg-6">
-                  <label class="control-label" for="shipping_name">Name (Shipping)</label>
-                  <input type="text" name="shipping_name" class="form-control" t-att-value="(delivery_address and delivery_address.name) or checkout.get('shipping_name', '')" t-att-readonly="'readonly' if delivery_address or (shipping_id &gt;= 0) else ''"/>
-                  <!--"/> -->
-                </div>
-                <div t-attf-class="form-group #{error.get('shipping_phone') and 'has-error' or ''} col-lg-6">
-                  <label class="control-label" for="shipping_phone">Phone</label>
-                  <input type="tel" name="shipping_phone" class="form-control" t-att-value="(delivery_address and delivery_address.phone) or checkout.get('shipping_phone', '')" t-att-readonly="'readonly' if delivery_address or (shipping_id &gt;= 0) else ''"/>
-                  <!--if shipping_id &gt;= 0 else ''"/> -->
-                </div>
-                <div t-attf-class="form-group #{error.get('shipping_street') and 'has-error' or ''} col-lg-6">
-                  <label class="control-label" for="shipping_street">Street</label>
-                  <input type="text" name="shipping_street" class="form-control" t-att-value="(delivery_address and delivery_address.street) or checkout.get('shipping_street', '')" t-att-readonly="'readonly' if delivery_address or (shipping_id &gt;= 0) else ''"/>
-                  <!--if shipping_id &gt;= 0 else ''"/> -->
-                </div>
-                <div class="clearfix"/>
-                <div t-attf-class="form-group #{error.get('shipping_city') and 'has-error' or ''} col-lg-6">
-                  <label class="control-label" for="shipping_city">City</label>
-                  <input type="text" name="shipping_city" class="form-control" t-att-value="(delivery_address and delivery_address.city) or checkout.get('shipping_city', '')" t-att-readonly="'readonly' if delivery_address or (shipping_id &gt;= 0) else ''"/>
-                  <!--if shipping_id &gt;= 0 else ''"/> -->
-                </div>
-                <div t-attf-class="form-group #{error.get('shipping_zip') and 'has-error' or ''} col-lg-6">
-                  <label class="control-label" for="shipping_zip" style="font-weight: normal">Zip / Postal Code</label>
-                  <input type="text" name="shipping_zip" class="form-control" t-att-value="(delivery_address and delivery_address.zip) or checkout.get('shipping_zip', '')" t-att-readonly="'readonly' if delivery_address or (shipping_id &gt;= 0) else ''"/>
-                  <!--if shipping_id &gt;= 0 else ''"/> -->
-                </div>
-                <!--Change by David : add hidden  -->
-                <div t-attf-class="form-group #{error.get('shipping_country_id') and 'has-error' or ''} col-lg-6 #{delivery_address and 'hidden' or  ''}">
-                  <label class="control-label" for="shipping_country_id">Country</label>
-                  <select name="shipping_country_id" class="form-control">
-                    <option value="">Pays...</option>
-                    <t t-foreach="countries or []" t-as="country">
-                      <option t-att-value="country.id" t-att-selected="delivery_address and delivery_address.country_id.id == country.id or checkout.get('shipping_country_id') == country.id">
-                        <t t-esc="country.name"/>
-                      </option>
-                    </t>
-                  </select>
-                </div>
-                <div t-attf-class="form-group #{error.get('shipping_state_id') and 'has-error' or ''} col-lg-6">
-                  <label class="control-label" for="shipping_state_id" style="font-weight: normal">State / Province</label>
-                  <select name="shipping_state_id" class="form-control" t-att-readonly="  'readonly' if delivery_address or shipping_id &gt;= 0 else ''">
-                    <option value="">State / Province...</option>
-                    <t t-foreach="states or []" t-as="state">
-                      <option t-att-value="state.id" style="display:none;" t-att-data-country_id="state.country_id.id" t-att-selected="delivery_address and delivery_address.state_id.id == state.id or state.id == checkout.get('shipping_state_id')">
-                        <t t-esc="state.name"/>
-                      </option>
-                    </t>
-                  </select>
-                </div>
-            </div>
+    <template id="checkout_pickingup" name="Remove Delivery Address when pickup" inherit_id="website_sale.checkout">
+        <xpath expr="//div[@t-if='not only_services']" position="attributes">
+        <attribute name="t-if">not only_services and not (delivery_id.is_pickup and delivery_id.address_partner)</attribute>
         </xpath>
     </template>
     </data>
