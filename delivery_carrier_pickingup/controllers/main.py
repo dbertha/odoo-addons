@@ -42,3 +42,4 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
         if not post.get('shipping_id') and order.carrier_id.is_pickup 
             and order.carrier_id.address_partner :
             post['shipping_id'] = order.carrier_id.address_partner.id
+        return super(website_sale, self).confirm_order(**post)
