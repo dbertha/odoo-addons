@@ -85,15 +85,18 @@ class SaleOrder(orm.Model):
             self.pool['sale.order']._delivery_unset(cr, SUPERUSER_ID, [order.id], context=context)
             return True
         else: 
+            _logger.debug("order.carrier_id.id : %s", order.carrier_id.id)
             carrier_id = force_carrier_id or order.carrier_id.id
             carrier_ids = self._get_delivery_methods(cr, uid, order, context=context)
             if carrier_id:
                 if carrier_id not in carrier_ids:
                     carrier_id = False
                 else:
+                    _logger.debug("moving carrier id to start of array : %s", carrier_id)
                     carrier_ids.remove(carrier_id)
                     carrier_ids.insert(0, carrier_id)
             if force_carrier_id or not carrier_id or not carrier_id in carrier_ids:
+                _logger.debug("Carrier_ids : %s", carrier_ids)
                 for delivery_id in carrier_ids:
                     carrier = carrier_obj.verify_carrier(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id)
                     if carrier:
