@@ -97,6 +97,7 @@ class SaleOrder(orm.Model):
                 for delivery_id in carrier_ids:
                     carrier = carrier_obj.verify_carrier(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id)
                     if carrier:
+                        _logger.debug("Carrier found : %s", delivery_id)
                         carrier_id = delivery_id
                         break
                 order.write({'carrier_id': carrier_id})
