@@ -33,3 +33,12 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
             #shipping info will be retrieved in view from delivery carrier
         
         return values
+
+    @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
+    def confirm_order(self, **post):
+        order = request.website.sale_get_order(context=context)
+        if not order:
+            return request.redirect("/shop")
+        if not post.get('shipping_id') and order.carrier_id.is_pickup 
+            and order.carrier_id.address_partner :
+            post['shipping_id'] = order.carrier_id.address_partner.id
