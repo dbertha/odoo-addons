@@ -74,6 +74,11 @@ class SaleOrder(orm.Model):
         ),
     }
 
+    @api.onchange('partner_id')
+    def onchange_partner_id_dtype(self):
+        if self.partner_id and not self.carrier_id :
+            self.carrier_id = self.partner_id.property_delivery_carrier_id
+
     def _check_carrier_quotation(self, cr, uid, order, force_carrier_id=None, context=None):
         carrier_obj = self.pool.get('delivery.carrier')
 
