@@ -36,7 +36,7 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
 
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
     def confirm_order(self, **post):
-        order = request.website.sale_get_order(context=context)
+        order = request.website.sale_get_order(context=request.context)
         if not order:
             return request.redirect("/shop")
         if not post.get('shipping_id') and order.carrier_id.is_pickup \
