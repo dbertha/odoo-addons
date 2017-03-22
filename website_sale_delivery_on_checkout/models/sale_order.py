@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from openerp import models, api, _
+
 from openerp.osv import orm, fields
 from openerp import SUPERUSER_ID
 from openerp.addons import decimal_precision
 from openerp.exceptions import ValidationError
-from openerp.tools.translate import _
 
 
 _logger = logging.getLogger(__name__)
