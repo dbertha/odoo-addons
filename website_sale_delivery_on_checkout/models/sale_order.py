@@ -86,6 +86,7 @@ class SaleOrder(orm.Model):
             return True
         else: 
             _logger.debug("order.carrier_id.id : %s", order.carrier_id.id)
+            _logger.debug("force_carrier_id : %s", force_carrier_id)
             carrier_id = force_carrier_id or order.carrier_id.id
             _logger.debug("carrier_id : %s", carrier_id)
             carrier_ids = self._get_delivery_methods(cr, uid, order, context=context)
