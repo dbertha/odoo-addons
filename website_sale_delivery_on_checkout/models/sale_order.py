@@ -77,6 +77,7 @@ class SaleOrder(orm.Model):
 
     @api.onchange('partner_id')
     def onchange_partner_id_dtype(self):
+        _logger.debug("In overrided onchange parner_id")
         if self.partner_id and not self.carrier_id :
             self.carrier_id = self.partner_id.property_delivery_carrier_id
 

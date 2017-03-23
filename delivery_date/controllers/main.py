@@ -66,14 +66,14 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         """overload to store delivery date"""
         cr, uid, context, registry = request.cr, request.uid, request.context, request.registry
 
-        order = request.website.sale_get_order(force_create=1, context=context)
+        order = request.website.sale_get_order(context=context)
 
         order_obj = registry.get('sale.order')
         
         super(website_sale, self).checkout_form_save(checkout)
 
         #need to add delivery date
-        _logger.debug("checkout form save, before write : checkout delivery date time start : %s", checkout.get('delivery_datetime_start'))
+        _logger.debug("checkout form save, before write : checkout delivery date time start : %s", checkout.get('requested_date'))
         order_info = {'requested_date' : checkout.get('requested_date'),
                       }
         
