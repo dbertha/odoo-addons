@@ -12,10 +12,10 @@
 
     'author': "David Bertha",
     'website': "",
-    'installable' : False,
+    'installable' : True,
 
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': '2',
 
     'depends': ['base', 'website', 'website_sale', 'delivery'], 
 
