@@ -181,14 +181,16 @@ class SaleOrder(orm.Model):
         # The carrier might also be invalid, eg: if you bought things that are too heavy
         # -> this may cause a bug if you go to the checkout screen, choose a carrier,
         #    then update your cart (the cart becomes uneditable)
-        carrier_id = self.carrier_id and self.carrier_id.id
+        carrier_ids = {}
+        for order in self.browse(cr, uid, ids, context=context) :
+            carrier_ids[order.id] = order.carrier_id and order.carrier_id.id
         self.write(cr, uid, ids, {'carrier_id': False}, context=context)
 
         values = super(SaleOrder, self)._cart_update(
             cr, uid, ids, product_id, line_id, add_qty, set_qty, context, **kwargs)
 
         for sale_order in self.browse(cr, uid, ids, context=context):
-            self._check_carrier_quotation(cr, uid, sale_order, force_carrier_id=carrier_id, context=context)
+            self._check_carrier_quotation(cr, uid, sale_order, force_carrier_id=carrier_ids[sale_order.id], context=context)
 
         return values
 
