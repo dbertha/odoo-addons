@@ -21,7 +21,7 @@
             <field name="model">delivery.zips</field>
             <field name="arch" type="xml">
                 <form string="Zips">
-                    <page string="Destination">
+                    <sheet string="Destination">
                         <field name="name" attrs="{'readonly': True}"/>
                         <group string="Zip List">
                             <field name="zip_from"/>
