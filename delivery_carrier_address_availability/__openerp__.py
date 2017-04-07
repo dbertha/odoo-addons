@@ -8,17 +8,17 @@
     'description': """
         Delivery method with destination configuration are available for public user (even if they doesn't have a zipcode encoded yet),
         destination check is made after checkout.
-        Zipcodes are list instead of range and a a partner is linked to a list
+        Zipcodes are list instead of range 
     """,
 
     'author': "David Bertha",
     'website': "",
-    'installable' : False,
+    'installable' : True,
 
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale_delivery_on_checkout', 'delivery'], 
+    'depends': ['base', 'website', 'website_sale', 'delivery'], 
 
     # always loaded
     'data': [
