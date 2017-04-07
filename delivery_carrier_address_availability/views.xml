@@ -6,7 +6,7 @@
             <field name="model">delivery.carrier</field>
             <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[@name='general']" position="after">
+                <xpath expr="//page[@string='Destination']" position="inside">
                     <group name="delivery_zip" string="Zips">
                         <field name="zip_ids"/>
                         <field name="notif_partner_id"/>
