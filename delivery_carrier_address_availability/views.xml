@@ -28,7 +28,7 @@
                             <field name="zip_to"/>
                         </group>
                         
-                    </page>
+                    </sheet>
                 </form>
             </field>
     </record>
