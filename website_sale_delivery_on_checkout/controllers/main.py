@@ -68,3 +68,6 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             if line.is_delivery:
                 ret['transaction']['shipping'] = line.price_unit
         return ret
+
+
+ 
