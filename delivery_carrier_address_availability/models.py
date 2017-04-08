@@ -53,7 +53,7 @@ class DeliveryCarrier(models.Model):
     @api.multi
     def verify_carrier(self, contact):
         res = super(DeliveryCarrier, self).verify_carrier(contact)
-        if res and self.zip_ids :
+        if res and self.zip_ids and contact and contact.zip and not self.env.context.get('checkout', False) :
             res = False
             for zip_elem in self.zip_ids :
                 if zip_elem.zip_from < (contact.zip or '') < zip_elem.zip_to :
