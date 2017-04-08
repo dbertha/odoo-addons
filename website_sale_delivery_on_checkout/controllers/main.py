@@ -34,6 +34,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     def checkout(self, **post):
         _logger.debug("overloaded checkout")
         cr, uid, context = request.cr, request.uid, request.context
+        context = dict(request.context)
+        context['checkout'] = True
         order = request.website.sale_get_order(context=context)
         carrier_id = post.get('carrier_id')
         if carrier_id:
