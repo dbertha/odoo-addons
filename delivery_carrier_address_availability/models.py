@@ -16,10 +16,10 @@ class DeliveryGridZips(models.Model):
 
     zip_from = fields.Char('Zip From')
     zip_to = fields.Char('Zip To')
-    name = fields.Char('Name')
+    name = fields.Char('Name', compute='name_get')
 
     @api.multi
-    @api.depends('name','zip_from', "zip_to")
+    @api.depends('name','zip_from', 'zip_to')
     def name_get(self):
         result = []
         for ziplist in self:
