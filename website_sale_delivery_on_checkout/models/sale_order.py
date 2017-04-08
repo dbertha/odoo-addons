@@ -107,7 +107,7 @@ class SaleOrder(orm.Model):
             if force_carrier_id or not carrier_id or not carrier_id in carrier_ids:
                 _logger.debug("Carrier_ids : %s", carrier_ids)
                 for delivery_id in carrier_ids:
-                    carrier = carrier_obj.verify_carrier(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id)
+                    carrier = carrier_obj.verify_carrier(cr, SUPERUSER_ID, [delivery_id], order.partner_shipping_id, context=context)
                     if carrier:
                         _logger.debug("Carrier found : %s", delivery_id)
                         carrier_id = delivery_id
