@@ -83,7 +83,7 @@ class SaleOrder(orm.Model):
 
     def _check_carrier_quotation(self, cr, uid, order, force_carrier_id=None, context=None):
         carrier_obj = self.pool.get('delivery.carrier')
-
+        _logger.debug(context)
         # check to add or remove carrier_id
         if not order:
             return False
