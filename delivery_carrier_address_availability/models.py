@@ -14,9 +14,6 @@ class DeliveryGridZips(models.Model):
     _name = "delivery.zips"
     _order = 'zip_from'
 
-    zip_from = fields.Char('Zip From')
-    zip_to = fields.Char('Zip To')
-    name = fields.Char('Name', compute='name_get')
 
     @api.multi
     @api.depends('name','zip_from', 'zip_to')
@@ -24,8 +21,15 @@ class DeliveryGridZips(models.Model):
         result = []
         for ziplist in self:
             name = ziplist.zip_from + ' - ' + ziplist.zip_to
+            ziplist.name = name
             result.append((ziplist.id, name))
         return result
+
+    zip_from = fields.Char('Zip From')
+    zip_to = fields.Char('Zip To')
+    name = fields.Char('Name')
+
+    
 
     @api.multi
     @api.constrains('zip_from', 'zip_to')
