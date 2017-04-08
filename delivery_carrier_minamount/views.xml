@@ -6,7 +6,7 @@
             <field name="model">delivery.carrier</field>
             <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[0]" position="inside">
+                <xpath expr="/page" position="inside">
                             <field name="not_available_if_less_than"/>
                             <field name="amount_lower_bound" attrs="{'required':[('not_available_if_less_than','!=',False)], 'invisible':[('not_available_if_less_than','=',False)]}"/>
                 </xpath>
