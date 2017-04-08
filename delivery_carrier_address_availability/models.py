@@ -27,7 +27,7 @@ class DeliveryGridZips(models.Model):
 
     zip_from = fields.Char('Zip From')
     zip_to = fields.Char('Zip To')
-    name = fields.Char('Name')
+    name = fields.Char(compute="name_get")
 
     
 
