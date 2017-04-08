@@ -114,9 +114,9 @@ class SaleOrder(orm.Model):
                         break
                 order.write({'carrier_id': carrier_id})
             if carrier_id:
-                order.delivery_set()
+                order.with_context(context).delivery_set()
             else:
-                order._delivery_unset()
+                order.with_context(context)._delivery_unset()
 
         return carrier_id
 
