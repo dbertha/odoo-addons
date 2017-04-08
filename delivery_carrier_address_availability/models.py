@@ -20,7 +20,9 @@ class DeliveryGridZips(models.Model):
     def name_get(self):
         result = []
         for ziplist in self:
-            name = ziplist.zip_from + ' - ' + ziplist.zip_to
+            name = ""
+            if ziplist.zip_from and ziplist.zip_to :
+                name = ziplist.zip_from + ' - ' + ziplist.zip_to
             ziplist.name = name
             result.append((ziplist.id, name))
         return result
