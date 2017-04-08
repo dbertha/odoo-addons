@@ -20,14 +20,13 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         error, error_message = super(website_sale, self).checkout_form_validate(data)
         order = request.website.sale_get_order()
         if order.carrier_id :
-        	if order.partner_shipping_id :
-        		old_zip = order.partner_shipping_id.zip
-        		order.partner_shipping_id.zip = data.get("zip", False)
-
-            res = order.carrier_id.verify_carrier(order.partner_shipping_id)
-            
             if order.partner_shipping_id :
-        		order.partner_shipping_id.zip = old_zip
+                old_zip = order.partner_shipping_id.zip
+                order.partner_shipping_id.zip = data.get("zip", False)
+            res = order.carrier_id.verify_carrier(order.partner_shipping_id)
+
+            if order.partner_shipping_id :
+                order.partner_shipping_id.zip = old_zip
             if not res :
                 error['carrier_id'] = 'unavailable'
                 error_message.append(_('The delivery method is not available for your shipping address'))
