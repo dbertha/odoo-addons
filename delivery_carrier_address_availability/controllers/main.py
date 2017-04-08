@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     def checkout_form_validate(self, data):
         error, error_message = super(website_sale, self).checkout_form_validate(data)
-        order = request.website.sale_get_order(context=context)
+        order = request.website.sale_get_order()
         if order.carrier_id :
             res = order.carrier_id.verify_carrier(order.partner_shipping_id)
             if not res :
