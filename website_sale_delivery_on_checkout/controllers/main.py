@@ -33,7 +33,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     @http.route(['/shop/checkout'], type='http', auth="public", website=True)
     def checkout(self, **post):
         _logger.debug("overloaded checkout")
-        cr, uid, context = request.cr, request.uid, request.context
+        cr, uid = request.cr, request.uid
         context = dict(request.context)
         context['checkout'] = True
         order = request.website.sale_get_order(context=context)
@@ -41,6 +41,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         if carrier_id:
             carrier_id = int(carrier_id)
         if order:
+            _logger.debug(context)
             request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context)
             if carrier_id:
                 #refresh page with new delivery method
