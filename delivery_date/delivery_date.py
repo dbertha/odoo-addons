@@ -36,17 +36,17 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
     
-    def get_forbidden_time_intervals(self,cr,uid, ids, min_date=None, max_date=None, context=None) :
+    def get_forbidden_time_intervals(self,min_date=None, max_date=None) :
         """Compute rules for delivery based on the sale order.
         Bounds included.
         Assert : only one ID"""
         return []
     
-    def get_datetime_format(self, cr, uid, order, context=None) :
+    def get_datetime_format(self,) :
         """Can be overloaded easily"""
         return 'ddd DD/MM/YYYY HH:mm' # %a %d/%m/%Y %H:%m
     
-    def get_min_date(self,cr,uid, order, forbidden_days=None, context=None) :
+    def get_min_date(self,forbidden_days=None) :
         """Compute rules for delivery based on the sale order.
         Possible improvement : use strategy pattern and delegate computation
         to those classes"""
@@ -59,7 +59,7 @@ class SaleOrder(models.Model):
         now = now.replace(minute=59) + delta 
         return [now.year, now.month, now.day, now.hour, now.minute]
         
-    def get_max_date(self,cr,uid, order, min_date=None, forbidden_days=None, context=None) :
+    def get_max_date(self,min_date=None, forbidden_days=None) :
         """Compute rules for delivery based on the sale order.
         Can be overloaded to specify rules relative to delivery carriers, products in cart,...
         Assert : only one ID
@@ -70,22 +70,23 @@ class SaleOrder(models.Model):
         min_datetime += timedelta(days=30)
         return [min_datetime.year, min_datetime.month, min_datetime.day, min_datetime.hour, min_datetime.minute]
     
-    def get_forbidden_days(self,cr,uid, order, context=None) :
+    def get_forbidden_days(self) :
         """Compute forbidden days for delivery
         Assert : only one ID"""
         return []  
     
-    def check_date(self, cr,uid, ids, datetime_start,context=None) :
+    @api.one
+    def check_date(self,datetime_start) :
         """check if date is between min and max acceptable date for delivery
         and not in a forbidden day"""
         tzone = timezone('Europe/Brussels')
         now = pytz.utc.localize(datetime.now()).astimezone(tzone)
-        order = self.browse(cr, SUPERUSER_ID, ids, context=context)
-        forbidden_days = self.get_forbidden_days(cr, uid, order, context=context)
+        order = self
+        forbidden_days = self.get_forbidden_days()
         
-        min_datetime_list = self.get_min_date(cr, uid, order, forbidden_days=forbidden_days, context=context)
+        min_datetime_list = self.get_min_date(forbidden_days=forbidden_days)
         min_datetime = tzone.localize(datetime(*min_datetime_list))
-        max_datetime_param = self.get_max_date(cr, uid, order, min_date=min_datetime_list, forbidden_days=forbidden_days, context=context) or [2100,1,1] #a date far away
+        max_datetime_param = self.get_max_date(min_date=min_datetime_list, forbidden_days=forbidden_days) or [2100,1,1] #a date far away
         _logger.debug("max param : %s", str(max_datetime_param))
         max_datetime = tzone.localize(datetime(*max_datetime_param))
         _logger.debug("form validate datetime_start : %s | min : %s | max : %s", 
@@ -105,7 +106,7 @@ class SaleOrder(models.Model):
         if(datetime_start.weekday() in forbidden_days) :
             _logger.debug("form validate : forbidden day")
             return False
-        forbidden_intervals = self.get_forbidden_time_intervals(cr, uid, order, min_date=min_datetime_list, max_date=max_datetime_param, context=context)
+        forbidden_intervals = self.get_forbidden_time_intervals(min_date=min_datetime_list, max_date=max_datetime_param)
         forbidden_datetimes_intervals = [ [tzone.localize(datetime(*x)) for x in interval ] for interval in forbidden_intervals]
         for interval in forbidden_datetimes_intervals :
             if interval[0] < datetime_start < interval[1] :

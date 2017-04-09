@@ -85,8 +85,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         uid = request.uid
         context = request.context
         cr = request.cr
-        order_id = request.session.get('sale_order_id')
-        return request.registry['sale.order'].check_date(cr,uid, order_id,datetime_start,context=context)
+        order = request.website.sale_get_order(context=context)
+        return order.check_date(datetime_start)
         
     def checkout_form_validate(self, data):
         _logger.debug("Validating form")
@@ -107,20 +107,18 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         uid = request.uid
         context = request.context
         cr = request.cr
-        sale_order_obj = request.registry['sale.order']
-        order_id = request.session.get('sale_order_id')
-        order = sale_order_obj.browse(cr, SUPERUSER_ID, order_id, context=context)
+        order = request.website.sale_get_order(context=context)
         _logger.debug("UID : %s", str(uid))
-        forbidden_days = sale_order_obj.get_forbidden_days(cr,uid, order, context=context)  
+        forbidden_days = order.get_forbidden_days()  
 
-        min_date = sale_order_obj.get_min_date(cr,uid, order, forbidden_days=forbidden_days, context=context) 
+        min_date = order.get_min_date(forbidden_days=forbidden_days) 
         #[year, month, day, hour, minutes]
-        max_date = sale_order_obj.get_max_date(cr,uid, order, min_date=min_date, forbidden_days=forbidden_days, context=context)  
-        forbidden_intervals = sale_order_obj.get_forbidden_time_intervals(cr,uid, order, min_date=min_date, max_date=max_date,context=context) 
+        max_date = order.get_max_date(min_date=min_date, forbidden_days=forbidden_days)  
+        forbidden_intervals = order.get_forbidden_time_intervals(min_date=min_date, max_date=max_date) 
         return {
             'min_date' : min_date,
             'max_date' : max_date,
             'forbidden_days' : forbidden_days,
             'forbidden_intervals' : forbidden_intervals,
-            'format' : sale_order_obj.get_datetime_format(cr, uid, order, context=context)
+            'format' : order.get_datetime_format()
             }  
