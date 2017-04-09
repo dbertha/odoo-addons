@@ -22,7 +22,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         if order.carrier_id :
             if order.partner_shipping_id :
                 old_zip = order.partner_shipping_id.zip
-                order.partner_shipping_id.zip = data.get("zip", False)
+                order.partner_shipping_id.zip = data.get("shipping_zip", False) or data.get("zip", False)
             res = order.carrier_id.verify_carrier(order.partner_shipping_id)
 
             if order.partner_shipping_id :
