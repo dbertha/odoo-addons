@@ -25,8 +25,7 @@ import pytz
 import openerp
 from openerp import SUPERUSER_ID
 from openerp.addons.web.http import request
-from openerp.osv import fields
-from openerp import models
+from openerp import api, fields, models, _
 from pytz import timezone
 import logging
 
