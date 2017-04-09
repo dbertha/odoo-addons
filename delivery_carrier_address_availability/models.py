@@ -54,6 +54,7 @@ class DeliveryCarrier(models.Model):
     @api.multi
     def verify_carrier(self, contact):
         res = super(DeliveryCarrier, self).verify_carrier(contact)
+        _logger.debug(contact and contact.zip)
         if res and self.zip_ids and contact and contact.zip and not self.env.context.get('checkout', False) :
             _logger.debug(contact.zip)
             res = False
