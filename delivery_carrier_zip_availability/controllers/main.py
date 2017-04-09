@@ -20,12 +20,12 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         error, error_message = super(website_sale, self).checkout_form_validate(data)
         order = request.website.sale_get_order()
         if order.carrier_id :
-            if order.partner_shipping_id :
+            if order.partner_shipping_id and order.carrier_id.zip_ids :
                 old_zip = order.partner_shipping_id.zip
                 order.partner_shipping_id.zip = data.get("shipping_zip", False) or data.get("zip", False)
             res = order.carrier_id.verify_carrier(order.partner_shipping_id)
 
-            if order.partner_shipping_id :
+            if order.partner_shipping_id and order.carrier_id.zip_ids :
                 order.partner_shipping_id.zip = old_zip
             if not res :
                 error['carrier_id'] = 'unavailable'

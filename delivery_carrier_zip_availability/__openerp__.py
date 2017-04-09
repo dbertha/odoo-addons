@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Delivery Method Available to some Addresses",
+    'name': "Delivery Method Available to some shipping zips",
 
     'summary': """
         Ease the destination configuration for delivery methods""",
@@ -8,7 +8,7 @@
     'description': """
         Delivery method with destination configuration are available for public user (even if they doesn't have a zipcode encoded yet),
         destination check is made after checkout.
-        Zipcodes are list instead of range 
+        Zipcodes are list of ranges instead of one range 
     """,
 
     'author': "David Bertha",
