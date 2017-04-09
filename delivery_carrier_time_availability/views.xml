@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<record id="delivery_carrier_withperiods_form" model="ir.ui.view">
+            <field name="name">delivery.carrier.withperiods.form.view</field>
+            <field name="model">delivery.carrier</field>
+            <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[last()]" position="after">
+                    <page string="Time">
+                    <group name="pick_up" string="Periods">
+                    <field name="delivery_period_ids"  widget="many2many_tags"/>
+                    </group>
+                </page>
+                </xpath>
+            </field>
+    </record>
+    
+    <!-- Delivery Periods -->
+        <record id="view_delivery_period_tree" model="ir.ui.view">
+            <field name="name">delivery.period.tree</field>
+            <field name="model">delivery.period</field>
+            <field name="arch" type="xml">
+                <tree string="Delivery periods">
+                    <field name="name"/>
+                    <field name="day_of_week"/>
+                    <field name="start_hour"/>
+                    <field name="start_min"/>
+                    <field name="end_hour"/>
+                    <field name="end_min"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_delivery_period_form" model="ir.ui.view">
+            <field name="name">delivery.period.form</field>
+            <field name="model">delivery.period</field>
+            <field name="arch" type="xml">
+                <form string="Delivery periods">
+                    <group col="2">
+                        <field name="name"/>
+                        <field name="day_of_week"/>
+                    </group>
+                    <group col="4">
+                        <field name="start_hour"/>
+                        <field name="end_hour"/>
+                        <field name="start_min"/>
+                        
+                        <field name="end_min"/>
+                    </group>
+                    
+                </form>
+            </field>
+        </record>
+        <record id="action_delivery_period_form" model="ir.actions.act_window">
+            <field name="name">Delivery Periods</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">delivery.period</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a delivery period.
+              </p><p>
+                The delivery period allows you to compute the allowed intervals
+                for delivery date according to the delivery method.
+              </p>
+            </field>
+        </record>
+        <menuitem action="action_delivery_period_form" id="menu_action_delivery_period_form" parent="delivery.menu_delivery"/>
+        <menuitem action="action_delivery_period_form" id="sale_menu_action_delivery_period_form" parent="delivery.sale_menu_delivery" sequence="2"/>
+
+
+    
+    
+    </data>
+    
+</openerp>
