@@ -96,9 +96,6 @@ class SaleOrder(models.Model):
         if(datetime_start.minute != 0) :
             _logger.debug("form validate : minutes not 0")
             return False
-        if((datetime_start.hour < 10) or (datetime_start.hour > 18)) : #TODO : use intervals instead
-            _logger.debug("form validate : hour not in correct interval")
-            return False
         if(not(min_datetime <= datetime_start <= max_datetime)) :
             _logger.debug("form validate : day not in correct interval")
             return False 
