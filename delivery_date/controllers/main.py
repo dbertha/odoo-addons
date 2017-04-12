@@ -101,7 +101,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         _logger.debug("form validate : error : %s", str(error))
         return error, error_messages
     
-    @http.route('/shop/checkout/get_dates', type='json', auth="public")
+    @http.route('/shop/checkout/get_dates', type='json', auth="public", website=True)
     def get_dates(self):
         uid = request.uid
         context = request.context
