@@ -91,14 +91,20 @@ class SaleOrder(models.Model):
 
     def get_forbidden_time_intervals(self,min_date=None, max_date=None) :
         intervals = super(SaleOrder,self).get_forbidden_time_intervals(min_date=min_date, max_date=max_date) 
+        _logger.debug(intervals)
+        _logger.debug("Min date : %s" % min_date)
+        _logger.debug("Max date : %s" % max_date)
         if min_date and max_date :
             #nothing to compute if the is not an interval to check
             #TODO: can use forbidden_days also
             #order = self.browse(cr, SUPERUSER_ID, order_id, context)
             delivery_carrier = self.carrier_id
             allowed_daytimes = {}
+            _logger.debug(delivery_carrier)
+            _logger.debug(delivery_carrier and delivery_carrier.delivery_period_ids)
             if delivery_carrier and delivery_carrier.delivery_period_ids :
                 for period in delivery_carrier.delivery_period_ids :
+                    
                     #for each day, a list of list of tuples
                     allowed_daytimes[period.day_of_week] = allowed_daytimes.get(period.day_of_week, []) + \
                         [[(period.start_hour, (0 if period.start_min == 1 else period.start_min)), (period.end_hour, (0 if period.end_min == 1 else period.end_min))]]
