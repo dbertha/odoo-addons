@@ -74,7 +74,6 @@ class SaleOrder(models.Model):
         Assert : only one ID"""
         return []  
     
-    @api.one
     def check_date(self,datetime_start) :
         """check if date is between min and max acceptable date for delivery
         and not in a forbidden day"""
