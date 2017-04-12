@@ -45,28 +45,28 @@ class DeliveryPeriod(models.Model) :
         return result
     
 
-    name = fields.Char(compute="name_get"),
+    name = fields.Char(compute="name_get")
     day_of_week = fields.Selection(
                 [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thursday'), 
                  (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection == 0
                 string="Day of the week", required=True
-                ),
+                )
     start_hour = fields.Selection(
                 [(1,"01"), (2,"02"), (3,"03"), (4,"04"),
                  (5,"05"), (6,"06"), (7,"07"), (8,"08"),
                  (9, '09'), (10, '10'), (11, '11'), (12, '12'),
                  (13, '13'), (14, '14'), (15, '15'), (16, '16'),
                  (17, '17'), (18, '18'), (19, '19'), (20, '20'), 
-                 (21, '21'), (22, '22'), (23, '23')], string="Hour of start time", default=1, required=True),
+                 (21, '21'), (22, '22'), (23, '23')], string="Hour of start time", default=1, required=True)
     start_min = fields.Selection(
-                [(01,"00"), (15,"15"), (30,"30"), (45,"45")], string="Minutes of start time", default=1, required=True),
+                [(01,"00"), (15,"15"), (30,"30"), (45,"45")], string="Minutes of start time", default=1, required=True)
     end_hour = fields.Selection(
                 [(1,"01"), (2,"02"), (3,"03"), (4,"04"),
                  (5,"05"), (6,"06"), (7,"07"), (8,"08"),
                  (9, '09'), (10, '10'), (11, '11'), (12, '12'),
                  (13, '13'), (14, '14'), (15, '15'), (16, '16'),
                  (17, '17'), (18, '18'), (19, '19'), (20, '20'), 
-                 (21, '21'), (22, '22'), (23, '23')], string="Hour of end time", default=23, required=True),
+                 (21, '21'), (22, '22'), (23, '23')], string="Hour of end time", default=23, required=True)
     end_min = fields.Selection(
                 [(01,"00"), (15,"15"), (30,"30"), (45,"45")], string="Minutes of end time", default=1, required=True)
     
