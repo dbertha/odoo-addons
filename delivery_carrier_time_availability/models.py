@@ -34,7 +34,7 @@ class DeliveryPeriod(models.Model) :
     
     @api.multi
     @api.depends('name','day_of_week', 'start_hour', 'start_min', 'end_hour', 'end_min')
-    def _name_get(self, cr, uid, ids, name, arg, context=None) :
+    def name_get(self, cr, uid, ids, name, arg, context=None) :
         days = ['','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         result = []
         for period in self :
@@ -45,7 +45,7 @@ class DeliveryPeriod(models.Model) :
         return result
     
 
-    name = fields.Char(compute="_name_get"),
+    name = fields.Char(compute="name_get"),
     day_of_week = fields.Selection(
                 [(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thursday'), 
                  (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection == 0
