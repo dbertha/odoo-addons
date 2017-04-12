@@ -45,7 +45,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             _logger.debug("checkout value delivery_date : %s", data.get('delivery_date'))
             order = request.website.sale_get_order(force_create=1, context=context)
             order_obj = registry.get('sale.order')
-            datetime_format = self.convert_format(order_obj.get_datetime_format(cr, uid, order, context=context))
+            datetime_format = self.convert_format(order.get_datetime_format())
             _logger.debug("format : %s", datetime_format)
             try :
                 datetime_start = datetime.strptime(data.get('delivery_date'), datetime_format)
@@ -68,16 +68,13 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         order = request.website.sale_get_order(context=context)
 
-        order_obj = registry.get('sale.order')
         
         super(website_sale, self).checkout_form_save(checkout)
 
         #need to add delivery date
         _logger.debug("checkout form save, before write : checkout delivery date time start : %s", checkout.get('requested_date'))
-        order_info = {'requested_date' : checkout.get('requested_date'),
-                      }
+        order.requested_date = checkout.get('requested_date')
         
-        order_obj.write(cr, SUPERUSER_ID, [order.id], order_info, context=context)
 
     def check_date_validity(self, date_time):
         tzone = timezone('Europe/Brussels')
