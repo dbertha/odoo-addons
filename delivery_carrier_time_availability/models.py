@@ -38,10 +38,11 @@ class DeliveryPeriod(models.Model) :
         days = ['','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         result = []
         for period in self :
-            name = "{0} {1:0>2d}h{2:0>2d} - {3:0>2d}h{4:0>2d}".format(
-                    days[period.day_of_week][0:3], period.start_hour, 0 if period.start_min == 1 else period.start_min, period.end_hour, 0 if period.end_min == 1 else period.end_min)
-            period.name = name
-            result.append((period.id, name))
+            if period.day_of_week :
+                name = "{0} {1:0>2d}h{2:0>2d} - {3:0>2d}h{4:0>2d}".format(
+                        days[period.day_of_week][0:3], period.start_hour, 0 if period.start_min == 1 else period.start_min, period.end_hour, 0 if period.end_min == 1 else period.end_min)
+                period.name = name
+                result.append((period.id, name))
         return result
     
 
