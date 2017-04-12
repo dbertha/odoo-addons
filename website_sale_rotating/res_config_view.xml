@@ -7,7 +7,7 @@
              <field name="inherit_id" ref="sale.view_sales_config"/>
              <field name="arch" type="xml">
                  <data>
-                     <xpath expr="//div[@name='Sale Features']" position="after">
+                     <xpath expr="//div[@id='main']" position="inside">
                          <group id="rotating_week_number">
                              <field name="current_week_number" class="oe_inline"/>
                          </group>

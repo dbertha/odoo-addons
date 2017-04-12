@@ -6,9 +6,9 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[@name='sale_condition']" position="after"> 
+                <xpath expr="//group[@name='website']" position="inside"> 
                     <group name="rotation_options">
-                        <field name="week_number" on_change="onchange_week_number(week_number)"/>
+                        <field name="week_number"/>
                     </group>
                     
                 </xpath>
