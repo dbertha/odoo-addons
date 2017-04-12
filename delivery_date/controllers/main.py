@@ -83,7 +83,9 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         context = request.context
         cr = request.cr
         order = request.website.sale_get_order(context=context)
-        return order.check_date(datetime_start)
+        res = order.check_date(datetime_start)
+        _logger.debug(res)
+        return res
         
     def checkout_form_validate(self, data):
         _logger.debug("Validating form")
