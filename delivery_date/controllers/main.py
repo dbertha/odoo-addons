@@ -108,8 +108,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         cr = request.cr
         sale_order_obj = request.registry['sale.order']
         order_id = request.session.get('sale_order_id')
-        order = sale_order_obj.browse(cr, SUPERUSER_ID,order_id, context=context)
-        _logger.debug("UID : %s", str(uid))
+        order = sale_order_obj.browse(cr, SUPERUSER_ID,[order_id], context=context)
+        _logger.debug("order : %s", str(order))
         forbidden_days = order.get_forbidden_days()  
 
         min_date = order.get_min_date(forbidden_days=forbidden_days) 
