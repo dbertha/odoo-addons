@@ -34,7 +34,7 @@ class DeliveryPeriod(models.Model) :
     
     @api.multi
     @api.depends('name','day_of_week', 'start_hour', 'start_min', 'end_hour', 'end_min')
-    def name_get(self, cr, uid, ids, name, arg, context=None) :
+    def name_get(self) :
         days = ['','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         result = []
         for period in self :
