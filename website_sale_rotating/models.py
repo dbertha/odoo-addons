@@ -15,7 +15,7 @@ class sale_configuration(models.TransientModel):
     _inherit = 'sale.config.settings'
 
 
-    current_week_number : fields.selection(
+    current_week_number = fields.Selection(
                 [(1, 'Week 1'), (2, 'Week 2'), (3, 'Week 3'), (4, 'Week 4')],
                 string="Current week number :",
                 help="Choose the current week for rotating products.", 
