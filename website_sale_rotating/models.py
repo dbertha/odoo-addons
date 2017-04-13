@@ -114,7 +114,7 @@ class product_template(models.Model):
             #week_number = None #TODO
             if(current_week == self.week_number) :
                self.website_published = True
-            elif(new_week_number != 0) :
+            elif(self.week_number != 0) :
                 _logger.debug("article shouldn't be published")
                 self.website_published = False
         
