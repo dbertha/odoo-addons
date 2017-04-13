@@ -107,15 +107,16 @@ class product_template(models.Model):
             self.publish_tagged_products(new_current_week)
     
     @api.onchange('week_number')
-    def onchange_week_number(self,new_week_number):
-        current_week = self.get_current_week()
-        _logger.debug("current week : %d, new week_number : %d", current_week, new_week_number)
-        #week_number = None #TODO
-        if(current_week == new_week_number) :
-           self.website_published = True
-        elif(new_week_number != 0) :
-            _logger.debug("article shouldn't be published")
-            self.website_published = False
+    def onchange_week_number(self):
+        if self.week_number :
+            current_week = self.get_current_week()
+            _logger.debug("current week : %d, new week_number : %d", current_week, self.week_number)
+            #week_number = None #TODO
+            if(current_week == self.week_number) :
+               self.website_published = True
+            elif(new_week_number != 0) :
+                _logger.debug("article shouldn't be published")
+                self.website_published = False
         
     def is_rotating(self):
         """Expect only one ID"""
