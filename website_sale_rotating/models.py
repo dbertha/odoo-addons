@@ -60,7 +60,7 @@ class product_template(models.Model):
     @api.model
     def reset_week_published(self):
         """Set the published attribute of all products with a week number to False"""
-        products = self.search(['&', ('website_published', '=', True), ('week_number', '!=', False)]) :
+        products = self.search(['&', ('website_published', '=', True), ('week_number', '!=', False)])
         products.write({'website_published' : False})
 
     @api.model
