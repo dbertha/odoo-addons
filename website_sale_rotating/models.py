@@ -69,26 +69,26 @@ class product_template(models.Model):
         product_ids = self.search( 
                             [('website_published', '=', False), ('week_number', '=', weeknumber)])
         #custom : elect some products to be the boxes content
-        plats_ids = self.search(
-                            ['&',('website_published', '=', False), '&', 
-                             ('week_number', '=', weeknumber), ('public_categ_ids', 'in', [42])]).ids
-        entrees_ids = self.search(
-                            ['&',('website_published', '=', False), '&', 
-                             ('week_number', '=', weeknumber), ('public_categ_ids', 'in', [41])]).ids
-        _logger.debug("plats : %s", plats_ids)
-        _logger.debug("entrees : %s", entrees_ids)
-        chosen_plats_ids = random.sample(plats_ids, 7)
-        chosen_entrees_ids = random.sample(entrees_ids, 7)
-        entrees_desc = 'SEMAINE' + weeknumber + '\nLes entrées de la semaine : \n'
-        plats_desc = '\nLes plats de la semaine : \n'
-        for index in range(0,3) :
-            entrees_desc += self.browse(chosen_entrees_ids[index])[0].name + '\n'
-            plats_desc += self.browse(chosen_plats_ids[index])[0].name + '\n'
-        # self.write([3708], {'description_sale' : entrees_desc + plats_desc}) #Box 3/7
-        for index in range(3,5) :
-            entrees_desc += self.browse(chosen_entrees_ids[index])[0].name + '\n'
-            plats_desc += self.browse(chosen_plats_ids[index])[0].name + '\n'
-        # self.write([3707], {'description_sale' : entrees_desc + plats_desc}) #Box 5/7
+        # plats_ids = self.search(
+        #                     ['&',('website_published', '=', False), '&', 
+        #                      ('week_number', '=', weeknumber), ('public_categ_ids', 'in', [42])]).ids
+        # entrees_ids = self.search(
+        #                     ['&',('website_published', '=', False), '&', 
+        #                      ('week_number', '=', weeknumber), ('public_categ_ids', 'in', [41])]).ids
+        # _logger.debug("plats : %s", plats_ids)
+        # _logger.debug("entrees : %s", entrees_ids)
+        # chosen_plats_ids = random.sample(plats_ids, 7)
+        # chosen_entrees_ids = random.sample(entrees_ids, 7)
+        # entrees_desc = 'SEMAINE' + weeknumber + '\nLes entrées de la semaine : \n'
+        # plats_desc = '\nLes plats de la semaine : \n'
+        # for index in range(0,3) :
+        #     entrees_desc += self.browse(chosen_entrees_ids[index])[0].name + '\n'
+        #     plats_desc += self.browse(chosen_plats_ids[index])[0].name + '\n'
+        # # self.write([3708], {'description_sale' : entrees_desc + plats_desc}) #Box 3/7
+        # for index in range(3,5) :
+        #     entrees_desc += self.browse(chosen_entrees_ids[index])[0].name + '\n'
+        #     plats_desc += self.browse(chosen_plats_ids[index])[0].name + '\n'
+        # # self.write([3707], {'description_sale' : entrees_desc + plats_desc}) #Box 5/7
         
         #end custom
         _logger.debug("number of articles with week %d : %d", weeknumber, len(product_ids))
