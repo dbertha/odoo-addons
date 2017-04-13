@@ -19,11 +19,15 @@
 ##############################################################################
 
 from openerp.addons.website_sale.controllers.main import website_sale
+from openerp.tools.translate import _
+
 
 
 class WebsiteSale(website_sale):
     def checkout_form_validate(self, data):
-        res = super(WebsiteSale, self).checkout_form_validate(data)
+        error, error_message = super(WebsiteSale, self).checkout_form_validate(data)
         if data.get('street') and not data.get('vat'):
-            res['vat'] = 'missing'
-        return res
+            error['vat'] = 'missing'
+            error_message.append(_('VAT is needed if you set an enterprise name.'))
+        return error, error_message
+ 
