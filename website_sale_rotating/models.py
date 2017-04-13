@@ -94,7 +94,7 @@ class product_template(models.Model):
         _logger.debug("number of articles with week %d : %d", weeknumber, len(product_ids))
         #TODO : more efficient : write method with ids
         product_ids.write({'website_published' : True})
-    
+    @api.model
     def tick(self):
         """One tick in the rotation
         For good behavior, assert that there is a least one article for each of

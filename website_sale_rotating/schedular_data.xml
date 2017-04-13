@@ -12,7 +12,7 @@
             <field name="doall" eval="True" />
             <field eval="'product.template'" name="model"></field>
             <field eval="'tick'" name="function"/>
-            <field eval="''" name="args"/>
+            <field eval="''(,)''" name="args"/>
             
         </record>
     
