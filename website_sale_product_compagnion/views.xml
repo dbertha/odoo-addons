@@ -104,7 +104,6 @@
 
 <menuitem action="action_product_companion_pack_form" id="menu_action_companion_pack_form" parent="delivery.menu_delivery" sequence="1"/>
 <menuitem action="action_product_companion_pack_form" id="sale_menu_action_companion_pack_form" parent="delivery.sale_menu_delivery" sequence="2"/>
-    </data>
         
     </data>
 </openerp>
