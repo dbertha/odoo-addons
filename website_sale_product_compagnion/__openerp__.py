@@ -6,13 +6,13 @@
     """Rules to add some products to cart if another product is present""",
 
     'description': 
-    """Rules based on quantity to propose some packs to be chosen by the customer.
+    """Rules based on quantity to add automatically some packs.
     If only one pack, this can be used as a mandatory compagnion.
     Can be used for mandatory warranty, cash security, ...""",
 
     'author': "David Bertha",
     'website': "",
-    'installable' : False,
+    'installable' : True,
 
     'category': 'Uncategorized',
     'version': '0.1',
