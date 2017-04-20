@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="product_product_formwithcompanions_view" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <group name="website" position="inside">
+                    <field name="companion_product_rules" widget="many2many_tags"/>
+                </group>
+            </field>
+        </record>
+
+
+    <record id="view_product_companion_rule_form" model="ir.ui.view">
+            <field name="name">product.companion.rule.form.view</field>
+            <field name="model">product.companion.rule</field>
+            <field name="arch" type="xml">
+                <form string="Companion Rules">
+                    <sheet string="Rules">
+                        <field name="companion_product_packs"/>
+                        <group string="Range">
+                            <field name="qty_lower_bound"/>
+                            <field name="qty_upper_bound"/>
+                        </group>
+                        
+                    </sheet>
+                </form>
+            </field>
+    </record>
+
+    <record id="view_product_companion_pack_form" model="ir.ui.view">
+            <field name="name">product.companion.pack.form.view</field>
+            <field name="model">product.companion.pack</field>
+            <field name="arch" type="xml">
+                <form string="Companion Packs">
+                    <sheet string="Packs">
+                        <field name="qty"/>
+                            <field name="companion_product_product"/>
+                        
+                    </sheet>
+                </form>
+            </field>
+    </record>
+
+<record id="view_product_companion_rule_tree" model="ir.ui.view">
+            <field name="name">product.companion.rule.tree</field>
+            <field name="model">product.companion.rule</field>
+            <field name="arch" type="xml">
+                <tree string="Companion Rules">
+                    <field name="name"/>
+                    
+
+                </tree>
+            </field>
+        </record>
+
+<record id="view_product_companion_pack_tree" model="ir.ui.view">
+            <field name="name">product.companion.pack.tree</field>
+            <field name="model">product.companion.pack</field>
+            <field name="arch" type="xml">
+                <tree string="Companion Packs">
+                    <field name="name"/>
+                    
+
+                </tree>
+            </field>
+        </record>
+
+<record id="action_product_companion_rule_form" model="ir.actions.act_window">
+            <field name="name">Companion Rules</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.companion.rule</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new companion rule.
+              </p><p>
+                A rule apply to ecommerce cart to add mandatory products like a warranty, based on the quantity of the initial product.
+              </p>
+            </field>
+        </record>
+<record id="action_product_companion_pack_form" model="ir.actions.act_window">
+            <field name="name">Companion Packs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.companion.pack</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new companion pack.
+              </p><p>
+                A pack define the product and the quantity that need to be add to the cart if the corresponding rule applies.
+              </p>
+            </field>
+        </record>
+
+
+
+<menuitem action="action_product_companion_rule_form" id="menu_action_companion_rule_form" parent="delivery.menu_delivery" sequence="1"/>
+<menuitem action="action_product_companion_rule_form" id="sale_menu_action_companion_rule_form" parent="delivery.sale_menu_delivery" sequence="2"/>
+
+<menuitem action="action_product_companion_pack_form" id="menu_action_companion_pack_form" parent="delivery.menu_delivery" sequence="1"/>
+<menuitem action="action_product_companion_pack_form" id="sale_menu_action_companion_pack_form" parent="delivery.sale_menu_delivery" sequence="2"/>
+    </data>
+        
+    </data>
+</openerp>
