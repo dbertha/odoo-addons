@@ -19,6 +19,7 @@
             <field name="arch" type="xml">
                 <form string="Companion Rules">
                     <sheet string="Rules">
+                        <field name="name"/>
                         <field name="companion_product_packs"/>
                         <group string="Range">
                             <field name="qty_lower_bound"/>
@@ -36,6 +37,7 @@
             <field name="arch" type="xml">
                 <form string="Companion Packs">
                     <sheet string="Packs">
+                        <field name="name"/>
                         <field name="qty"/>
                             <field name="companion_product_product"/>
                         
