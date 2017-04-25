@@ -6,14 +6,13 @@
         Rules for delivery carrier and date based on the products inside the sale order""",
 
     'description': """
-        Public categories are linked to a delivery condition. When a product is added to
-        a sale order, the sale order is considered as having that delivery condition.
+        Public categories are linked to a delivery condition. When a webshop is chosen, the sale order is considered as having that delivery condition.
         Delay rules and delivery carrier are dependent of the delivery condition of the sale order.
     """,
 
     'author': "David Bertha",
     'website': "",
-    'installable' : False,
+    'installable' : True,
 
     'category': 'Sales',
     'version': '0.1',

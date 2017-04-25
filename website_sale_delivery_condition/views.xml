@@ -20,8 +20,8 @@
                         </group>
                         <group string="Description">
                             <field name="website_description"/>
-                            <field name="image" widget="image"/>
-                        </group>
+<!--                             <field name="image" widget="image"/>
+ -->                        </group>
                         <group name="rules" string="Delay Rules">
                             <field name="delay_from"/>
                             <!--<field name="delay_to"/>-->
@@ -96,7 +96,6 @@
     <record id="sale_order_withcondition_form" model="ir.ui.view">
             <field name="name">sale.order.withconditions.form.view</field>
             <field name="model">sale.order</field>
-            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <group name="sale_pay" position="after">
