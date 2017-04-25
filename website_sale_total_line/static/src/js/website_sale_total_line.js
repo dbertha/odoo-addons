@@ -9,7 +9,7 @@ $('.oe_website_sale').each(function () {
         var price = parseFloat($line.find('td[name="price"]').find(".oe_currency_value").text().replace(',', '.')); 
         var $total = $line.find('td[name="total_line"]').find("span[id='custom_line_total']");
         var total_value = value * price;
-        $total.html(total_value.toFixed(2));
+        $total.html(total_value.toFixed(2).replace('.', ',') + ' €');
     });
 });
 }); 

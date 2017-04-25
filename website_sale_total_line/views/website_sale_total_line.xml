@@ -9,15 +9,15 @@
     </template>
     
     <template id="order_line_total_cart" name="Line total in cart display" inherit_id="website_sale.cart">
-        <xpath expr="//th[@width='120']" position="after">
-            <th width="100">Total</th>                
+        <xpath expr="//table[@id='cart_products']//th[last()]" position="after">
+            <th width="100" class="text-center">Total</th>                
         </xpath>
         
         <xpath expr="//table[@id='cart_products']/tbody//td[last()]" position="after">
             <td class="text-center" name="total_line">
                 <div>
                     
-                    <span style="white-space: nowrap;"><span class="oe_currency_value" id="custom_line_total"><t t-esc="int(line.product_uom_qty) * line.price_unit"/> </span>  € </span>
+                    <span style="white-space: nowrap;"><span class="oe_currency_value" id="custom_line_total"><t t-esc="int(line.product_uom_qty) * line.discounted_price"/> </span>  € </span>
                 </div>
             </td>
         </xpath>
