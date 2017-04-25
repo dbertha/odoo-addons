@@ -16,7 +16,7 @@
             </xpath>
         </template>
         
-        <template id="all_products_link_to_condition_page" inherit_id="website_sale.products" name="Product Categories with correct link to condition page">
+        <template id="all_products_link_to_condition_page" inherit_id="website_sale.products_categories" name="Product Categories with correct link to condition page">
             <xpath expr="//ul[@class='nav nav-pills nav-stacked mt16']//li//a" position="replace">
                 <a t-att-href="keep('/shop' + (chosen_condition and ('/type/' + slug(chosen_condition)) or ''),category=0)">All Products</a>
             </xpath>
