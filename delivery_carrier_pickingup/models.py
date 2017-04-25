@@ -35,5 +35,5 @@ class SaleOrder(models.Model):
                     if carrier.address_partner :
                         order.partner_shipping_id = carrier.address_partner.id
                 else :
-                    order.warehouse_id = self.env['ir.model.data'].get_object(cr, uid, 'stock', 'warehouse0')
+                    order.warehouse_id = self.env['ir.model.data'].get_object('stock', 'warehouse0')
         return result
