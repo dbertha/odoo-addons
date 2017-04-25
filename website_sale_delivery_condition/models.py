@@ -51,7 +51,7 @@ class DeliveryCondition(models.Model):
                  (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')], #1-7 because no selection == 0
                 string="Last day of the allowed range"
                 )
-    website_description = fields.Char(string="Text for the website", translate=True),
+    website_description = fields.Char(string="Text for the website", translate=True)
     sequence = fields.Integer('Sequence', required=True, default=10,help="The sequence field is used to order the delivery conditions \
             from the lowest sequences to the higher ones. \
             The order is important because it determines the priority between the delivery conditions.")
