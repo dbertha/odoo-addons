@@ -85,7 +85,7 @@ class DeliveryCarrier(models.Model):
     #         help="This is the delivery condition of the public category of the delivery product"),
     condition_ids = fields.Many2many('delivery.condition', 'delivery_carrier_condition_rel', 'carrier_id', 'condition_id',
                                            string="Delivery Conditions", 
-                                           help="That delivery method will be available for order with one of those delivery condition."),
+                                           help="That delivery method will be available for order with one of those delivery condition.")
         #The delivery product should be in a category linked with the delivery condition with the lowest priority"),
         #Not true, because sale order delivery condition is not dependent of delivery lines
     
