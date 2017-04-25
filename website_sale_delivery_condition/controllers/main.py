@@ -72,7 +72,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             url += "/type/%s" % slug(condition)
         if category:
             category = pool['product.public.category'].browse(cr, uid, int(category), context=context)
-            url +== "/category/%s" % slug(category)
+            url += "/category/%s" % slug(category)
         if attrib_list:
             post['attrib'] = attrib_list
 
