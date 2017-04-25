@@ -121,7 +121,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
         delivery_condition = request.website.sale_get_delivery_condition()
 
-        product_template_objs = pool['product.template']
+        product_template_objs = request.env['product.template']
         current_week = product_template_objs.get_current_week()
          
 
