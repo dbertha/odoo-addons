@@ -24,16 +24,16 @@ class SaleOrder(models.Model):
 
     @api.multi
     def delivery_set(self):
-    	result = super(SaleOrder, self).delivery_set()
-    	if result :
-    		for order in self: 
-    			carrier = order.carrier_id
-    			if carrier.is_pickup and carrier.shop_location :
+        result = super(SaleOrder, self).delivery_set()
+        if result :
+            for order in self: 
+                carrier = order.carrier_id
+                if carrier.is_pickup and carrier.shop_location :
                     warehouse_ids = self.env['stock.warehouse'].search([('lot_stock_id.id','=',carrier.shop_location.id)])
                     if warehouse_ids :
                         order.warehouse_id = warehouse_ids[0]
                     if carrier.address_partner :
-    				    order.partner_shipping_id = carrier.address_partner.id
+                        order.partner_shipping_id = carrier.address_partner.id
                 else :
                     order.warehouse_id = self.env['ir.model.data'].get_object(cr, uid, 'stock', 'warehouse0')
-    	return result
+        return result
