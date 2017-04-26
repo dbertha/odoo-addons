@@ -35,8 +35,9 @@ class ProductProduct(models.Model):
             'product_companion_rel','product_id','rule_id', string='Mandatory Accompanying products', 
             help='Those products will be automatically added/removed when the product is added/removed from the cart, with the correct quantity')
     
-    @api.one
+    @api.multi
     def get_companion_packs(self, quantity) :
+        self.ensure_one()
         pack_ids = []
         for rule in self.companion_product_rules :
             if rule.qty_lower_bound <= quantity <= rule.qty_upper_bound :
