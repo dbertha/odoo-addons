@@ -86,6 +86,7 @@ class SaleOrder(models.Model):
         context['companions'] = True
         for line_id, packs in pack_ids.iteritems() :
             for pack in packs :
+                _logger.debug("pack : %s", pack)
                 res = self.with_context(context)._cart_update(product_id=pack.companion_product_product.id, add_qty=pack.qty)
                 self.env['sale.order.line'].browse(res['line_id']).companion_of_line_id = line_id
 
