@@ -105,8 +105,9 @@ class SaleOrder(models.Model):
     _name = "sale.order"
     _inherit = "sale.order"
     
-    @api.one
+    @api.multi
     def has_delivery_condition_named(self,delivery_name) :
+        self.ensure_one()
         _logger.debug("Has delivery condition : start, delivery name : %s", delivery_name)
         return self.delivery_condition.name == delivery_name
     
@@ -127,9 +128,10 @@ class SaleOrder(models.Model):
     
 
     
-    @api.one
+    @api.multi
     def get_min_date(self,forbidden_days=None) :
         #order = self.browse(cr, SUPERUSER_ID, order_id, context)
+        self.ensure_one()
         delivery_condition = self.delivery_condition
         _logger.debug("In overloaded min_date\nDelivery condition : %s", str(delivery_condition))
         _logger.debug("user_id : %s", str(self.env.uid))
@@ -161,9 +163,10 @@ class SaleOrder(models.Model):
             return [min_date.year, min_date.month, min_date.day, min_date.hour, min_date.minute]
         return super(SaleOrder,self).get_min_date(forbidden_days=forbidden_days)
 
-    @api.one
+    @api.multi
     def get_forbidden_days(self) :
         #order = self.browse(cr, SUPERUSER_ID, order_id, context=context)
+        self.ensure_one()
         delivery_condition = self.delivery_condition
         forbidden_days = super(SaleOrder,self).get_forbidden_days() 
         if delivery_condition :
@@ -179,8 +182,9 @@ class SaleOrder(models.Model):
                 _logger.debug('Forbidden days : %s', forbidden_days)
         return forbidden_days
     
-    @api.one
+    @api.multi
     def get_max_date(self,min_date=None,forbidden_days=None) :
+        self.ensure_one()
         #order = self.browse(cr, SUPERUSER_ID, order_id, context=context)
         delivery_condition = self.delivery_condition
         if delivery_condition :
