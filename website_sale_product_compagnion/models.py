@@ -41,6 +41,8 @@ class ProductProduct(models.Model):
         for rule in self.companion_product_rules :
             if rule.qty_lower_bound <= quantity <= rule.qty_upper_bound :
                 pack_ids.extend(list(rule.companion_product_packs))
+                _logger.debug("pack_ids : %s", pack_ids)
+                _logger.debug("rule.companion_product_packs : %s", rule.companion_product_packs)
         return pack_ids
 
 class SaleOrderLine(models.Model):
