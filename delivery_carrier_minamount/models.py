@@ -20,7 +20,7 @@ class DeliveryCarrier(models.Model):
             SaleOrder = self.env['sale.order']
             order = SaleOrder.browse(order_id)
 
-            if self.amount_lower_bound > ((order.amount_total - order.amount_delivery) or 0.0) :
+            if self.amount_lower_bound > (order.amount_total - order.amount_delivery) :
                 self.available = False
 
     
