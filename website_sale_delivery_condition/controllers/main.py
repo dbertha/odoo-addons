@@ -116,8 +116,10 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
 
         #showing the page considered as choosing a delivery condition
-        order = request.website.sale_get_order(force_create=1, context=context)
-        order.delivery_condition = condition
+        if condition : 
+            order = request.website.sale_get_order(force_create=1, context=context)
+        
+            order.delivery_condition = condition
 
 
 
