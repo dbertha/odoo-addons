@@ -39,7 +39,7 @@
                     <sheet string="Packs">
                         <field name="name"/>
                         <field name="qty"/>
-                            <field name="companion_product_product"/>
+                        <field name="companion_product_product"/>
                         
                     </sheet>
                 </form>

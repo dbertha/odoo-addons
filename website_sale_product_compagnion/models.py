@@ -77,13 +77,21 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     @api.one
-    def clear_companions(self, line_id=False) :
-        self.order_line.filtered(lambda line : line.companion_of_line_id and (line.companion_of_line_id.id == line_id or not line_id)).unlink()
+    def clear_companions(self, companion_line_id=False, line_id = False) :
+        if companion_line_id :
+            self.order_line.filtered(lambda line : companion_line_id and line.id == companion_line_id).unlink()
+        else :
+            self.order_line.filtered(lambda line : line.companion_of_line_id and (line.companion_of_line_id.id == line_id or not line_id)).unlink()
 
     @api.one
-    def generate_companions(self, line_id=False) :
+    def generate_companions(self, line_id=False, companion_line_id=False) :
         context = dict(self.env.context)
         pack_ids = {}
+        if companion_line_id and not line_id :
+            line_id = self.order_line.filtered(lambda line : line.id == companion_line_id).companion_of_line_id.id
+        # if line_id and not self.order_line.filtered(lambda line : line.id == line_id) :
+        #     #line has been removed
+        #     line_id = False
         for line in ((not line_id and self.order_line) or self.order_line.filtered(lambda line : line.id == line_id)) :
             pack_ids[line.id] = line.product_id.get_companion_packs(line.product_uom_qty)
         context['companions'] = True
@@ -107,12 +115,14 @@ class SaleOrder(models.Model):
         #Overload to handle relational product with delivery product
         lines = {}
         for order in self :
-            lines[order.id] = order.order_line.filtered('is_delivery')
+            delivery_line = order.order_line.filtered('is_delivery')
+            if delivery_line :
+                lines[order.id] = order.order_line.filtered(lambda line : line.companion_of_line_id and line.companion_of_line_id.id == delivery_line.id)
         result = super(SaleOrder,self)._delivery_unset()
         for order in self :
             if not self.env.context.get('companions', False) and lines.get(order.id, False) :
-                self.clear_companions(lines[order.id].id)
-                self.generate_companions(lines[order.id].id)
+                self.clear_companions(companion_line_id = lines[order.id].id)
+                self.generate_companions(companion_line_id = lines[order.id].id)
 
         #self.pool['sale.order']._cart_update(cr, uid,ids, context=context)
         return result
@@ -123,8 +133,8 @@ class SaleOrder(models.Model):
         for order in self :
             if not self.env.context.get('companions', False) :
                 line = order.order_line.filtered('is_delivery')
-                order.clear_companions(line.id)
-                order.generate_companions(line.id)
+                order.clear_companions(line_id = line.id)
+                order.generate_companions(line_id = line.id)
         return result
     
     @api.multi
@@ -132,10 +142,13 @@ class SaleOrder(models.Model):
         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,
         because otherwise it will apply its delivery condition to the cart"""
         self.ensure_one()
+        companion_line_id = self.order_line.filtered(lambda line : line.companion_of_line_id and line.companion_of_line_id.id == line_id)
+        if companion_line_id :
+            companion_line_id = companion_line_id.id
         result_dict = super(SaleOrder,self)._cart_update(product_id, line_id, add_qty, set_qty)
         if not self.env.context.get('companions', False) :
-            self.clear_companions(result_dict['line_id'])
-            self.generate_companions(result_dict['line_id'])
+            self.clear_companions(line_id = result_dict['line_id'], companion_line_id = companion_line_id)
+            self.generate_companions(line_id = result_dict['line_id'], companion_line_id = companion_line_id)
         return result_dict
 
 
