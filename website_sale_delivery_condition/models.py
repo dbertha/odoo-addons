@@ -10,6 +10,8 @@ from dateutil.relativedelta import relativedelta
 import time
 import pytz
 from pytz import timezone
+import openerp.addons.decimal_precision as dp
+
 
 import logging
 
@@ -64,6 +66,11 @@ class DeliveryCondition(models.Model):
                  (21, '21'), (22, '22'), (23, '23'), (24, '24')], default=17,   
                 string="Last hour of day to allow delivery for the next day"
                 )
+
+    enterprise_portal_published = fields.Boolean(
+                        string="Available on Enterprise Portal"
+                        )
+
         # 'image': fields.binary("Image",
             # help="This field holds the image used as image for the shop page, limited to 1024x1024px.")
         #possible improvement : 'repeat_interval'
@@ -266,20 +273,19 @@ class Website(models.Model):
 
     def sale_get_delivery_condition(self) :
         _logger.debug("get_delivery_condition, user id : %s", str(self.env.uid))
-        sale_order_obj = self.env['sale.order']
-        sale_order_id = request.session.get('sale_order_id')
-        _logger.debug("sale get_delivery_condition")
-        if sale_order_id :
-            sale_order = sale_order_obj.browse(sale_order_id)  
-            if sale_order.exists() :
-                _logger.debug("sale order exists")
-                if sale_order.delivery_condition :
-                    return sale_order.delivery_condition
+        sale_order = self.sale_get_order(force_create=1)
+        if sale_order.exists() :
+            _logger.debug("sale order exists")
+            if sale_order.delivery_condition :
+                return sale_order.delivery_condition
         return False
     
     def sale_is_product_compatible_with_cart(self,tpl_product_id) :
         """Can be overloaded to handle incompatibility between delivery conditions"""
-        return True
+        condition = self.sale_get_delivery_condition()
+        product = self.env['product.template'].browse(tpl_product_id)
+        return not condition or ( condition.id in 
+                        product.mapped('public_categ_ids').mapped('condition_id').mapped('id') )
     
     def sale_product_domain(self):
         # remove product event from the website content grid and list view (not removed in detail view)
@@ -288,3 +294,28 @@ class Website(models.Model):
         if delivery_condition :
             return ['&'] + res + [('public_categ_ids', 'child_of', delivery_condition.category_ids.ids)]
         return res
+
+
+class ResUsers(models.Model):
+    _inherit = 'res.users'
+    
+
+    enterprise_portal = fields.Boolean(
+                        string="Enterprise Portal",
+                        help="If loggued, will access to the enterprise website")
+    specific_delivery_price = fields.Float(string='Fixed delivery price', digits=dp.get_precision('Product Price'))
+
+
+class DeliveryCarrier(models.Model):
+    _name = "delivery.carrier"
+    _inherit = "delivery.carrier" 
+    
+    @api.one
+    def get_price(self):
+        """overload to add user delivery price if specified"""
+        res = super(DeliveryCarrier,self).get_price()
+        order_id = self.env.context.get('order_id')
+        if self.available and self.env.user.specific_delivery_price is not False : 
+        #we should accept 0 #TODO : check if False or None when the column is set to NULL
+            _logger.debug("specific delivery price : %s", self.env.user.specific_delivery_price)
+            self.price = self.env.user.specific_delivery_price

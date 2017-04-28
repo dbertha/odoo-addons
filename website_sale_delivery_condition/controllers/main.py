@@ -69,6 +69,8 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         if search:
             post["search"] = search
         if condition :
+            if self.env.user.enterprise_portal and not condition.enterprise_portal_published :
+                return request.redirect("/")
             url += "/type/%s" % slug(condition)
         if category:
             category = pool['product.public.category'].browse(cr, uid, int(category), context=context)
@@ -256,3 +258,14 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             
         return super(website_sale, self).cart_update_json(product_id, line_id, add_qty, set_qty,display)
     
+
+
+
+    @http.route(['/shop/payment/transaction/<int:acquirer_id>'], type='json', auth="public", website=True)
+    def payment_transaction(self, acquirer_id):
+        if self.env.user.enterprise_portal and 
+            not (self.env['payment.acquirer'].browse(acquirer_id).auto_confirm == 'at_pay_now') :
+            #send mail even if not confirmed
+            order = request.website.sale_get_order(context=context)
+            order.force_quotation_send()
+        return super(website_sale, self).payment_transaction(acquirer_id)

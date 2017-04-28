@@ -13,6 +13,8 @@
                         <group>
                             <field name="name"/>
                             <field name="sequence"/>
+                            <field name="enterprise_portal_published"/>
+                            
                         </group>
                         <group string="Connexions">
                             <field name="category_ids"/>
@@ -105,6 +107,18 @@
                 </group>
             </field>
     </record>
+
+    <record id="view_users_form_enterprise_portal" model="ir.ui.view">
+            <field name="name">res.users.form.enterprise_portal</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="enterprise_portal"/>
+                    <field name="specific_delivery_price"/>
+                </field>
+            </field>
+        </record>
     
     </data>
 </openerp>
