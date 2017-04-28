@@ -106,6 +106,11 @@ class DeliveryCarrier(models.Model):
             order = SaleOrder.sudo().browse(order_id)
             if order.delivery_condition and order.delivery_condition.id not in self.condition_ids.ids :
                 self.available = False
+            elif self.env.user.specific_delivery_price is not False : 
+            #we should accept 0 #TODO : check if False or None when the column is set to NULL
+                _logger.debug("specific delivery price : %s", self.env.user.specific_delivery_price)
+                self.price = self.env.user.specific_delivery_price
+        return res
     
     
 class SaleOrder(models.Model):
@@ -306,16 +311,4 @@ class ResUsers(models.Model):
     specific_delivery_price = fields.Float(string='Fixed delivery price', digits=dp.get_precision('Product Price'))
 
 
-class DeliveryCarrier(models.Model):
-    _name = "delivery.carrier"
-    _inherit = "delivery.carrier" 
-    
-    @api.one
-    def get_price(self):
-        """overload to add user delivery price if specified"""
-        res = super(DeliveryCarrier,self).get_price()
-        order_id = self.env.context.get('order_id')
-        if self.available and self.env.user.specific_delivery_price is not False : 
-        #we should accept 0 #TODO : check if False or None when the column is set to NULL
-            _logger.debug("specific delivery price : %s", self.env.user.specific_delivery_price)
-            self.price = self.env.user.specific_delivery_price
+        
