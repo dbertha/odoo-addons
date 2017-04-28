@@ -263,7 +263,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
     @http.route(['/shop/payment/transaction/<int:acquirer_id>'], type='json', auth="public", website=True)
     def payment_transaction(self, acquirer_id):
-        if self.env.user.enterprise_portal and 
+        if self.env.user.enterprise_portal and \
             not (self.env['payment.acquirer'].browse(acquirer_id).auto_confirm == 'at_pay_now') :
             #send mail even if not confirmed
             order = request.website.sale_get_order(context=context)
