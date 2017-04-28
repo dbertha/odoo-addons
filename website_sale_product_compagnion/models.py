@@ -14,7 +14,7 @@ class ProductCompanionPack(models.Model):
     qty = fields.Float('Quantity', help="The quantity should be expressed in product uom",required=True)
     companion_product_product = fields.Many2one('product.product',
             string='Product', required=True,
-            help='Those products will be automatically added/removed when the product is added/removed from the cart, with the correct quantity')
+            help='This product will be automatically added/removed when the product is added/removed from the cart, with the correct quantity')
     
 
 
@@ -24,7 +24,7 @@ class ProductCompanionRule(models.Model):
     qty_lower_bound = fields.Float('Quantity lower bound (included)', required=True)
     qty_upper_bound = fields.Float('Quantity upper bound (included)', required=True)
     companion_product_packs = fields.Many2many('product.companion.pack',
-            'product_companion_rel','product_id','rule_id', required=True, string='Product packs to have in cart', 
+            'product_rule_pack_rel','rule_id','pack_id', required=True, string='Product packs to have in cart', 
             help='Those products will be automatically added/removed when the product is added/removed from the cart, with the correct quantity')
     
 
@@ -32,7 +32,7 @@ class ProductProduct(models.Model):
     #_name = 'product.public.category'
     _inherit = "product.product"
     companion_product_rules = fields.Many2many('product.companion.rule',
-            'product_companion_rel','product_id','rule_id', string='Mandatory Accompanying products', 
+            'product_rule_rel','product_id','rule_id', string='Mandatory Accompanying products', 
             help='Those products will be automatically added/removed when the product is added/removed from the cart, with the correct quantity')
     
     @api.multi
@@ -95,21 +95,24 @@ class SaleOrder(models.Model):
                 res = self.with_context(context)._cart_update(product_id=pack.companion_product_product.id, add_qty=pack.qty)
                 self.env['sale.order.line'].browse(res['line_id']).companion_of_line_id = line_id
 
-    @api.one
+    
     def _cart_find_product_line(self,product_id=None, line_id=None, **kwargs):
         if self.env.context.get('companions', False) :
             return []
         else :
             return super(SaleOrder,self)._cart_find_product_line(product_id, line_id, **kwargs)
 
-    @api.one
+    @api.multi
     def _delivery_unset(self):
         #Overload to handle relational product with delivery product
-        line = self.order_line.filtered('is_delivery')
+        lines = {}
+        for order in self :
+            lines[order.id] = order.order_line.filtered('is_delivery')
         result = super(SaleOrder,self)._delivery_unset()
-        if not self.env.context.get('companions', False) and line :
-            self.clear_companions(line.id)
-            self.generate_companions(line.id)
+        for order in self :
+            if not self.env.context.get('companions', False) and lines.get(order.id, False) :
+                self.clear_companions(lines[order.id].id)
+                self.generate_companions(lines[order.id].id)
 
         #self.pool['sale.order']._cart_update(cr, uid,ids, context=context)
         return result
@@ -124,10 +127,11 @@ class SaleOrder(models.Model):
                 order.generate_companions(line.id)
         return result
     
-    @api.one
+    @api.multi
     def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
         """Overload to remove delivery method when all leaving products are with a delivery condition with lower priority,
         because otherwise it will apply its delivery condition to the cart"""
+        self.ensure_one()
         result_dict = super(SaleOrder,self)._cart_update(product_id, line_id, add_qty, set_qty)
         if not self.env.context.get('companions', False) :
             self.clear_companions(result_dict['line_id'])
