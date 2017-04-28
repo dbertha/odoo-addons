@@ -37,6 +37,12 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         TODO: compute values in a dedicated method"""
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
+        #showing the page considered as choosing a delivery condition
+        if condition : 
+            order = request.website.sale_get_order(force_create=1, context=context)
+        
+            order.delivery_condition = condition
+
         if ppg:
             try:
                 ppg = int(ppg)
@@ -115,11 +121,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
 
-        #showing the page considered as choosing a delivery condition
-        if condition : 
-            order = request.website.sale_get_order(force_create=1, context=context)
         
-            order.delivery_condition = condition
 
 
 
