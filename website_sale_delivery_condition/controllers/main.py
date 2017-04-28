@@ -238,7 +238,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             return request.redirect("/shop/product/%s" % slug(template))
         
 
-        return super(website_sale, self).cart_update(product_id, add_qty, set_qty) 
+        return super(website_sale, self).with_context(update_not_json=True).cart_update(product_id, add_qty, set_qty) 
     #TODO : update website_sale module and modifiy check_carrier to unlink even if compatible but cart cleared
     
     @http.route(['/shop/cart/update_json'], type='json', auth="public", methods=['POST'], website=True)
