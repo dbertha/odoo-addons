@@ -105,7 +105,7 @@ class SaleOrder(models.Model):
 
     
     def _cart_find_product_line(self,product_id=None, line_id=None, **kwargs):
-        if self.env.context.get('update_not_json', False) :
+        if self.env.context.get('update_not_json', False) or self.env.context.get('companions', False) :
             return []
         else :
             return super(SaleOrder,self)._cart_find_product_line(product_id, line_id, **kwargs)
