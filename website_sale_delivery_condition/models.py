@@ -274,6 +274,8 @@ class SaleOrder(models.Model):
     
 class Website(models.Model):
     _inherit = 'website'
+
+    delivery_condition_url = fields.Char('Local URL to delivery condition page')
     
 
     def sale_get_delivery_condition(self) :

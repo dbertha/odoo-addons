@@ -15,6 +15,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
+    #TODO : redirect if no delivery condition chosed
 
     def checkout_values(self, data=None):
         """Overload to add delivery condition"""
@@ -42,6 +43,9 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             order = request.website.sale_get_order(force_create=1, context=context)
         
             order.delivery_condition = condition
+        else :
+            if request.website.delivery_condition_url :
+                return request.redirect(request.website.delivery_condition_url)
 
         if ppg:
             try:

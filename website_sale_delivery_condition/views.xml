@@ -119,6 +119,17 @@
                 </field>
             </field>
         </record>
+
+    <record id="view_website_form_condition_url" model="ir.ui.view">
+            <field name="name">website.form.condition_url</field>
+            <field name="model">website</field>
+            <field name="inherit_id" ref="website.view_website_form"/>
+            <field name="arch" type="xml">
+                <field name="google_analytics_key" position="after">
+                    <field name="delivery_condition_url" placeholder="/page/our-conditions"/>
+                </field>
+            </field>
+        </record>
     
     </data>
 </openerp>
