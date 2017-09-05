@@ -7,6 +7,11 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+#because qty should be overwritten without writing to the DB
+class FakePack() :
+    def __init__(self, companion_product_product, qty) :
+        self.companion_product_product = companion_product_product
+        self.qty = qty
 
 class ProductCompanionPack(models.Model):
     _name = "product.companion.pack"
@@ -41,9 +46,13 @@ class ProductProduct(models.Model):
         pack_ids = []
         for rule in self.companion_product_rules :
             if rule.qty_lower_bound <= quantity <= rule.qty_upper_bound :
-                pack_ids.extend(list(rule.companion_product_packs))
+                pack_ids.extend(list(rule.companion_product_packs.mapped(lambda x : FakePack(x.companion_product_product, x.qty))))
                 _logger.debug("pack_ids : %s", pack_ids)
                 _logger.debug("rule.companion_product_packs : %s", rule.companion_product_packs)
+        #when pack have quantity 0, use the line quantity
+        for pack in pack_ids :
+            if pack.qty == 0 :
+                pack.qty = quantity
         return pack_ids
 
 class SaleOrderLine(models.Model):
