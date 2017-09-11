@@ -41,7 +41,11 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         #showing the page considered as choosing a delivery condition
         if condition : 
             order = request.website.sale_get_order(force_create=1, context=context)
-        
+            if order.delivery_condition.id != condition.id and order.order_line :
+                #reset cart because another condition has been chosen
+                for line in order.order_line :
+                    line.unlink()
+
             order.delivery_condition = condition
         else :
             if request.website.delivery_condition_url :

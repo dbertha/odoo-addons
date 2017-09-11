@@ -106,7 +106,7 @@ class DeliveryCarrier(models.Model):
             order = SaleOrder.sudo().browse(order_id)
             if order.delivery_condition and order.delivery_condition.id not in self.condition_ids.ids :
                 self.available = False
-            elif self.env.user.specific_delivery_price is not False : 
+            elif self.env.user.enterprise_portal and self.env.user.specific_delivery_price != 0 : 
             #we should accept 0 #TODO : check if False or None when the column is set to NULL
                 _logger.debug("specific delivery price : %s", self.env.user.specific_delivery_price)
                 self.price = self.env.user.specific_delivery_price
