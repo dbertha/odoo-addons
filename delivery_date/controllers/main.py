@@ -109,7 +109,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         sale_order_obj = request.registry['sale.order']
         order_id = request.session.get('sale_order_id')
         order = sale_order_obj.browse(cr, SUPERUSER_ID,[order_id], context=context)
-        order = request.website.sale_get_order(context=context)
+        order = order or request.website.sale_get_order(context=context)
         _logger.debug("order : %s", str(order))
         _logger.debug("context : %s", str(context))
         _logger.debug("session : %s", str(request.session))

@@ -139,5 +139,5 @@ class SaleOrder(models.Model):
                     _logger.debug("Will remove line : %s", line.name)
                     ids_to_remove.append(line.id)
         if ids_to_remove :
-            self.env.get('sale.order.line').sudo().unlink(ids_to_remove)
+            self.env['sale.order.line'].sudo().unlink(ids_to_remove)
         return bool(ids_to_remove)
