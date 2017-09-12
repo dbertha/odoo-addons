@@ -79,9 +79,9 @@ class product_template(models.Model):
         _logger.debug("entrees : %s", entrees_ids)
         chosen_plats_ids = random.sample(plats_ids, 7)
         chosen_entrees_ids = random.sample(entrees_ids, 7)
-        fr_context = dict(context)
+        fr_context = dict(self.env.context)
         fr_context['lang'] = 'fr_BE'
-        nl_context = dict(context)
+        nl_context = dict(self.env.context)
         nl_context['lang'] = 'nl_NL'
         entrees_desc_nl = u'WEEK ' + unicode(weeknumber) + u'\nVOORGERECHTEN : \n'
         plats_desc_nl = u'\nHOOFDGERECHTEN : \n'
