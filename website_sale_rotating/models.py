@@ -96,7 +96,7 @@ class product_template(models.Model):
             plats_desc_nl += self.with_context(nl_context).browse(chosen_plats_ids[index]).name + u'\n'
         self.with_context(fr_context).browse([38001]).write({'description_sale' : entrees_desc_fr + plats_desc_fr, 'x_web_description' : entrees_desc_fr + plats_desc_fr}) #Box 3/7
         self.with_context(nl_context).browse([38001]).write({'description_sale' : entrees_desc_nl + plats_desc_nl, 'x_web_description' : entrees_desc_nl + plats_desc_nl}) #Box 3/7
-         for index in range(3,5) :
+        for index in range(3,5) :
             entrees_desc_fr += self.with_context(fr_context).browse(chosen_entrees_ids[index]).name + u'\n'
             plats_desc_fr += self.with_context(fr_context).browse(chosen_plats_ids[index]).name + u'\n'
             entrees_desc_nl += self.with_context(nl_context).browse(chosen_entrees_ids[index]).name + u'\n'
