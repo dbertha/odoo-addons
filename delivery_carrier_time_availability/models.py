@@ -149,10 +149,14 @@ class SaleOrder(models.Model):
         #order = self.browse(cr, SUPERUSER_ID, order_id, context)
         self.ensure_one()
         min_date = super(SaleOrder,self).get_min_date(forbidden_days=forbidden_days)
+
         min_datetime = datetime(*min_date)
+
         delivery_carrier = self.carrier_id
         if delivery_carrier and delivery_carrier.delivery_period_ids :
             for period in delivery_carrier.delivery_period_ids :
                 if period.day_of_week == min_datetime.isoweekday() :
-                    min_datetime.replace(hour=period.start_hour, minute=period.start_min)
+                    if period.start_hour > min_datetime.hour :
+                        min_datetime.replace(hour=period.start_hour, minute=period.start_min)
+        _logger.debug("Min date for delivery with carrier time : %s", str(min_date))
         return [min_datetime.year, min_datetime.month, min_datetime.day, min_datetime.hour, min_datetime.minute]

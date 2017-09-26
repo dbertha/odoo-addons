@@ -19,7 +19,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'website_sale', 'delivery', 'delivery_date'], 
+    'depends': ['base', 'website', 'website_sale', 'delivery', 'delivery_date', 'website_sale_delivery_condition'], 
     #delivery_date depends of website_sale_delivery_on_checkout
 
     # always loaded
