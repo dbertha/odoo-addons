@@ -159,7 +159,9 @@ class SaleOrder(models.Model):
                 _logger.debug(period.day_of_week)
                 if period.day_of_week == min_datetime.isoweekday() :
                     _logger.debug("interval found")
+                    _logger.debug(min_datetime.hour)
+                    _logger.debug(period.start_hour)
                     if period.start_hour > min_datetime.hour :
-                        min_datetime.replace(hour=period.start_hour, minute=period.start_min)
+                        min_datetime = min_datetime.replace(hour=period.start_hour, minute=period.start_min)
         _logger.debug("Min date for delivery with carrier time : %s", str(min_datetime))
         return [min_datetime.year, min_datetime.month, min_datetime.day, min_datetime.hour, min_datetime.minute]
