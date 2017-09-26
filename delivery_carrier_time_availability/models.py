@@ -143,3 +143,16 @@ class SaleOrder(models.Model):
         #intervals.append([[date.today().year+1,1,1,0,0],[date.today().year+1,1,1,23,59]]) #first of january always closed
         _logger.debug(intervals)
         return intervals
+
+    @api.multi
+    def get_min_date(self,forbidden_days=None) :
+        #order = self.browse(cr, SUPERUSER_ID, order_id, context)
+        self.ensure_one()
+        min_date = super(SaleOrder,self).get_min_date(forbidden_days=forbidden_days)
+        min_datetime = datetime(*min_date)
+        delivery_carrier = self.carrier_id
+        if delivery_carrier and delivery_carrier.delivery_period_ids :
+            for period in delivery_carrier.delivery_period_ids :
+                if period.day_of_week == min_datetime.isoweekday() :
+                    min_datetime.replace(hour=period.start_hour, minute=period.start_min)
+        return [min_datetime.year, min_datetime.month, min_datetime.day, min_datetime.hour, min_datetime.minute]
