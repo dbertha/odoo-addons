@@ -158,5 +158,5 @@ class SaleOrder(models.Model):
                 if period.day_of_week == min_datetime.isoweekday() :
                     if period.start_hour > min_datetime.hour :
                         min_datetime.replace(hour=period.start_hour, minute=period.start_min)
-        _logger.debug("Min date for delivery with carrier time : %s", str(min_date))
+        _logger.debug("Min date for delivery with carrier time : %s", str(min_datetime))
         return [min_datetime.year, min_datetime.month, min_datetime.day, min_datetime.hour, min_datetime.minute]
