@@ -153,9 +153,12 @@ class SaleOrder(models.Model):
         min_datetime = datetime(*min_date)
 
         delivery_carrier = self.carrier_id
+        _logger.debug(delivery_carrier)
         if delivery_carrier and delivery_carrier.delivery_period_ids :
             for period in delivery_carrier.delivery_period_ids :
+                _logger.debug(period.day_of_week)
                 if period.day_of_week == min_datetime.isoweekday() :
+                    _logger.debug("interval found")
                     if period.start_hour > min_datetime.hour :
                         min_datetime.replace(hour=period.start_hour, minute=period.start_min)
         _logger.debug("Min date for delivery with carrier time : %s", str(min_datetime))
