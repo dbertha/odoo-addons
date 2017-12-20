@@ -12,6 +12,10 @@ $(document).ready(function () {
     //timeStart.hour(timeStart.hour() + 1); //min one hour after current time
     
     if($delivery_field.length){
+        var old_val = $('#delivery_date').val();
+        $('#delivery_date').val('');
+        console.log("old_val : ");
+        console.log(old_val);
         var timeStart;
         var timeEnd;
         var timeDefault;
@@ -24,9 +28,17 @@ $(document).ready(function () {
             result.min_date[1] = result.min_date[1] - 1 //moment.js : months start from 0...
             timeStart = moment(result.min_date);
             console.log(timeStart.format("DD/MM HH:mm"))
-            timeDefault = moment(timeStart);
-            timeDefault.hours(timeDefault.hours() +1);
-            timeDefault.minutes(0);
+            if(old_val){
+                console.log("old time used");
+                timeDefault = moment(old_val);
+            }
+
+            else{
+                timeDefault = moment(timeStart);
+                timeDefault.hours(timeDefault.hours() +1);
+                timeDefault.hours(16);
+                timeDefault.minutes(0);
+            }
             forbidden_intervals_list = result.forbidden_intervals
             console.debug(forbidden_intervals_list)
             console.debug(forbidden_intervals_list.length)

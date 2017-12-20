@@ -45,14 +45,25 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             _logger.debug("checkout value delivery_date : %s", data.get('delivery_date'))
             order = request.website.sale_get_order(force_create=1, context=context)
             order_obj = registry.get('sale.order')
-            datetime_format = self.convert_format(order.get_datetime_format())
+            #fixing locale format problem
+
+            js_format = order.get_datetime_format()
+            try :
+                js_format_fixed = js_format[js_format.index('DD'):]
+                data['delivery_date'] = data['delivery_date'][js_format.index('DD'):]
+            except Exception as e:
+                _logger.debug(e)
+
+            datetime_format = self.convert_format(js_format_fixed)
             _logger.debug("format : %s", datetime_format)
             try :
                 datetime_start = datetime.strptime(data.get('delivery_date'), datetime_format)
                 datetime_start = tzone.localize(datetime_start).astimezone(pytz.utc)
                 _logger.debug("delivery date from format : %s", datetime_start)
-            except :
+            except Exception as e:
                 _logger.error("Incorrect date %s for format : %s", data.get('delivery_date'), datetime_format)
+                _logger.debug(e)
+                _logger.debug(datetime(2017,12,20).strftime('%a %d/%m/%Y %H:%M'))
                 return {}
 
             _logger.debug("checkout value end, checkout delivery datetime start : %s", datetime_start)
