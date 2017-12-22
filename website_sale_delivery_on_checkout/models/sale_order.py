@@ -96,6 +96,16 @@ class SaleOrder(orm.Model):
             _logger.debug("force_carrier_id : %s", force_carrier_id)
             carrier_id = force_carrier_id or order.carrier_id.id
             _logger.debug("carrier_id : %s", carrier_id)
+
+            #quick test first
+            if carrier_id and carrier_obj.verify_carrier(cr, SUPERUSER_ID, [carrier_id], order.partner_shipping_id, context=context) : #choice is valid
+                if carrier_id == order.carrier_id.id : #already set
+                    return carrier_id
+                else :
+                    order.write({'carrier_id': carrier_id})
+                    order.with_context(context).delivery_set()
+                    return carrier_id
+
             carrier_ids = self._get_delivery_methods(cr, uid, order, context=context)
             if carrier_id:
                 if carrier_id not in carrier_ids:
@@ -172,27 +182,27 @@ class SaleOrder(orm.Model):
         _logger.debug("price attr : %s" % str([delivery.price for delivery in values['deliveries']]))
         return values
 
-    def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
-        """ Override to update carrier quotation if quantity changed """
+    # def _cart_update(self, cr, uid, ids, product_id=None, line_id=None, add_qty=0, set_qty=0, context=None, **kwargs):
+    #     """ Override to update carrier quotation if quantity changed """
 
-        self._delivery_unset(cr, uid, ids, context=context)
+    #     self._delivery_unset(cr, uid, ids, context=context)
 
-        # When you update a cart, it is not enough to remove the "delivery cost" line
-        # The carrier might also be invalid, eg: if you bought things that are too heavy
-        # -> this may cause a bug if you go to the checkout screen, choose a carrier,
-        #    then update your cart (the cart becomes uneditable)
-        carrier_ids = {}
-        for order in self.browse(cr, uid, ids, context=context) :
-            carrier_ids[order.id] = order.carrier_id and order.carrier_id.id
-        self.write(cr, uid, ids, {'carrier_id': False}, context=context)
+    #     # When you update a cart, it is not enough to remove the "delivery cost" line
+    #     # The carrier might also be invalid, eg: if you bought things that are too heavy
+    #     # -> this may cause a bug if you go to the checkout screen, choose a carrier,
+    #     #    then update your cart (the cart becomes uneditable)
+    #     carrier_ids = {}
+    #     for order in self.browse(cr, uid, ids, context=context) :
+    #         carrier_ids[order.id] = order.carrier_id and order.carrier_id.id
+    #     self.write(cr, uid, ids, {'carrier_id': False}, context=context)
 
-        values = super(SaleOrder, self)._cart_update(
-            cr, uid, ids, product_id, line_id, add_qty, set_qty, context, **kwargs)
+    #     values = super(SaleOrder, self)._cart_update(
+    #         cr, uid, ids, product_id, line_id, add_qty, set_qty, context, **kwargs)
 
-        for sale_order in self.browse(cr, uid, ids, context=context):
-            self._check_carrier_quotation(cr, uid, sale_order, force_carrier_id=carrier_ids[sale_order.id], context=context)
+    #     for sale_order in self.browse(cr, uid, ids, context=context):
+    #         self._check_carrier_quotation(cr, uid, sale_order, force_carrier_id=carrier_ids[sale_order.id], context=context)
 
-        return values
+    #     return values
 
     def _get_shipping_country(self, cr, uid, values, context=None):
         country_ids = set()
