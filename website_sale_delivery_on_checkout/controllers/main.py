@@ -42,17 +42,64 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
             carrier_id = int(carrier_id)
         if order:
             _logger.debug(context)
-            request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context)
+            
             if carrier_id:
                 #refresh page with new delivery method
+                request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context)
                 return request.redirect("/shop/checkout")
+            else :
+                request.registry['sale.order']._check_carrier_quotation(cr, uid, order, context=context)
         _logger.debug("will call original checkout func")
         res = super(website_sale, self).checkout(**post)
         return res
 
-    #TODO : carrier should be checked in checkout_form_validate : 
-    #maybe the data in the form invalid the carrier
-    # better as it is : force form to be valid
+    @http.route(['/shop/update_carrier_id'], type='json', auth="public", methods=['POST'], website=True)
+    def update_carrier_id(self, carrier_id, **post):
+        cr, uid = request.cr, request.uid
+        context = dict(request.context)
+        context['checkout'] = True
+        order = request.website.sale_get_order(context=context)
+        if carrier_id:
+            carrier_id = int(carrier_id)
+            if order:
+                _logger.debug(context)
+                #record values before carrier update
+                old_record = {field : order[field] for field in order._fields}
+                _logger.debug(old_record)
+                request.registry['sale.order']._check_carrier_quotation(cr, uid, order, force_carrier_id=carrier_id, context=context)
+                changed_fields = {field : order._fields[field].type == 'many2one' and order[field].id or order[field] for field in order._fields if order[field] != old_record[field] and order._fields[field].type not in ('many2many', 'one2many')}
+                changed_fields['is_pickup'] = order.carrier_id.is_pickup
+                if 'partner_shipping_id' in changed_fields :
+                    if not order.partner_shipping_id :
+                        changed_fields.update({
+                        'shipping_name' : '',
+                        'shipping_phone' : '',
+                        'shipping_street' : '',
+                        'shipping_city' : '',
+                        'shipping_zip' : '',
+                        'shipping_country_id' : '',
+                        })
+                    partner_shipping = request.env['res.partner'].browse(changed_fields['partner_shipping_id'])
+                    changed_fields.update({
+                        'shipping_name' : partner_shipping.name,
+                        'shipping_phone' : partner_shipping.phone,
+                        'shipping_street' : partner_shipping.street,
+                        'shipping_city' : partner_shipping.city,
+                        'shipping_zip' : partner_shipping.zip,
+                        'shipping_country_id' : partner_shipping.country_id.id,
+                        })
+                # if 'delivery_price' in changed_fields :
+                #     changed_fields.update({
+                #         'amount_tax' : order.amount_tax,
+                #         'amount_untaxed' : order.amount_untaxed,
+                #         'amount_delivery' : order.amount_delivery,
+                #         'amount_total' : order.amount_total,
+                #         })
+
+
+                _logger.debug(changed_fields)
+                return changed_fields
+
 
     
     def order_lines_2_google_api(self, order_lines):
