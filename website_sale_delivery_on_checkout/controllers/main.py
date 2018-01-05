@@ -79,7 +79,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
                         'shipping_zip' : '',
                         'shipping_country_id' : '',
                         })
-                    partner_shipping = request.env['res.partner'].browse(changed_fields['partner_shipping_id'])
+                    partner_shipping = request.env['res.partner'].sudo().browse(changed_fields['partner_shipping_id'])
                     changed_fields.update({
                         'shipping_name' : partner_shipping.name,
                         'shipping_phone' : partner_shipping.phone,
