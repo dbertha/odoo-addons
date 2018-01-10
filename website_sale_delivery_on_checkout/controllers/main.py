@@ -98,6 +98,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
 
                 _logger.debug(changed_fields)
+                request.cr.commit()
                 return changed_fields
 
 
