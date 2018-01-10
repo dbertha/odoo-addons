@@ -98,13 +98,13 @@ class SaleOrder(orm.Model):
             _logger.debug("carrier_id : %s", carrier_id)
 
             #quick test first
-            if carrier_id and carrier_obj.verify_carrier(cr, SUPERUSER_ID, [carrier_id], order.partner_shipping_id, context=context) : #choice is valid
-                if carrier_id == order.carrier_id.id : #already set
-                    return carrier_id
-                else :
-                    order.write({'carrier_id': carrier_id})
-                    order.with_context(context).delivery_set()
-                    return carrier_id
+            # if carrier_id and carrier_obj.verify_carrier(cr, SUPERUSER_ID, [carrier_id], order.partner_shipping_id, context=context) : #choice is valid
+            #     if carrier_id == order.carrier_id.id : #already set
+            #         return carrier_id
+                # else :
+                #     order.write({'carrier_id': carrier_id})
+                #     order.with_context(context).delivery_set()
+                #     return carrier_id
 
             carrier_ids = self._get_delivery_methods(cr, uid, order, context=context)
             if carrier_id:
