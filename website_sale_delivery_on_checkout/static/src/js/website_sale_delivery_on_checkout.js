@@ -50,7 +50,7 @@ $(document).ready(function () {
         // window.location.href = '/shop/checkout?carrier_id=' + carrier_id;
     });
 
-    $("select.delivery_mode").change(function (ev) {
+    $("input[name='delivery_mode']").click(function (ev) {
         var option = $(ev.currentTarget).val();
         console.log(option);
         $("label.store").toggleClass('hidden', ! (option === 'store'));
