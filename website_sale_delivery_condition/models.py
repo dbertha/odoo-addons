@@ -299,7 +299,10 @@ class Website(models.Model):
         res = super(Website, self).sale_product_domain()
         delivery_condition = self.sale_get_delivery_condition()
         if delivery_condition :
-            return ['&'] + res + [('public_categ_ids', 'child_of', delivery_condition.category_ids.ids)]
+            if delivery_condition.category_ids :
+                return ['&'] + res + [('public_categ_ids', 'child_of', delivery_condition.category_ids.ids)]
+            else :
+                return ['&'] + res + [('name', '=', False)]
         return res
 
 
