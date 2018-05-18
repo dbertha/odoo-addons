@@ -137,6 +137,7 @@ class SaleOrder(models.Model):
     #     return result
     
     delivery_condition = fields.Many2one('delivery.condition', string="Conditions of Delivery")
+    is_enterprise_portal = fields.Boolean("Is B2B order")
     
 
     

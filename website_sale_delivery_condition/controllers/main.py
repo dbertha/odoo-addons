@@ -24,10 +24,11 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         #_logger.debug("checkout value end, checkout delivery datetime start : %s", values['checkout']['delivery_datetime_start'])
         return values
     
-    @http.route(['/shop',
-        '/shop/page/<int:page>',
-        '/shop/category/<model("product.public.category"):category>',
-        '/shop/category/<model("product.public.category"):category>/page/<int:page>',
+    @http.route([
+        # '/shop',
+        # '/shop/page/<int:page>',
+        # '/shop/category/<model("product.public.category"):category>',
+        # '/shop/category/<model("product.public.category"):category>/page/<int:page>',
         '/shop/type/<model("delivery.condition"):condition>', #new shop requests
         '/shop/type/<model("delivery.condition"):condition>/page/<int:page>',
         '/shop/type/<model("delivery.condition"):condition>/category/<model("product.public.category"):category>',
@@ -280,6 +281,7 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         if request.env.user.enterprise_portal and \
             not (request.env['payment.acquirer'].browse(acquirer_id).auto_confirm == 'at_pay_now') :
             #send mail even if not confirmed
-            order = request.website.sale_get_order(context=context)
+            order = request.website.sale_get_order()
+            order.is_enterprise_portal = True
             order.force_quotation_send()
         return super(website_sale, self).payment_transaction(acquirer_id)
