@@ -291,13 +291,15 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
     def confirm_order(self, **post):
         order = request.website.sale_get_order(context=request.context)
         res = super(website_sale, self).confirm_order(**post)
-        _logger.debug(res)
-        _logger.debug(res.headers and res.headers.get('location'))
-        if request.env.user.enterprise_portal :
+        # _logger.debug(res)
+        # _logger.debug(res.headers and res.headers.get('location'))
+        if request.env.user.enterprise_portal and "payment" in (res.headers and res.headers.get('location', '') or '') :
+            #avoid payment page and send mail for quotation
             order.is_enterprise_portal = True
             order.force_quotation_send()
             request.website.sale_reset(context=request.context)
             return request.redirect('/shop/confirmation')
+        return res
 
 
     @http.route('/shop/payment/get_status/<int:sale_order_id>', type='json', auth="public", website=True)
