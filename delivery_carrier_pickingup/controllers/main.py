@@ -39,7 +39,7 @@ class website_sale(openerp.addons.website_sale_delivery_on_checkout.controllers.
         order = request.website.sale_get_order(context=request.context)
         if not order:
             return request.redirect("/shop")
-        if not post.get('shipping_id') and order.carrier_id.is_pickup \
+        if order.carrier_id.is_pickup \
             and order.carrier_id.address_partner :
             post['shipping_id'] = order.carrier_id.address_partner.id
         return super(website_sale, self).confirm_order(**post)
