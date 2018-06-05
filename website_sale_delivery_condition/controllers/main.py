@@ -276,12 +276,22 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
 
 
 
-    @http.route(['/shop/payment/transaction/<int:acquirer_id>'], type='json', auth="public", website=True)
-    def payment_transaction(self, acquirer_id):
-        if request.env.user.enterprise_portal and \
-            not (request.env['payment.acquirer'].browse(acquirer_id).auto_confirm == 'at_pay_now') :
-            #send mail even if not confirmed
-            order = request.website.sale_get_order()
-            order.is_enterprise_portal = True
-            order.force_quotation_send()
-        return super(website_sale, self).payment_transaction(acquirer_id)
+    # @http.route(['/shop/payment/transaction/<int:acquirer_id>'], type='json', auth="public", website=True)
+    # def payment_transaction(self, acquirer_id):
+    #     if request.env.user.enterprise_portal and \
+    #         not (request.env['payment.acquirer'].browse(acquirer_id).auto_confirm == 'at_pay_now') :
+    #         #send mail even if not confirmed
+    #         order = request.website.sale_get_order()
+    #         order.is_enterprise_portal = True
+    #         order.force_quotation_send()
+    #     return super(website_sale, self).payment_transaction(acquirer_id)
+
+
+    @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
+    def confirm_order(self, **post):
+        order = request.website.sale_get_order(context=request.context)
+        res = super(website_sale, self).confirm_order(**post)
+        _logger.debug(res)
+        _logger.debug(res.__dict__)
+        if request.env.user.enterprise_portal :
+            return request.redirect('/shop/confirmation')
