@@ -292,6 +292,23 @@ class website_sale(openerp.addons.website_sale.controllers.main.website_sale):
         order = request.website.sale_get_order(context=request.context)
         res = super(website_sale, self).confirm_order(**post)
         _logger.debug(res)
-        _logger.debug(res.__dict__)
+        _logger.debug(res.headers and res.headers.get('location'))
         if request.env.user.enterprise_portal :
+            order.is_enterprise_portal = True
+            order.force_quotation_send()
+            request.website.sale_reset(context=request.context)
             return request.redirect('/shop/confirmation')
+
+
+    @http.route('/shop/payment/get_status/<int:sale_order_id>', type='json', auth="public", website=True)
+    def payment_get_status(self, sale_order_id, **post):
+        cr, uid, context = request.cr, request.uid, request.context
+
+        res = super(website_sale, self).payment_get_status(sale_order_id,**post)
+        if request.env.user.enterprise_portal :
+            values = {}
+        
+            values.update({'tx_ids': False, 'state': 'done', 'validation': None})
+            
+            return res.update({'message': request.website._render("website_sale.order_state_message", values)})
+        return res
