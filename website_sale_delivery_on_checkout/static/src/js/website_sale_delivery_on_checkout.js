@@ -16,6 +16,7 @@ $(document).ready(function () {
 
         ajax.jsonRpc("/shop/update_carrier_id", 'call', {'carrier_id': parseInt(carrier_id)})
             .then(function (data) {
+                //TODO : use qweb rendering
                 console.log(data);
                 $(".shipping_id_div").toggleClass('hidden', data['is_pickup']);
                 if(! data['is_pickup']){
@@ -36,6 +37,18 @@ $(document).ready(function () {
                         console.log($("span[data-oe-field='" + field + "'] > span"));
                         $("input[name='" + field + "']").val(data[field]);
                         $("span[data-oe-field='" + field + "'] > span").text((isNaN(data[field]) || Number.isInteger(data[field]) || typeof(data[field]) === "boolean" || typeof(data[field]) === "string") && data[field] || typeof(data[field]) !== "boolean" && data[field].toFixed(2));
+                        if(field === 'amount_total'){
+                            $("#order_total span[class='oe_currency_value'").text((isNaN(data[field]) || Number.isInteger(data[field]) || typeof(data[field]) === "boolean" || typeof(data[field]) === "string") && data[field] || typeof(data[field]) !== "boolean" && data[field].toFixed(2));
+                        }
+                        if(field === 'amount_delivery'){
+                            $("#order_delivery span[class='oe_currency_value'").text((isNaN(data[field]) || Number.isInteger(data[field]) || typeof(data[field]) === "boolean" || typeof(data[field]) === "string") && data[field] || typeof(data[field]) !== "boolean" && data[field].toFixed(2));
+                        }
+                        if(field === 'amount_tax'){
+                            $("#order_total_taxes span[class='oe_currency_value'").text((isNaN(data[field]) || Number.isInteger(data[field]) || typeof(data[field]) === "boolean" || typeof(data[field]) === "string") && data[field] || typeof(data[field]) !== "boolean" && data[field].toFixed(2));
+                        }
+                        if(field === 'amount_untaxed'){
+                            $("#order_total_untaxed span[class='oe_currency_value'").text((isNaN(data[field]) || Number.isInteger(data[field]) || typeof(data[field]) === "boolean" || typeof(data[field]) === "string") && data[field] || typeof(data[field]) !== "boolean" && data[field].toFixed(2));
+                        }
                     }
                 });
 
