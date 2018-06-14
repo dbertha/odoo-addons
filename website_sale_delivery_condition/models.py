@@ -304,7 +304,7 @@ class Website(models.Model):
                 return ['&'] + res + [('public_categ_ids', 'child_of', delivery_condition.category_ids.ids)]
             else :
                 return ['&'] + res + [('name', '=', False)]
-        return res
+        return ['&'] + res + [('website_published', '=', True)]
 
 
 class ResUsers(models.Model):
