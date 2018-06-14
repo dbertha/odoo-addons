@@ -298,13 +298,14 @@ class Website(models.Model):
     def sale_product_domain(self):
         # remove product event from the website content grid and list view (not removed in detail view)
         res = super(Website, self).sale_product_domain()
+        res = ['&'] + res + [('website_published', '=', True)]
         delivery_condition = self.sale_get_delivery_condition()
         if delivery_condition :
             if delivery_condition.category_ids :
                 return ['&'] + res + [('public_categ_ids', 'child_of', delivery_condition.category_ids.ids)]
             else :
                 return ['&'] + res + [('name', '=', False)]
-        return ['&'] + res + [('website_published', '=', True)]
+        return res
 
 
 class ResUsers(models.Model):
