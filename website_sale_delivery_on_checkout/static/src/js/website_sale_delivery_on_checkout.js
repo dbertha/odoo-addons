@@ -68,6 +68,10 @@ $(document).ready(function () {
         console.log(option);
         $("label.store").toggleClass('hidden', ! (option === 'store'));
         $("label.delivery").toggleClass('hidden', ! (option === 'delivery'));
+        if(option ==='delivery'){
+            console.log($("label.delivery > input[type='delivery_type']"));
+            $("label.delivery > input[type='delivery_type']").trigger("click");
+        }
         
     });
 
