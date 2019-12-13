@@ -140,8 +140,10 @@ class SaleOrder(models.Model):
                         #all day should be forbidden
                         intervals.append([[current_day.year, current_day.month, current_day.day, 0, 0], [current_day.year, current_day.month, current_day.day, 23, 59]])
                     current_day += one_day_delta
-        intervals.append([[date.today().year+1,1,1,0,0],[date.today().year+1,1,1,23,59]]) #first of january always closed
-        intervals.append([[date.today().year,12,25,0,0],[date.today().year,12,25,23,59]]) #25/12 always closed
+                if delivery_carrier.is_pickup :
+                    intervals.append([[date.today().year+1,1,1,0,0],[date.today().year+1,1,1,23,59]]) #first of january always closed
+                    intervals.append([[date.today().year,12,25,0,0],[date.today().year,12,25,23,59]]) #25/12 always closed
+        
         _logger.debug(intervals)
         return intervals
 
